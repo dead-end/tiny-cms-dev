@@ -1,3 +1,5 @@
+## Project installation
+
 ```sh
 npm create vite@latest
 ✔ Project name: … tiny-cms-dev
@@ -5,6 +7,12 @@ npm create vite@latest
 ✔ Select a variant: › TypeScript
 
 npm install svelte-spa-router
+```
+
+Add the base configuration to`vite.config.ts` to get relative URL's:
+
+```js
+base: "./";
 ```
 
 ## Install tailwind
@@ -38,4 +46,44 @@ Add to `tailwind.config.js`:
 
 ```js
   plugins: [require("@tailwindcss/forms")],
+```
+
+## Deploy to github pages
+
+``sh
+npm install gh-pages --save-dev
+
+````
+
+Add file: `gh-pages.js` with:
+
+```js
+import ghpages from "gh-pages";
+
+ghpages.publish(
+  "dist", // path to public directory
+  {
+    branch: "main",
+    repo: "https://github.com/dead-end/tiny-cms.git",
+  },
+  () => {
+    console.log("Deploy Complete!");
+  }
+);
+
+````
+
+Add to package.json
+
+```js
+"deploy": "node ./gh-pages.js",
+```
+
+## Deploy to Github
+
+To deploy to Github pages:
+
+```sh
+npm run build
+npm run deploy
 ```
