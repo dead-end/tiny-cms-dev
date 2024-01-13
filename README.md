@@ -16,7 +16,7 @@ npx tailwindcss init -p
 
 Add to `tailwind.config.js`:
 
-```json
+```js
 content: ["./src/**/*.{html,js,svelte,ts}"],
 ```
 
