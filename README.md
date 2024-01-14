@@ -9,6 +9,14 @@ npm create vite@latest
 npm install svelte-spa-router
 ```
 
+## Dependencies
+
+For encryption
+
+```sh
+npm install byte-base64
+```
+
 Add the base configuration to`vite.config.ts` to get relative URL's:
 
 ```js

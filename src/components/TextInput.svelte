@@ -1,4 +1,5 @@
 <script lang="ts">
+  export let label: string;
   export let id: string;
   export let value: string;
   export let type: "text" | "password" = "text";
@@ -11,7 +12,7 @@
   };
 </script>
 
-<label for={id} class="label-base mb-2">Token</label>
+<label for={id} class="label-base mb-2">{label}</label>
 <input {id} name={id} class="input-base" {type} {value} on:blur={onblur} />
 
 {#if error}

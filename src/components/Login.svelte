@@ -9,10 +9,10 @@
   import FormWrapper from "./FormWrapper.svelte";
   import TextInput from "./TextInput.svelte";
 
-  let token = "";
+  let password = "";
 
   const formValidators: Record<string, TValidator[]> = {
-    token: [requiredValidator],
+    password: [requiredValidator],
   };
 
   let { formErrors, validateForm } = createFormValidator(formValidators);
@@ -26,16 +26,18 @@
     }
 
     console.log("submit");
-    repoConfigStore.login("token");
+
+    repoConfigStore.login(password);
   };
 </script>
 
 <div class="w-full max-w-xs m-auto">
   <FormWrapper label="Login" {submit}>
     <TextInput
-      id="token"
-      value={token}
-      error={formErrors["token"]}
+      label="Password"
+      id="password"
+      value={password}
+      error={formErrors["password"]}
       type="password"
     />
   </FormWrapper>

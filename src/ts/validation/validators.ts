@@ -5,12 +5,18 @@
  */
 export type TValidator = (value: any, formData: FormData) => string | void;
 
+/**
+ * The function ensures that the form field has a value.
+ */
 export const requiredValidator: TValidator = (value) => {
     if (!value) {
         return "Please enter a value!";
     }
 };
 
+/**
+ * The function checks if two fields of the form have the same value.
+ */
 export const validateFieldEquals = (field: string, msg: string): TValidator => {
     return (value, formData) => {
         if (value !== formData.get(field)) {
@@ -19,6 +25,10 @@ export const validateFieldEquals = (field: string, msg: string): TValidator => {
     };
 };
 
+/**
+ * The function checks the min / max of a value, depending on the type
+ * of the field.
+ */
 export const validateMinMax = (props: {
     min?: number;
     max?: number;
