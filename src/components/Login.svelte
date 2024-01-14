@@ -1,5 +1,6 @@
 <script lang="ts">
   import { repoConfigStore } from "../ts/stores/repoConfig";
+  import { formDataStrValue } from "../ts/utils";
   import { createFormValidator } from "../ts/validation/formValidator";
   import {
     requiredValidator,
@@ -8,8 +9,6 @@
 
   import FormWrapper from "./FormWrapper.svelte";
   import TextInput from "./TextInput.svelte";
-
-  let password = "";
 
   const formValidators: Record<string, TValidator[]> = {
     password: [requiredValidator],
@@ -27,7 +26,7 @@
 
     console.log("submit");
 
-    repoConfigStore.login(password);
+    repoConfigStore.login(formDataStrValue(formData.get("password")));
   };
 </script>
 
@@ -36,7 +35,7 @@
     <TextInput
       label="Password"
       id="password"
-      value={password}
+      value=""
       error={formErrors["password"]}
       type="password"
     />

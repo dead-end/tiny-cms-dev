@@ -22,8 +22,8 @@ const createRepoConfigStore = () => {
     })
 
     /**
- * The function encryptes the token.
- */
+     * The function encryptes the token.
+     */
     const enctyptToken = async (token: string, pwd: string) => {
         const key = await getKey(pwd, getSalt());
         return await doEncrypt(key, getIv(), token);
@@ -40,7 +40,18 @@ const createRepoConfigStore = () => {
     return {
         subscribe: store.subscribe,
 
-        login: (token: string) => {
+        login: async (password: string) => {
+
+            const data = localStorage.getItem("github-repo");
+            if (!data) {
+                throw new Error("Github repository data not found!");
+            }
+
+            let tmp = JSON.parse(data);
+            const token = await dectyptToken(tmp.token, password);
+
+
+            //const token = await dectyptToken(get(store).token, password)
             store.update((repoConfig) => {
                 repoConfig.token = token;
                 return repoConfig
@@ -78,6 +89,8 @@ const createRepoConfigStore = () => {
             store.set({
                 owner, name, token
             })
+
+            console.log("AFTER", get(store), "owner", owner)
         },
 
         loadRepoConfig: async (pwd: string) => {
@@ -91,6 +104,25 @@ const createRepoConfigStore = () => {
             tmp.token = await dectyptToken(tmp.token, pwd);
 
             store.set(tmp as RepoConfig)
+        },
+
+        initRepoConfig: () => {
+            const data = localStorage.getItem("github-repo");
+            if (!data) {
+                return
+            }
+
+            let tmp = JSON.parse(data) as RepoConfig;
+
+            store.set({
+                owner: tmp.owner,
+                name: tmp.name,
+                token: ''
+            })
+        },
+
+        hasRepoConfig: () => {
+            return localStorage.getItem("github-repo") !== null
         }
     }
 }

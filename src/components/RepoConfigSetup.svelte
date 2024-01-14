@@ -11,6 +11,7 @@
 
   import FormWrapper from "./FormWrapper.svelte";
   import TextInput from "./TextInput.svelte";
+  import { formDataStrValue } from "../ts/utils";
 
   let owner = "";
   let name = "";
@@ -39,8 +40,12 @@
       return;
     }
 
-    console.log("submit");
-    repoConfigStore.saveRepoConfig(owner, name, token, password);
+    repoConfigStore.saveRepoConfig(
+      formDataStrValue(formData.get("owner")),
+      formDataStrValue(formData.get("name")),
+      formDataStrValue(formData.get("token")),
+      formDataStrValue(formData.get("password"))
+    );
     replace("/home");
   };
 </script>
