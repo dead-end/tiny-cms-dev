@@ -1,27 +1,27 @@
 <script lang="ts">
   import { repoConfigStore } from "../ts/stores/repoConfig";
-  import { useForm } from "../ts/validators/valid";
+  import { createFormValidator } from "../ts/validation/formValidator";
   import {
     requiredValidator,
     type TValidator,
-  } from "../ts/validators/validators";
+  } from "../ts/validation/validators";
 
   import FormWrapper from "./FormWrapper.svelte";
   import TextInput from "./TextInput.svelte";
 
   let token = "";
 
-  const fieldValidators: Record<string, TValidator[]> = {
+  const formValidators: Record<string, TValidator[]> = {
     token: [requiredValidator],
   };
 
-  let { fieldErrors, validateForm } = useForm(fieldValidators);
+  let { formErrors, validateForm } = createFormValidator(formValidators);
 
   const submit = (event: Event) => {
     const formData = new FormData(event.target as HTMLFormElement);
 
     if (!validateForm(formData)) {
-      fieldErrors = fieldErrors;
+      formErrors = formErrors;
       return;
     }
 
@@ -35,7 +35,7 @@
     <TextInput
       id="token"
       value={token}
-      error={fieldErrors["token"]}
+      error={formErrors["token"]}
       type="password"
     />
   </FormWrapper>
