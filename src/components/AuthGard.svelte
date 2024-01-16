@@ -1,26 +1,25 @@
 <script lang="ts">
-  import { replace, location } from "svelte-spa-router";
-  import { repoConfigStore } from "../ts/stores/repoConfig";
-  import Login from "./Login.svelte";
-  import RepoConfigSetup from "./RepoConfigSetup.svelte";
-  import { onMount } from "svelte";
+    import { replace, location } from 'svelte-spa-router'
+    import { repoConfigStore } from '../ts/stores/repoConfig'
+    import Login from './Login.svelte'
+    import RepoConfigSetup from './RepoConfigSetup.svelte'
+    import { onMount } from 'svelte'
 
-  onMount(() => {
-    repoConfigStore.initRepoConfig();
-  });
+    onMount(() => {
+        repoConfigStore.initRepoConfig()
+    })
 </script>
 
 <div class="bg-slate-200">
-  <h1>Main</h1>
-  <p>owner: {$repoConfigStore.owner}</p>
-  <p>Name: {$repoConfigStore.name}</p>
-  <p>Token: {$repoConfigStore.token}</p>
-  <p>Is logged in: {repoConfigStore.isLogin()}</p>
+    <h1>Main</h1>
+    <p>owner: {$repoConfigStore.owner}</p>
+    <p>Name: {$repoConfigStore.name}</p>
+    <p>Token: {$repoConfigStore.token}</p>
 </div>
 {#if !$repoConfigStore.name}
-  <RepoConfigSetup />
+    <RepoConfigSetup />
 {:else if !$repoConfigStore.token}
-  <Login />
+    <Login />
 {:else}
-  <slot />
+    <slot />
 {/if}
