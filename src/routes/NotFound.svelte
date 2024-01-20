@@ -1,3 +1,3 @@
-<div class="bg-red-100">
+<div>
     <h1>Not Found</h1>
 </div>

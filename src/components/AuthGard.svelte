@@ -9,16 +9,20 @@
     })
 </script>
 
-<div class="bg-slate-200">
-    <h1>Main</h1>
-    <p>owner: {$repoConfigStore.owner}</p>
-    <p>Name: {$repoConfigStore.name}</p>
-    <p>Token: {$repoConfigStore.token}</p>
-</div>
 {#if !$repoConfigStore.name}
-    <RepoConfigSetup />
+    <div class="flex h-screen">
+        <div class="m-auto px-16 py-20 bg-gray-50">
+            <h1 class="text-2xl font-bold mb-6">Tiny CMS</h1>
+            <RepoConfigSetup />
+        </div>
+    </div>
 {:else if !$repoConfigStore.token}
-    <Login />
+    <div class="flex h-screen">
+        <div class="m-auto px-16 py-20 bg-gray-50">
+            <h1 class="text-2xl font-bold mb-6">Tiny CMS</h1>
+            <Login />
+        </div>
+    </div>
 {:else}
     <slot />
 {/if}

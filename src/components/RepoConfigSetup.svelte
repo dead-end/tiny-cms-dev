@@ -49,7 +49,7 @@
 
             formDataStrValue(formData.get('password'))
         )
-        replace('/home')
+        replace('/')
     }
 </script>
 

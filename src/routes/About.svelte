@@ -9,7 +9,7 @@
     }
 </script>
 
-<div class="bg-green-300">
+<div>
     <h1>About</h1>
     <button on:click={query} class="btn-base">Query</button>
 
@@ -25,4 +25,11 @@
             {/each}
         </ul>
     {/if}
+
+    <div class="bg-slate-200">
+        <h1>Main</h1>
+        <p>owner: {$repoConfigStore.owner}</p>
+        <p>Name: {$repoConfigStore.name}</p>
+        <p>Token: {$repoConfigStore.token}</p>
+    </div>
 </div>
