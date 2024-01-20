@@ -10,6 +10,12 @@ export type TRepoConfig = {
     token: string,
 }
 
+const defaultRepoConfig: TRepoConfig = {
+    owner: '',
+    name: '',
+    token: '',
+}
+
 /**
  * The function loads the repo config data from the local storage. If a password is
  * provided, then the token wil be decrypted. If not then the token will be set to
@@ -18,7 +24,11 @@ export type TRepoConfig = {
 const doLoadRepoConfig = async (password?: string) => {
     const data = localStorage.getItem("github-repo");
     if (!data) {
-        throw new Error("Github repository data not found!");
+        if (password) {
+            throw new Error("Github repository data not found!");
+        }
+
+        return defaultRepoConfig
     }
 
     let repoConfig = JSON.parse(data) as TRepoConfig;
@@ -45,11 +55,7 @@ const doSaveRepoConfig = async (repoConfig: TRepoConfig, password: string) => {
  */
 const createRepoConfigStore = () => {
 
-    const store = writable<TRepoConfig>({
-        owner: '',
-        name: '',
-        token: '',
-    })
+    const store = writable<TRepoConfig>(defaultRepoConfig)
 
     return {
         subscribe: store.subscribe,
