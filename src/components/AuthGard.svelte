@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { replace, location } from 'svelte-spa-router'
     import { repoConfigStore } from '../ts/stores/repoConfig'
     import Login from './Login.svelte'
     import RepoConfigSetup from './RepoConfigSetup.svelte'

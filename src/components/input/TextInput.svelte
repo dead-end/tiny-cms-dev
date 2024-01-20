@@ -1,4 +1,7 @@
 <script lang="ts">
+    import ErrorComp from './ErrorComp.svelte'
+    import LabelComp from './LabelComp.svelte'
+
     export let label: string
     export let id: string
     export let value: string
@@ -12,9 +15,6 @@
     }
 </script>
 
-<label for={id} class="label-base mb-2">{label}</label>
+<LabelComp {id} {label} />
 <input {id} name={id} class="input-base mb-2" {type} {value} on:blur={onblur} />
-
-{#if error}
-    <p class="text-xs text-red-600 pt-2">{error}</p>
-{/if}
+<ErrorComp {error} />

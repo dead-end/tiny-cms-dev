@@ -10,8 +10,8 @@
     } from '../ts/validation/validators'
 
     import FormWrapper from './FormWrapper.svelte'
-    import TextInput from './TextInput.svelte'
-    import { formDataStrValue } from '../ts/utils'
+    import TextInput from './input/TextInput.svelte'
+    import { formDataStrValue } from '../ts/libs/utils'
 
     let owner = ''
     let name = ''

@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store'
-import { encrypt, decrypt } from '../crypt'
+import { encrypt, decrypt } from '../libs/crypt'
 
 /**
  * The definition of a repo config.
