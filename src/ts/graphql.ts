@@ -1,4 +1,4 @@
-import type { RepoConfig } from "./stores/repoConfig";
+import type { TRepoConfig } from "./stores/repoConfig";
 
 const GQL_URL = "https://api.github.com/graphql"
 
@@ -7,7 +7,7 @@ export type TListing = {
     type: string;
 }
 
-export const gqlTest = async (repoConfig: RepoConfig, path: string) => {
+export const gqlTest = async (repoConfig: TRepoConfig, path: string) => {
 
     try {
         const query = `

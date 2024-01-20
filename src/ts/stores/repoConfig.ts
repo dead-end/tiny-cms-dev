@@ -1,30 +1,14 @@
-import { get, writable } from 'svelte/store'
-import { doEncrypt, doDecrypt, getIv, getKey, getSalt } from '../crypt'
+import { writable } from 'svelte/store'
+import { encrypt, decrypt } from '../crypt'
 
 /**
  * The definition of a repo config.
  */
-export interface RepoConfig {
+export type TRepoConfig = {
     owner: string,
     name: string,
     token: string,
 }
-
-/**
- * The function encryptes the token.
- */
-const enctyptToken = async (token: string, pwd: string) => {
-    const key = await getKey(pwd, getSalt());
-    return await doEncrypt(key, getIv(), token);
-};
-
-/**
- * The function decryptes the token.
- */
-const dectyptToken = async (base64: string, pwd: string) => {
-    const key = await getKey(pwd, getSalt());
-    return await doDecrypt(key, getIv(), base64);
-};
 
 /**
  * The function loads the repo config data from the local storage. If a password is
@@ -37,19 +21,19 @@ const doLoadRepoConfig = async (password?: string) => {
         throw new Error("Github repository data not found!");
     }
 
-    let repoConfig = JSON.parse(data) as RepoConfig;
-    repoConfig.token = password ? await dectyptToken(repoConfig.token, password) : '';
+    let repoConfig = JSON.parse(data) as TRepoConfig;
+    repoConfig.token = password ? await decrypt(repoConfig.token, password) : '';
     return repoConfig
 };
 
 /**
  * The function saves the repo config to the local storage.
  */
-const doSaveRepoConfig = async (repoConfig: RepoConfig, pwd: string) => {
-    const data: RepoConfig = {
+const doSaveRepoConfig = async (repoConfig: TRepoConfig, password: string) => {
+    const data: TRepoConfig = {
         owner: repoConfig.owner,
         name: repoConfig.name,
-        token: await enctyptToken(repoConfig.token, pwd),
+        token: await encrypt(repoConfig.token, password),
     };
 
     localStorage.setItem("github-repo", JSON.stringify(data));
@@ -57,11 +41,11 @@ const doSaveRepoConfig = async (repoConfig: RepoConfig, pwd: string) => {
 }
 
 /**
- * 
+ * The function creates the repo config store.
  */
 const createRepoConfigStore = () => {
 
-    const store = writable<RepoConfig>({
+    const store = writable<TRepoConfig>({
         owner: '',
         name: '',
         token: '',
@@ -79,15 +63,15 @@ const createRepoConfigStore = () => {
         },
 
         logout: () => {
-            console.log("logout", get(store))
             store.update((repoConfig) => {
                 repoConfig.token = '';
                 return repoConfig
             })
         },
 
-        saveRepoConfig: async (repoConfig: RepoConfig, pwd: string) => {
-            store.set(await doSaveRepoConfig(repoConfig, pwd))
+        saveRepoConfig: async (repoConfig: TRepoConfig, pwd: string) => {
+            repoConfig = await doSaveRepoConfig(repoConfig, pwd)
+            store.set(repoConfig)
         },
     }
 }

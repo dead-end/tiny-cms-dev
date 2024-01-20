@@ -1,6 +1,5 @@
 <script lang="ts">
     import { gqlTest, type TListing } from '../ts/graphql'
-    import { count } from '../ts/stores/count'
     import { repoConfigStore } from '../ts/stores/repoConfig'
 
     let listing: TListing[] = []
@@ -12,8 +11,6 @@
 
 <div class="bg-green-300">
     <h1>About</h1>
-    <p>Count: {$count}</p>
-    <button on:click={count.increment}>Add</button>
     <button on:click={query} class="btn-base">Query</button>
 
     {#if listing}
