@@ -7,7 +7,7 @@
 
 <div>
     <h1>Home</h1>
-    <div>
+    <div class="max-w-xs m-auto">
         <FormWrapper label="Demo" submit={(e) => console.log(e)}>
             <TextInput label="Text" id="text" value="" error="" type="text" />
             <AreaInput label="Area" id="area" value="" error="" />

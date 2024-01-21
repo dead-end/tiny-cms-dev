@@ -28,7 +28,7 @@
                 <h1 class="text-2xl font-bold">Tiny CMS</h1>
                 <Navigation {entries} />
             </nav>
-            <div class="col-span-4 bg-gray-50 py-6 h-screen">
+            <div class="col-span-4 bg-gray-50 p-8 h-screen">
                 <div class="w-full">
                     <Routes {routes} />
                 </div>
