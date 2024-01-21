@@ -16,13 +16,15 @@ const defaultRepoConfig: TRepoConfig = {
     token: '',
 }
 
+const KEY = 'github-repo'
+
 /**
  * The function loads the repo config data from the local storage. If a password is
  * provided, then the token wil be decrypted. If not then the token will be set to
  * an empty string.
  */
 const doLoadRepoConfig = async (password?: string) => {
-    const data = localStorage.getItem("github-repo");
+    const data = localStorage.getItem(KEY);
     if (!data) {
         if (password) {
             throw new Error("Github repository data not found!");
@@ -46,8 +48,15 @@ const doSaveRepoConfig = async (repoConfig: TRepoConfig, password: string) => {
         token: await encrypt(repoConfig.token, password),
     };
 
-    localStorage.setItem("github-repo", JSON.stringify(data));
+    localStorage.setItem(KEY, JSON.stringify(data));
     return repoConfig;
+}
+
+/**
+ * Delete the repo config data to reset.
+ */
+const doReset = () => {
+    localStorage.removeItem(KEY);
 }
 
 /**
@@ -79,6 +88,11 @@ const createRepoConfigStore = () => {
             repoConfig = await doSaveRepoConfig(repoConfig, pwd)
             store.set(repoConfig)
         },
+
+        reset: () => {
+            doReset()
+            store.set(defaultRepoConfig)
+        }
     }
 }
 

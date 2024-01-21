@@ -24,8 +24,6 @@
             return
         }
 
-        console.log('submit')
-
         repoConfigStore.login(formDataStrValue(formData.get('password')))
     }
 </script>
@@ -39,5 +37,8 @@
             error={formErrors['password']}
             type="password"
         />
+        <button class="btn-base my-4 mr-2" on:click={repoConfigStore.reset}
+            >Reset</button
+        >
     </FormWrapper>
 </div>
