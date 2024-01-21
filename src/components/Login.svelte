@@ -37,8 +37,10 @@
             error={formErrors['password']}
             type="password"
         />
-        <button class="btn-base my-4 mr-2" on:click={repoConfigStore.reset}
-            >Reset</button
+        <button
+            type="button"
+            class="btn-base my-4 mr-2"
+            on:click={repoConfigStore.reset}>Reset</button
         >
     </FormWrapper>
 </div>

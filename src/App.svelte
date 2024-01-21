@@ -21,7 +21,7 @@
     ]
 </script>
 
-<main class="text-gray-700 max-w-screen-xl m-auto">
+<main class="text-gray-600 max-w-screen-xl m-auto">
     <AuthGard>
         <div class="grid grid-cols-5">
             <nav class="col-span-1 text-end py-6 pr-4">
@@ -29,7 +29,7 @@
                 <Navigation {entries} />
             </nav>
             <div class="col-span-4 bg-gray-50 py-6 h-screen">
-                <div class="w-full max-w-xs m-auto">
+                <div class="w-full">
                     <Routes {routes} />
                 </div>
             </div>

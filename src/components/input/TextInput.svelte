@@ -1,6 +1,5 @@
 <script lang="ts">
-    import ErrorComp from './ErrorComp.svelte'
-    import LabelComp from './LabelComp.svelte'
+    import InputWrapper from './InputWrapper.svelte'
 
     export let label: string
     export let id: string
@@ -15,6 +14,13 @@
     }
 </script>
 
-<LabelComp {id} {label} />
-<input {id} name={id} class="input-base mb-2" {type} {value} on:blur={onblur} />
-<ErrorComp {error} />
+<InputWrapper {id} {label} {error}>
+    <input
+        {id}
+        name={id}
+        class="input-base mb-2"
+        {type}
+        {value}
+        on:blur={onblur}
+    />
+</InputWrapper>
