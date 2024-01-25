@@ -1,0 +1,20 @@
+{
+    "label": "My Collection",
+    "fields": [
+        {
+            "id": "label",
+            "type": "text",
+            "validators": [
+                {
+                    "validator": "required"
+                },
+                {
+                    "validator": "max",
+                    "props": {
+                        "max": 30
+                    }
+                }
+            ]
+        }
+    ]
+}

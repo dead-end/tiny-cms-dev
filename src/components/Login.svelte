@@ -3,7 +3,7 @@
     import { formDataStrValue } from '../ts/libs/utils'
     import { createFormValidator } from '../ts/validation/formValidator'
     import {
-        requiredValidator,
+        validateRequired,
         type TValidator
     } from '../ts/validation/validators'
 
@@ -11,7 +11,7 @@
     import TextInput from './input/TextInput.svelte'
 
     const formValidators: Record<string, TValidator[]> = {
-        password: [requiredValidator]
+        password: [validateRequired()]
     }
 
     let { formErrors, validateForm } = createFormValidator(formValidators)

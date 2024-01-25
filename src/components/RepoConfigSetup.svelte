@@ -3,10 +3,11 @@
     import { createFormValidator } from '../ts/validation/formValidator'
     import { replace } from 'svelte-spa-router'
     import {
-        requiredValidator,
-        validateMinMax,
         type TValidator,
-        validateFieldEquals
+        validateFieldEquals,
+        validateRequired,
+        validateMin,
+        validateMax
     } from '../ts/validation/validators'
 
     import FormWrapper from './FormWrapper.svelte'
@@ -20,13 +21,20 @@
     let confirm = ''
 
     const formValidators: Record<string, TValidator[]> = {
-        owner: [requiredValidator],
-        name: [requiredValidator],
-        token: [requiredValidator],
-        password: [requiredValidator, validateMinMax({ min: 5, max: 15 })],
+        owner: [validateRequired()],
+        name: [validateRequired()],
+        token: [validateRequired()],
+        password: [
+            validateRequired(),
+            validateMin({ min: 5 }),
+            validateMax({ max: 15 })
+        ],
         confirm: [
-            requiredValidator,
-            validateFieldEquals('password', 'Password do not match!')
+            validateRequired(),
+            validateFieldEquals({
+                field: 'password',
+                msg: 'Password do not match!'
+            })
         ]
     }
 

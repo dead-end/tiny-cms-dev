@@ -2,7 +2,6 @@
     import FormWrapper from '../components/FormWrapper.svelte'
     import AreaInput from '../components/input/AreaInput.svelte'
     import TextInput from '../components/input/TextInput.svelte'
-    import { repoConfigStore } from '../ts/stores/repoConfig'
 </script>
 
 <div>
