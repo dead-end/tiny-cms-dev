@@ -9,7 +9,7 @@ export type TValidator = (value: any, formData: FormData) => string | void;
  * The definition of a factory function that retuns a parameterazed version
  * of a validator.
  */
-export type TValidate = (propy: Record<string, any> | void) => TValidator;
+export type TValidate = (props: Record<string, any> | void) => TValidator;
 
 /**
  * The function ensures that the form field has a value.
@@ -79,7 +79,7 @@ export const validateFieldEquals: TValidate = (props) => {
 /**
  * Registry for the validators.
  */
-export const ValidatorRegistry: Record<string, TValidate> = {
+export const validatorRegistry: Record<string, TValidate> = {
     'required': validateRequired,
     'min': validateMin,
     'max': validateMax,
