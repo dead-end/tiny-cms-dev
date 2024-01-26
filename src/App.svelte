@@ -8,16 +8,19 @@
     import NotFound from './routes/NotFound.svelte'
     import Navigation from './components/Navigation.svelte'
     import type { TNavEntry } from './ts/types'
+    import Collections from './routes/Collections.svelte'
 
     const routes = {
         '/': Home,
         '/about': About,
+        '/collections': Collections,
         '*': NotFound
     }
 
     const entries: TNavEntry[] = [
         { label: 'Home', path: '#/' },
-        { label: 'About', path: '#/about' }
+        { label: 'About', path: '#/about' },
+        { label: 'Collections', path: '#/collections' }
     ]
 </script>
 
