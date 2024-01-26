@@ -16,7 +16,7 @@
 
     let { formErrors, validateForm } = createFormValidator(formValidators)
 
-    const submit = (event: Event) => {
+    const submit = async (event: Event) => {
         const formData = new FormData(event.target as HTMLFormElement)
 
         if (!validateForm(formData)) {
@@ -24,7 +24,14 @@
             return
         }
 
-        repoConfigStore.login(formDataStrValue(formData.get('password')))
+        try {
+            await repoConfigStore.login(
+                formDataStrValue(formData.get('password'))
+            )
+        } catch (e) {
+            formErrors['password'] = 'Unable to login!'
+            console.log('Unable to login!', e)
+        }
     }
 </script>
 
