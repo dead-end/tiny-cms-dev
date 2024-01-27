@@ -6,7 +6,7 @@
     export let value: string
     export let error: string
 
-    export let type: 'text' | 'password' = 'text'
+    export let type: 'text' | 'password' | 'date' | 'number' = 'text'
 
     const onblur = () => {
         if (error) {

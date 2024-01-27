@@ -1,17 +1,28 @@
 <script lang="ts">
-    import { gqlTest, type TListing } from '../ts/graphql'
+    import { gqlGetFile, gqlGetListing, type TListing } from '../ts/graphql'
     import { repoConfigStore } from '../ts/stores/repoConfig'
 
     let listing: TListing[] = []
 
     const query = async () => {
-        listing = await gqlTest($repoConfigStore, '/')
+        listing = await gqlGetListing(
+            $repoConfigStore,
+            'collections/search-engine'
+        )
+    }
+
+    const getFile = async () => {
+        await gqlGetFile(
+            $repoConfigStore,
+            'collections/search-engine/bing.json'
+        )
     }
 </script>
 
 <div>
     <h1>About</h1>
     <button on:click={query} class="btn-base">Query</button>
+    <button on:click={getFile} class="btn-base">Bing</button>
 
     {#if listing}
         <ul>

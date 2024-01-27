@@ -27,9 +27,13 @@
 <main class="text-gray-600 max-w-screen-xl m-auto">
     <AuthGard>
         <div class="grid grid-cols-5">
-            <nav class="col-span-1 text-end py-6 pr-4">
-                <h1 class="text-2xl font-bold">Tiny CMS</h1>
-                <Navigation {entries} />
+            <nav class="col-span-1 text-end bg-orange-200">
+                <h1 class="text-2xl font-bold bg-gray-600 text-white py-6 pr-4">
+                    Tiny CMS
+                </h1>
+                <div class="pr-4">
+                    <Navigation {entries} />
+                </div>
             </nav>
             <div class="col-span-4 bg-gray-50 p-8 h-screen">
                 <div class="w-full">
