@@ -6,15 +6,41 @@
         validatorRegistry,
         type TValidator
     } from '../ts/validation/validators'
+    import type { TDefinition } from '../ts/types'
 
-    const defintion = {
-        label: 'My Collection',
+    const defintion: TDefinition = {
+        label: 'Search Engine',
         fields: [
             {
                 id: 'label',
                 label: 'Label',
                 component: 'text',
-                value: 'default',
+                validators: [
+                    {
+                        validator: 'required'
+                    },
+                    {
+                        validator: 'max',
+                        props: {
+                            max: 32
+                        }
+                    }
+                ]
+            },
+            {
+                id: 'desc',
+                label: 'Description',
+                component: 'area',
+                validators: [
+                    {
+                        validator: 'required'
+                    }
+                ]
+            },
+            {
+                id: 'url',
+                label: 'Url',
+                component: 'text',
                 props: {
                     type: 'text'
                 },
@@ -23,32 +49,24 @@
                         validator: 'required'
                     },
                     {
-                        validator: 'max',
+                        validator: 'regex',
                         props: {
-                            max: 30
-                        }
-                    }
-                ]
-            },
-            {
-                id: 'text',
-                label: 'Text',
-                component: 'area',
-                value: 'default',
-                validators: [
-                    {
-                        validator: 'required'
-                    },
-                    {
-                        validator: 'max',
-                        props: {
-                            max: 10
+                            regex: '^(http://|https://)*'
                         }
                     }
                 ]
             }
         ]
     }
+
+    /*
+    let data: Record<string, any> = {
+        label: 'My Label',
+        text: 'My Text',
+        date: '2024-01-27',
+        number: 10
+    }
+    */
 
     let data: Record<string, any> = {}
 
@@ -63,10 +81,24 @@
             formErrors = formErrors
             return
         }
+
+        defintion.fields.forEach((field) => {
+            data[field.id] = formData.get(field.id)
+        })
+
+        console.log(data)
     }
 
     defintion.fields.forEach((field) => {
-        data[field.id] = field.value
+        /*
+        if (typeof data[field.id] === 'undefined') {
+            if (typeof field.value === 'undefined') {
+                data[field.id] = ''
+            } else {
+                data[field.id] = field?.value
+            }
+        }*/
+
         formValidators[field.id] = []
 
         field.validators.forEach((validator) => {
@@ -87,7 +119,7 @@
             this={componentRegistry[field.component]}
             id={field.id}
             label={field.label}
-            value={data[field.id]}
+            value={typeof data[field.id] === 'undefined' ? '' : data[field.id]}
             error={formErrors[field.id]}
             {...field.props}
         />
