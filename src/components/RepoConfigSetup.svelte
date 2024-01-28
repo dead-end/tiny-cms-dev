@@ -3,7 +3,7 @@
     import { createFormValidator } from '../ts/validation/formValidator'
     import { replace } from 'svelte-spa-router'
     import {
-        type TValidator,
+        type TValidatorFunction,
         validateFieldEquals,
         validateRequired,
         validateMin,
@@ -20,7 +20,7 @@
     let password = ''
     let confirm = ''
 
-    const formValidators: Record<string, TValidator[]> = {
+    const formValidators: Record<string, TValidatorFunction[]> = {
         owner: [validateRequired()],
         name: [validateRequired()],
         token: [validateRequired()],

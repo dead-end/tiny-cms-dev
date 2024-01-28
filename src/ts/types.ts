@@ -6,7 +6,7 @@ export type TNavEntry = {
     path: string;
 }
 
-export type TFieldValidator = {
+export type TValidatorDefinition = {
     validator: string;
     props?: Record<string, any>
 }
@@ -17,7 +17,7 @@ export type TField = {
     component: string;
     value?: string;
     props?: Record<string, any>
-    validators: TFieldValidator[];
+    validators: TValidatorDefinition[];
 }
 
 export type TDefinition = {

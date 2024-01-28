@@ -20,7 +20,7 @@ npm install byte-base64
 Add the base configuration to`vite.config.ts` to get relative URL's:
 
 ```js
-base: "./";
+base: './'
 ```
 
 ## Install tailwind
@@ -95,3 +95,75 @@ To deploy to Github pages:
 npm run build
 npm run deploy
 ```
+
+# Github Graphql
+
+## Get directory content
+
+```
+query getDirectoryListing($owner: String!, $name: String!) {
+  repository(owner: $owner, name: $name) {
+    object(expression: "HEAD:collections/search-engine") {
+      ... on Tree {
+        entries {
+          name
+          type
+          oid
+        }
+      }
+    }
+  }
+}
+```
+
+You can replace `HEAD` with an explicit branch `object(expression: "main:collections/search-engine")`
+
+## Get content of specific files in a directory
+
+```
+query getFilesContent($owner: String!, $name: String!) {
+  repository(owner: $owner, name: $name) {
+    bing: object(expression: "HEAD:collections/search-engine/bing.json") {
+      ... on Blob {
+        text
+        byteSize
+        oid
+      }
+    }
+    google: object(expression: "HEAD:collections/search-engine/google.json") {
+      ... on Blob {
+        text
+        byteSize
+        oid
+      }
+    }
+  }
+}
+```
+
+##
+
+Get last commit of main branch (for a mutation)
+
+```
+query getFile($owner: String!, $name: String!) {
+  repository(owner: $owner, name: $name) {
+    ref(qualifiedName: "refs/heads/main") {
+      name
+      target {
+        ... on Commit {
+          history(first: 1) {
+            nodes {
+              oid
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+Example:
+
+https://iq.opengenus.org/api-requests-in-java/#apirequestforfileuploadorreupload

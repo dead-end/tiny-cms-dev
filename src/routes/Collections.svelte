@@ -4,7 +4,7 @@
     import { createFormValidator } from '../ts/validation/formValidator'
     import {
         validatorRegistry,
-        type TValidator
+        type TValidatorFunction
     } from '../ts/validation/validators'
     import type { TDefinition } from '../ts/types'
 
@@ -70,7 +70,7 @@
 
     let data: Record<string, any> = {}
 
-    const formValidators: Record<string, TValidator[]> = {}
+    const formValidators: Record<string, TValidatorFunction[]> = {}
 
     let { formErrors, validateForm } = createFormValidator(formValidators)
 

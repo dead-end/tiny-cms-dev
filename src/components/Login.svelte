@@ -4,13 +4,13 @@
     import { createFormValidator } from '../ts/validation/formValidator'
     import {
         validateRequired,
-        type TValidator
+        type TValidatorFunction
     } from '../ts/validation/validators'
 
     import FormWrapper from './FormWrapper.svelte'
     import TextInput from './input/TextInput.svelte'
 
-    const formValidators: Record<string, TValidator[]> = {
+    const formValidators: Record<string, TValidatorFunction[]> = {
         password: [validateRequired()]
     }
 

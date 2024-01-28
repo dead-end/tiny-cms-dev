@@ -1,8 +1,15 @@
 <script lang="ts">
-    import { gqlGetFile, gqlGetListing, type TListing } from '../ts/graphql'
+    import {
+        gqlGetFile,
+        gqlGetListing,
+        type TFile,
+        type TListing
+    } from '../ts/graphql'
     import { repoConfigStore } from '../ts/stores/repoConfig'
 
     let listing: TListing[] = []
+
+    let file: TFile
 
     const query = async () => {
         listing = await gqlGetListing(
@@ -12,10 +19,14 @@
     }
 
     const getFile = async () => {
-        await gqlGetFile(
+        const a = await gqlGetFile(
             $repoConfigStore,
             'collections/search-engine/bing.json'
         )
+
+        if (a) {
+            file = a
+        }
     }
 </script>
 
@@ -43,4 +54,9 @@
         <p>Name: {$repoConfigStore.name}</p>
         <p>Token: {$repoConfigStore.token}</p>
     </div>
+
+    {#if file}
+        <h4>{file.oid}</h4>
+        <p>{file.text}</p>
+    {/if}
 </div>

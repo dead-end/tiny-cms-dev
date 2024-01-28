@@ -5,33 +5,15 @@ const GQL_URL = "https://api.github.com/graphql"
 export type TListing = {
     name: string;
     type: string;
+    oid: string;
 }
 
-const getFileQuery = (repoConfig: TRepoConfig, path: string) => {
-    const query = `
-    query getFile($owner: String!, $name: String!, $path: String!) {
-        repository(owner: $owner, name: $name) {
-          object(expression: $path) {
-            ... on Blob {
-              text
-              byteSize
-              oid
-            }
-          }
-        }
-      }
-        `
-    const variables = {
-        "owner": repoConfig.owner,
-        "name": repoConfig.name,
-        "path": `HEAD:${path}`
-    }
-
-    return { query, variables }
+export type TFile = {
+    text: string;
+    oid: string;
 }
 
-
-const getListingQuery = (repoConfig: TRepoConfig, path: string) => {
+const getListingQuery = (owner: string, name: string, branch: string, path: string) => {
     const query = `
     query Listing($owner: String!, $name: String!, $path: String!) {
         repository(owner: $owner, name: $name) {
@@ -48,22 +30,47 @@ const getListingQuery = (repoConfig: TRepoConfig, path: string) => {
       }
         `
     const variables = {
-        "owner": repoConfig.owner,
-        "name": repoConfig.name,
-        "path": `HEAD:${path}`
+        "owner": owner,
+        "name": name,
+        "path": `${branch}:${path}`
     }
 
     return { query, variables }
 }
 
-const processQuery = async (repoConfig: TRepoConfig, body: any) => {
+const getFileQuery = (owner: string, name: string, branch: string, path: string) => {
+    const query = `
+    query getFile($owner: String!, $name: String!, $path: String!) {
+        repository(owner: $owner, name: $name) {
+          object(expression: $path) {
+            ... on Blob {
+              text
+              oid
+            }
+          }
+        }
+      }
+        `
+    const variables = {
+        "owner": owner,
+        "name": name,
+        "path": `${branch}:${path}`
+    }
+
+    return { query, variables }
+}
+
+
+
+
+const processQuery = async (token: string, body: any) => {
 
     try {
 
         const data = {
             method: 'POST',
             headers: {
-                'authorization': `bearer ${repoConfig.token}`,
+                'authorization': `bearer ${token}`,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(body),
@@ -89,8 +96,9 @@ export const gqlGetFile = async (repoConfig: TRepoConfig, path: string) => {
 
     try {
 
-        const body = getFileQuery(repoConfig, path)
-        const json = await processQuery(repoConfig, body)
+        const body = getFileQuery(repoConfig.owner, repoConfig.name, 'main', path)
+        const json = await processQuery(repoConfig.token, body)
+        return json.data.repository.object as TFile
     } catch (e) {
         console.log("Error", e)
     }
@@ -100,8 +108,8 @@ export const gqlGetListing = async (repoConfig: TRepoConfig, path: string) => {
 
     try {
 
-        const body = getListingQuery(repoConfig, path)
-        const json = await processQuery(repoConfig, body)
+        const body = getListingQuery(repoConfig.owner, repoConfig.name, 'main', path)
+        const json = await processQuery(repoConfig.token, body)
         return json.data.repository.object.entries as TListing[]
     } catch (e) {
         console.log("Error", e)

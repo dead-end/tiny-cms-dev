@@ -3,18 +3,18 @@
  * should be validated and the form data, if the validation should involve
  * other values. It returns an error string or void if the value is ok.
  */
-export type TValidator = (value: any, formData: FormData) => string | void;
+export type TValidatorFunction = (value: any, formData: FormData) => string | void;
 
 /**
  * The definition of a factory function that retuns a parameterazed version
  * of a validator.
  */
-export type TValidate = (props: Record<string, any> | void) => TValidator;
+export type TValidatorCreator = (props: Record<string, any> | void) => TValidatorFunction;
 
 /**
  * The function ensures that the form field has a value.
  */
-export const validateRequired: TValidate = () => {
+export const validateRequired: TValidatorCreator = () => {
     return (value) => {
         if (!value) {
             return 'Please enter a value!';
@@ -25,7 +25,7 @@ export const validateRequired: TValidate = () => {
 /**
  * The function checks the min of a value, depending on the type of the field.
  */
-export const validateMin: TValidate = (props) => {
+export const validateMin: TValidatorCreator = (props) => {
     if (!props || typeof props.min !== 'number') {
         throw new Error('Validator: "min" required numeric property!')
     }
@@ -49,7 +49,7 @@ export const validateMin: TValidate = (props) => {
 /**
  * The function checks the max of a value, depending on the type of the field.
  */
-export const validateMax: TValidate = (props) => {
+export const validateMax: TValidatorCreator = (props) => {
     if (!props || typeof props.max !== 'number') {
         throw new Error('Validator: "max" required numeric property!')
     }
@@ -73,7 +73,7 @@ export const validateMax: TValidate = (props) => {
 /**
  * The function checks if the value matches a regex.
  */
-export const validateRegex: TValidate = (props) => {
+export const validateRegex: TValidatorCreator = (props) => {
     if (!props || !props.regex) {
         throw new Error('Validator: "validateRegex" requires a "regex" property!')
     }
@@ -90,7 +90,7 @@ export const validateRegex: TValidate = (props) => {
 /**
  * The function checks if two fields of the form have the same value.
  */
-export const validateFieldEquals: TValidate = (props) => {
+export const validateFieldEquals: TValidatorCreator = (props) => {
     if (!props || !props.field || !props.msg) {
         throw new Error('Validator: "fieldEquals" requires a "field" and a "msg" property!')
     }
@@ -104,7 +104,7 @@ export const validateFieldEquals: TValidate = (props) => {
 /**
  * Registry for the validators.
  */
-export const validatorRegistry: Record<string, TValidate> = {
+export const validatorRegistry: Record<string, TValidatorCreator> = {
     'required': validateRequired,
     'min': validateMin,
     'max': validateMax,

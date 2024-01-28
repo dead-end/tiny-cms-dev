@@ -1,6 +1,6 @@
-import type { TValidator } from "./validators";
+import type { TValidatorFunction } from "./validators";
 
-export const createFormValidator = (formValidators: Record<string, TValidator[]>) => {
+export const createFormValidator = (formValidators: Record<string, TValidatorFunction[]>) => {
 
     let formErrors: Record<string, string> = {};
 
@@ -11,7 +11,7 @@ export const createFormValidator = (formValidators: Record<string, TValidator[]>
     const validateField = (
         formData: FormData,
         field: string,
-        fieldValidators: TValidator[]
+        fieldValidators: TValidatorFunction[]
     ) => {
         formErrors[field] = "";
 
