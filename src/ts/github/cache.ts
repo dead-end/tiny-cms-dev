@@ -1,7 +1,7 @@
 const PREFIX = 'cache-'
 
 /**
- * The function caches a file with an oid in the session storage. No checks are 
+ * The function caches a file with an oid in the session storage. No checks are
  * performed.
  */
 export const cacheSet = (path: string, oid: string, content: string) => {
@@ -18,7 +18,7 @@ export const cacheGet = (path: string, oid: string) => {
         return
     }
 
-    const data = JSON.parse(json) as { oid: string, content: string }
+    const data = JSON.parse(json) as { oid: string; content: string }
     if (oid !== data.oid) {
         sessionStorage.removeItem(PREFIX + path)
         return

@@ -1,11 +1,11 @@
 /**
- * The interface defines the result of a function call. In case of an error 
+ * The interface defines the result of a function call. In case of an error
  * this is the error message, otherwise the return value.
  */
 export type Result<V> = {
-    hasError: () => boolean,
-    getError: () => string,
-    getValue: () => V,
+    hasError: () => boolean
+    getError: () => string
+    getValue: () => V
 }
 
 /**
@@ -14,8 +14,10 @@ export type Result<V> = {
 export const resultSuccess = <V>(value: V): Result<V> => {
     return {
         hasError: () => false,
-        getError: () => { throw new Error('Result has no error!') },
-        getValue: () => value,
+        getError: () => {
+            throw new Error('Result has no error!')
+        },
+        getValue: () => value
     }
 }
 
@@ -26,6 +28,8 @@ export const resultError = <V>(error: string): Result<V> => {
     return {
         hasError: () => true,
         getError: () => error,
-        getValue: () => { throw new Error('Result has no value!') },
+        getValue: () => {
+            throw new Error('Result has no value!')
+        }
     }
 }

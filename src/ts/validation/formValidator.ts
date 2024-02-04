@@ -1,8 +1,9 @@
-import type { TValidatorFunction } from "./validators";
+import type { TValidatorFunction } from './validators'
 
-export const createFormValidator = (formValidators: Record<string, TValidatorFunction[]>) => {
-
-    let formErrors: Record<string, string> = {};
+export const createFormValidator = (
+    formValidators: Record<string, TValidatorFunction[]>
+) => {
+    let formErrors: Record<string, string> = {}
 
     /**
      * The function validates the value of a field, by calling all validators of the
@@ -13,33 +14,31 @@ export const createFormValidator = (formValidators: Record<string, TValidatorFun
         field: string,
         fieldValidators: TValidatorFunction[]
     ) => {
-        formErrors[field] = "";
+        formErrors[field] = ''
 
         for (const validator of fieldValidators) {
-            const msg = validator(formData.get(field), formData);
+            const msg = validator(formData.get(field), formData)
             if (msg) {
-                formErrors[field] = msg;
-                return false;
+                formErrors[field] = msg
+                return false
             }
         }
-        return true;
-    };
+        return true
+    }
 
     /**
      * The function is calles with the form data and starts all registered validator
      * functions. It returns ok if all validators return ok.
      */
-    const validateForm = (
-        formData: FormData,
-    ) => {
-        let ok = true;
+    const validateForm = (formData: FormData) => {
+        let ok = true
         for (const field in formValidators) {
             if (!validateField(formData, field, formValidators[field])) {
-                ok = false;
+                ok = false
             }
         }
-        return ok;
-    };
+        return ok
+    }
 
     return { formErrors, validateForm }
 }

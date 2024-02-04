@@ -3,13 +3,18 @@
  * should be validated and the form data, if the validation should involve
  * other values. It returns an error string or void if the value is ok.
  */
-export type TValidatorFunction = (value: any, formData: FormData) => string | void;
+export type TValidatorFunction = (
+    value: any,
+    formData: FormData
+) => string | void
 
 /**
  * The definition of a factory function that retuns a parameterazed version
  * of a validator.
  */
-export type TValidatorCreator = (props: Record<string, any> | void) => TValidatorFunction;
+export type TValidatorCreator = (
+    props: Record<string, any> | void
+) => TValidatorFunction
 
 /**
  * The function ensures that the form field has a value.
@@ -17,10 +22,10 @@ export type TValidatorCreator = (props: Record<string, any> | void) => TValidato
 export const validateRequired: TValidatorCreator = () => {
     return (value) => {
         if (!value) {
-            return 'Please enter a value!';
+            return 'Please enter a value!'
         }
     }
-};
+}
 
 /**
  * The function checks the min of a value, depending on the type of the field.
@@ -38,13 +43,13 @@ export const validateMin: TValidatorCreator = (props) => {
             const num = Number(value)
 
             if (num < props.min) {
-                return `The minumum value is: ${props.min}`;
+                return `The minumum value is: ${props.min}`
             }
         } else if (value.length < props.min) {
-            return `The minumum length is: ${props.min}`;
+            return `The minumum length is: ${props.min}`
         }
-    };
-};
+    }
+}
 
 /**
  * The function checks the max of a value, depending on the type of the field.
@@ -62,52 +67,55 @@ export const validateMax: TValidatorCreator = (props) => {
             const num = Number(value)
 
             if (num > props.max) {
-                return `The maximum value is: ${props.max}`;
+                return `The maximum value is: ${props.max}`
             }
         } else if (value.length > props.max) {
-            return `The maximum length is: ${props.max}`;
+            return `The maximum length is: ${props.max}`
         }
-    };
-};
+    }
+}
 
 /**
  * The function checks if the value matches a regex.
  */
 export const validateRegex: TValidatorCreator = (props) => {
     if (!props || !props.regex) {
-        throw new Error('Validator: "validateRegex" requires a "regex" property!')
+        throw new Error(
+            'Validator: "validateRegex" requires a "regex" property!'
+        )
     }
-    const regex = new RegExp(props.regex);
+    const regex = new RegExp(props.regex)
 
     return (value) => {
         if (value !== '' && !regex.test(value)) {
-            return `Value does not match ${props.regex}`;
+            return `Value does not match ${props.regex}`
         }
-    };
-};
-
+    }
+}
 
 /**
  * The function checks if two fields of the form have the same value.
  */
 export const validateFieldEquals: TValidatorCreator = (props) => {
     if (!props || !props.field || !props.msg) {
-        throw new Error('Validator: "fieldEquals" requires a "field" and a "msg" property!')
+        throw new Error(
+            'Validator: "fieldEquals" requires a "field" and a "msg" property!'
+        )
     }
     return (value, formData) => {
         if (value !== formData.get(props.field)) {
-            return props.msg;
+            return props.msg
         }
-    };
-};
+    }
+}
 
 /**
  * Registry for the validators.
  */
 export const validatorRegistry: Record<string, TValidatorCreator> = {
-    'required': validateRequired,
-    'min': validateMin,
-    'max': validateMax,
-    'regex': validateRegex,
-    'fieldEquals': validateFieldEquals,
+    required: validateRequired,
+    min: validateMin,
+    max: validateMax,
+    regex: validateRegex,
+    fieldEquals: validateFieldEquals
 }
