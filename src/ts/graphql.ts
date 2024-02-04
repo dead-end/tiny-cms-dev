@@ -1,7 +1,9 @@
 import {
+    ghLastCommitQuery,
     ghGetFilesQuery,
     ghGetListingQuery,
-    ghProcessQuery
+    ghProcessQuery,
+    ghUpdateContent
 } from './github/github'
 import { resultError, resultSuccess } from './libs/result'
 import type { TRepoConfig } from './stores/repoConfig'
@@ -21,6 +23,7 @@ export type TFile = {
 }
 
 // TODO: Other file - separate grqaphql from files api
+// TODO: use gqlGetFiles
 export const gqlGetFile = async (repoConfig: TRepoConfig, path: string) => {
     try {
         const body = ghGetFilesQuery(
@@ -65,7 +68,7 @@ export const gqlGetFiles = async (repoConfig: TRepoConfig, paths: string[]) => {
         return resultSuccess<TFile[]>(files)
     } catch (e) {
         console.log('Error', e)
-        return resultError<TFile>(`Error: ${e} `)
+        return resultError<TFile[]>(`Error: ${e} `)
     }
 }
 
@@ -86,5 +89,48 @@ export const gqlGetListing = async (repoConfig: TRepoConfig, path: string) => {
         )
     } catch (e) {
         return resultError<TListing[]>(`Error: ${e} `)
+    }
+}
+
+export const gqlLastCommit = async (repoConfig: TRepoConfig) => {
+    try {
+        const body = ghLastCommitQuery(
+            repoConfig.owner,
+            repoConfig.name,
+            'main'
+        )
+        const result = await ghProcessQuery(repoConfig.token, body)
+        if (result.hasError()) {
+            return resultError<string>(result.getError())
+        }
+        return resultSuccess<string>(
+            result.getValue().data.repository.ref.target.history.nodes[0]
+                .oid as string
+        )
+    } catch (e) {
+        return resultError<string>(`Error: ${e} `)
+    }
+}
+
+export const gqUpdateContent = async (repoConfig: TRepoConfig, oid: string) => {
+    try {
+        const body = ghUpdateContent(
+            repoConfig.owner,
+            repoConfig.name,
+            'main',
+            oid,
+            'collections/search-engine/test.txt',
+            btoa('hallo at ' + new Date().toLocaleString())
+        )
+        const result = await ghProcessQuery(repoConfig.token, body)
+        if (result.hasError()) {
+            return resultError<string>(result.getError())
+        }
+        return resultSuccess<string>(
+            result.getValue().data.repository.ref.target.history.nodes[0]
+                .oid as string
+        )
+    } catch (e) {
+        return resultError<string>(`Error: ${e} `)
     }
 }
