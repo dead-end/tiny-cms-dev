@@ -11,9 +11,9 @@ export const ghUpdateContent = (
     content: string
 ) => {
     const query = `
-    mutation ($branch: CommittableBranch!, $path: String!, $content: Base64String!, $oid: GitObjectID!){
+    mutation ($committableBranch: CommittableBranch!, $path: String!, $content: Base64String!, $oid: GitObjectID!){
         createCommitOnBranch (input: {
-            branch : $branch
+            branch : $committableBranch
             message: {
                 headline: "Update file content"
             }
@@ -33,9 +33,9 @@ export const ghUpdateContent = (
     `
 
     const variables = {
-        branch: {
+        committableBranch: {
             repositoryNameWithOwner: `${owner}/${name}`,
-            branchName: 'main'
+            branchName: branch
         },
         path: path,
         content: content,
