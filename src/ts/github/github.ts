@@ -1,8 +1,20 @@
 import { resultError, resultSuccess } from '../libs/result'
+import type { TRepoConfig } from '../stores/repoConfig'
 
 const GQL_URL = 'https://api.github.com/graphql'
 
-export const ghUpdateContent = (
+export type TFile = {
+    text: string
+    oid: string
+}
+
+export type TListing = {
+    name: string
+    type: string
+    oid: string
+}
+
+const updateContentQuery = (
     owner: string,
     name: string,
     branch: string,
@@ -11,7 +23,7 @@ export const ghUpdateContent = (
     content: string
 ) => {
     const query = `
-    mutation ($committableBranch: CommittableBranch!, $path: String!, $content: Base64String!, $oid: GitObjectID!){
+    mutation ($committableBranch: CommittableBranch!, $path: String!, $content: Base64String!, $oid: GitObjectID!) {
         createCommitOnBranch (input: {
             branch : $committableBranch
             message: {
@@ -25,11 +37,11 @@ export const ghUpdateContent = (
             }
             expectedHeadOid: $oid
         }) {
-          commit {
-            commitUrl
-          }
+            commit {
+                commitUrl
+            }
         }
-      }
+    }
     `
 
     const variables = {
@@ -48,13 +60,9 @@ export const ghUpdateContent = (
 /**
  * The query requests the last commit id of the given branch.
  */
-export const ghLastCommitQuery = (
-    owner: string,
-    name: string,
-    branch: string
-) => {
+const lastCommitQuery = (owner: string, name: string, branch: string) => {
     const query = `
-    query LastCommit($owner: String!, $name: String!, $branch: String!){
+    query LastCommit($owner: String!, $name: String!, $branch: String!) {
         repository(owner: $owner, name: $name) {
             ref (qualifiedName: $branch) {
                 target {
@@ -81,7 +89,7 @@ export const ghLastCommitQuery = (
 }
 
 // TODO: pagination
-export const ghGetListingQuery = (
+const getListingQuery = (
     owner: string,
     name: string,
     branch: string,
@@ -115,7 +123,7 @@ export const ghGetListingQuery = (
  * The function returns a graphql query to get the content of files in a
  * directory.
  */
-export const ghGetFilesQuery = (
+const filesQuery = (
     owner: string,
     name: string,
     branch: string,
@@ -158,7 +166,7 @@ export const ghGetFilesQuery = (
 /**
  * The function processes a github graphql query.
  */
-export const ghProcessQuery = async (token: string, body: any) => {
+const processQuery = async (token: string, body: any) => {
     try {
         const data = {
             method: 'POST',
@@ -189,5 +197,91 @@ export const ghProcessQuery = async (token: string, body: any) => {
     } catch (e) {
         console.log('Error', e)
         return resultError<any>(`Error: ${e} `)
+    }
+}
+
+export const ghGetListing = async (repoConfig: TRepoConfig, path: string) => {
+    try {
+        const body = getListingQuery(
+            repoConfig.owner,
+            repoConfig.name,
+            'main',
+            path
+        )
+        const result = await processQuery(repoConfig.token, body)
+        if (result.hasError()) {
+            return resultError<TListing[]>(result.getError())
+        }
+        return resultSuccess<TListing[]>(
+            result.getValue().data.repository.object.entries as TListing[]
+        )
+    } catch (e) {
+        return resultError<TListing[]>(`Error: ${e} `)
+    }
+}
+
+// TODO: Order ? Return map with path as key?
+export const ghGetFiles = async (repoConfig: TRepoConfig, paths: string[]) => {
+    try {
+        const body = filesQuery(
+            repoConfig.owner,
+            repoConfig.name,
+            'main',
+            paths
+        )
+        const result = await processQuery(repoConfig.token, body)
+        if (result.hasError()) {
+            return resultError<TFile[]>(result.getError())
+        }
+
+        const files: TFile[] = []
+
+        for (const value of Object.values(result.getValue().data.repository)) {
+            files.push(value as TFile)
+        }
+
+        return resultSuccess<TFile[]>(files)
+    } catch (e) {
+        console.log('Error', e)
+        return resultError<TFile[]>(`Error: ${e} `)
+    }
+}
+
+export const ghLastCommit = async (repoConfig: TRepoConfig) => {
+    try {
+        const body = lastCommitQuery(repoConfig.owner, repoConfig.name, 'main')
+        const result = await processQuery(repoConfig.token, body)
+        if (result.hasError()) {
+            return resultError<string>(result.getError())
+        }
+        return resultSuccess<string>(
+            result.getValue().data.repository.ref.target.history.nodes[0]
+                .oid as string
+        )
+    } catch (e) {
+        return resultError<string>(`Error: ${e} `)
+    }
+}
+
+export const ghUpdateContent = async (repoConfig: TRepoConfig, oid: string) => {
+    try {
+        const body = updateContentQuery(
+            repoConfig.owner,
+            repoConfig.name,
+            'main',
+            oid,
+            'collections/search-engine/test.txt',
+            btoa('hallo at ' + new Date().toLocaleString())
+        )
+        const result = await processQuery(repoConfig.token, body)
+        if (result.hasError()) {
+            return resultError<string>(result.getError())
+        }
+        return resultSuccess<string>(
+            result.getValue().data.repository.ref.target.history.nodes[0]
+                .oid as string
+        )
+    } catch (e) {
+        return resultError<string>(`Error: ${e} `)
     }
 }

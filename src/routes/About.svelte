@@ -1,13 +1,12 @@
 <script lang="ts">
     import {
-        gqlLastCommit,
-        gqlGetFile,
-        gqlGetFiles,
-        gqlGetListing,
+        ghGetFiles,
+        ghGetListing,
+        ghLastCommit,
+        ghUpdateContent,
         type TFile,
-        type TListing,
-        gqUpdateContent
-    } from '../ts/graphql'
+        type TListing
+    } from '../ts/github/github'
     import {} from '../ts/libs/result'
     import { repoConfigStore } from '../ts/stores/repoConfig'
 
@@ -18,7 +17,7 @@
     let commit: string
 
     const query = async () => {
-        const result = await gqlGetListing(
+        const result = await ghGetListing(
             $repoConfigStore,
             'collections/search-engine'
         )
@@ -32,7 +31,7 @@
     }
 
     const getFiles = async () => {
-        const result = await gqlGetFiles($repoConfigStore, [
+        const result = await ghGetFiles($repoConfigStore, [
             'collections/search-engine/bing.json',
             'collections/search-engine/google.json'
         ])
@@ -46,21 +45,20 @@
     }
 
     const getFile = async () => {
-        const result = await gqlGetFile(
-            $repoConfigStore,
+        const result = await ghGetFiles($repoConfigStore, [
             'collections/search-engine/bing.json'
-        )
+        ])
 
         if (result.hasError()) {
             console.log('ERROR', result.getError())
             return
         }
 
-        file = result.getValue()
+        file = result.getValue()[0]
     }
 
     const getLastCommit = async () => {
-        const result = await gqlLastCommit($repoConfigStore)
+        const result = await ghLastCommit($repoConfigStore)
 
         if (result.hasError()) {
             console.log('ERROR', result.getError())
@@ -72,7 +70,7 @@
 
     const update = async () => {
         if (commit) {
-            gqUpdateContent($repoConfigStore, commit)
+            ghUpdateContent($repoConfigStore, commit)
         }
     }
 </script>
