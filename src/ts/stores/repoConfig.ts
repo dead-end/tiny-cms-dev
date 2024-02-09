@@ -7,12 +7,16 @@ import { encrypt, decrypt } from '../libs/crypt'
 export type TRepoConfig = {
     owner: string
     name: string
+    branch: string
+    prefix: string
     token: string
 }
 
 const defaultRepoConfig: TRepoConfig = {
     owner: '',
     name: '',
+    branch: 'main',
+    prefix: '',
     token: ''
 }
 
@@ -45,6 +49,8 @@ const doSaveRepoConfig = async (repoConfig: TRepoConfig, password: string) => {
     const data: TRepoConfig = {
         owner: repoConfig.owner,
         name: repoConfig.name,
+        branch: repoConfig.branch,
+        prefix: repoConfig.prefix,
         token: await encrypt(repoConfig.token, password)
     }
 

@@ -16,6 +16,8 @@
 
     let owner = ''
     let name = ''
+    let branch = 'main'
+    let prefix = ''
     let token = ''
     let password = ''
     let confirm = ''
@@ -23,6 +25,7 @@
     const formValidators: Record<string, TValidatorFunction[]> = {
         owner: [validateRequired()],
         name: [validateRequired()],
+        branch: [validateRequired()],
         token: [validateRequired()],
         password: [
             validateRequired(),
@@ -52,6 +55,8 @@
             {
                 owner: formDataStrValue(formData.get('owner')),
                 name: formDataStrValue(formData.get('name')),
+                branch: formDataStrValue(formData.get('branch')),
+                prefix: formDataStrValue(formData.get('prefix')),
                 token: formDataStrValue(formData.get('token'))
             },
 
@@ -76,6 +81,22 @@
             id="name"
             value={name}
             error={formErrors['name']}
+            type="text"
+        />
+
+        <TextInput
+            label="Branch"
+            id="branch"
+            value={branch}
+            error={formErrors['branch']}
+            type="text"
+        />
+
+        <TextInput
+            label="Prefix"
+            id="prefix"
+            value={prefix}
+            error={formErrors['prefix']}
             type="text"
         />
 
