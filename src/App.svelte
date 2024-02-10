@@ -9,11 +9,13 @@
     import Navigation from './components/Navigation.svelte'
     import type { TNavEntry } from './ts/types'
     import Collections from './routes/Collections.svelte'
+    import Collection from './routes/Collection.svelte'
 
     const routes = {
         '/': Home,
         '/about': About,
         '/collections': Collections,
+        '/collections/:collection': Collection,
         '*': NotFound
     }
 

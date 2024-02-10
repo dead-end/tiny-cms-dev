@@ -1,4 +1,4 @@
-const PREFIX = 'cache-'
+const PREFIX = 'cache@'
 
 /**
  * The function caches a file with an oid in the session storage. No checks are

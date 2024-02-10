@@ -24,3 +24,10 @@ export type TDefinition = {
     label: string
     fields: TField[]
 }
+
+export type TItem = {
+    id: string
+    title: string
+    modified: number
+    data: any
+}
