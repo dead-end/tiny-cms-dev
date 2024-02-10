@@ -31,3 +31,21 @@ export type TItem = {
     modified: number
     data: any
 }
+
+/**
+ * The definition of an entry of a directory listing on github.
+ */
+export type TListing = {
+    name: string
+    type: string
+    oid: string
+}
+
+/**
+ * The definition of a file with its content on github.
+ */
+export type TFile = {
+    text: string
+    oid: string
+    path: string
+}

@@ -1,19 +1,8 @@
 import { resultError, resultSuccess } from '../libs/result'
 import type { TRepoConfig } from '../stores/repoConfig'
+import type { TFile, TListing } from '../types'
 
 const GQL_URL = 'https://api.github.com/graphql'
-
-export type TFile = {
-    text: string
-    oid: string
-    path: string
-}
-
-export type TListing = {
-    name: string
-    type: string
-    oid: string
-}
 
 /**
  * The function processes a github graphql query.

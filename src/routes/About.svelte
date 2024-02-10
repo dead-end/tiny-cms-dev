@@ -3,12 +3,11 @@
         ghGetFiles,
         ghGetListing,
         ghLastCommit,
-        ghUpdateContent,
-        type TFile,
-        type TListing
+        ghUpdateContent
     } from '../ts/github/github'
     import {} from '../ts/libs/result'
     import { repoConfigStore } from '../ts/stores/repoConfig'
+    import type { TFile, TListing } from '../ts/types'
 
     let listing: TListing[] = []
 

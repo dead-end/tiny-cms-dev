@@ -1,8 +1,8 @@
 import { resultError, resultSuccess } from '../libs/result'
 import type { TRepoConfig } from '../stores/repoConfig'
-import type { TItem } from '../types'
+import type { TItem, TListing } from '../types'
 import { cacheGet, cacheSet } from './cache'
-import { ghGetFiles, ghGetListing, type TListing } from './github'
+import { ghGetFiles, ghGetListing } from './github'
 
 /**
  * The method creates the path for a collection.
