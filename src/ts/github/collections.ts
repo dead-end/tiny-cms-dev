@@ -52,7 +52,6 @@ export const colGetCollection = async (
 
     console.log('listing:', listings, 'uncached:', uncached, 'cached:', cached)
 
-    const fetched = new Map<string, string>()
     if (uncached.length > 0) {
         const resultFiles = await ghGetFiles(config, uncached)
         if (resultFiles.hasError()) {
@@ -61,9 +60,10 @@ export const colGetCollection = async (
             )
         }
 
-        resultFiles
-            .getValue()
-            .forEach((file) => fetched.set(file.oid, file.text))
+        resultFiles.getValue().forEach((file) => {
+            cacheSet(file.path, file.oid, file.text)
+            cached.set(file.oid, file.text)
+        })
     }
 
     const items: TItem[] = []
@@ -71,15 +71,9 @@ export const colGetCollection = async (
     for (const listing of listings) {
         let item = cached.get(listing.oid)
         if (!item) {
-            item = fetched.get(listing.oid)
-            if (!item) {
-                return resultError<TItem[]>(
-                    `Collection: ${collection} item not found: ${listing.name}`
-                )
-            }
-
-            const itemPath = collectionPath.concat('/', listing.name)
-            cacheSet(itemPath, listing.oid, item)
+            return resultError<TItem[]>(
+                `Collection: ${collection} item not found: ${listing.name}`
+            )
         }
         items.push(JSON.parse(item))
     }
