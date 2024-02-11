@@ -35,7 +35,7 @@ export type TListing = {
 export type TFile = {
     path: string
     oid: string
-    content: string
+    text: string
 }
 
 /**

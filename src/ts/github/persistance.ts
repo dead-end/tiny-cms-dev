@@ -31,7 +31,7 @@ const loadFromCache = (path: string, listings: TListing[]) => {
         const filePath = path.concat('/', listing.name)
         const cachedFile = cacheGet(filePath, listing.oid)
         if (cachedFile) {
-            cached.set(listing.oid, cachedFile.content)
+            cached.set(listing.oid, cachedFile.text)
         } else {
             uncached.push(filePath)
         }
@@ -74,7 +74,7 @@ const getListing = async <T>(config: TRepoConfig, path: string) => {
 
         resultFiles.getValue().forEach((file) => {
             cacheSet(file)
-            cached.set(file.oid, file.content)
+            cached.set(file.oid, file.text)
         })
     }
 
@@ -82,6 +82,7 @@ const getListing = async <T>(config: TRepoConfig, path: string) => {
 
     for (const listing of listings) {
         let file = cached.get(listing.oid)
+        console.log('cached', cached)
         if (!file) {
             return resultError<T[]>(
                 `Listing for: ${path} file not found: ${listing.name}`
