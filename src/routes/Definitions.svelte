@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from 'svelte'
     import type { TEntry } from '../ts/types'
-    import { getDefinitionsListing } from '../ts/github/collections'
+    import { getDefinitionsListing } from '../ts/github/persistance'
     import { repoConfigStore } from '../ts/stores/repoConfig'
     import { push } from 'svelte-spa-router'
 
