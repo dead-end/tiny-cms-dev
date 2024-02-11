@@ -33,9 +33,9 @@ export type TListing = {
  * The definition of a file with its content on github.
  */
 export type TFile = {
-    text: string
-    oid: string
     path: string
+    oid: string
+    content: string
 }
 
 /**

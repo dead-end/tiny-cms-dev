@@ -2,12 +2,7 @@
     import { ghLastCommit, ghUpdateContent } from '../ts/github/github'
     import {} from '../ts/libs/result'
     import { repoConfigStore } from '../ts/stores/repoConfig'
-    import type { TFile, TListing } from '../ts/types'
 
-    let listing: TListing[] = []
-
-    let file: TFile
-    let files: TFile[]
     let commit: string
 
     const getLastCommit = async () => {
@@ -33,37 +28,12 @@
     <button on:click={getLastCommit} class="btn-base">last commit</button>
     <button on:click={update} class="btn-base">update</button>
 
-    {#if listing}
-        <ul>
-            {#each listing as entry}
-                <li>
-                    <div class="w-10 bg-red-200 inline-block">
-                        {entry.type === 'blob' ? 'File' : 'Dir'}
-                    </div>
-                    {entry.name}
-                </li>
-            {/each}
-        </ul>
-    {/if}
-
     <div class="bg-slate-200">
         <h1>Main</h1>
         <p>owner: {$repoConfigStore.owner}</p>
         <p>Name: {$repoConfigStore.name}</p>
         <p>Token: {$repoConfigStore.token}</p>
     </div>
-
-    {#if file}
-        <h4>{file.oid}</h4>
-        <p>{file.text}</p>
-    {/if}
-
-    {#if files}
-        {#each files as f}
-            <h4>{f.oid}</h4>
-            <p>{f.text}</p>
-        {/each}
-    {/if}
 
     {#if commit}
         <h4>Commit:</h4>

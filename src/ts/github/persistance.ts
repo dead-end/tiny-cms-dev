@@ -21,19 +21,19 @@ const getDefinitionsPath = (config: TRepoConfig) => {
 }
 
 /**
- * The function loads a collection item from the cache.
+ * The function loads a entries from the cache.
  */
-const loadFromCache = (collectionPath: string, listings: TListing[]) => {
+const loadFromCache = (path: string, listings: TListing[]) => {
     const cached = new Map<string, string>()
     const uncached: string[] = []
 
     for (const listing of listings) {
-        const itemPath = collectionPath.concat('/', listing.name)
-        const cachedItem = cacheGet(itemPath, listing.oid)
-        if (cachedItem) {
-            cached.set(listing.oid, cachedItem)
+        const filePath = path.concat('/', listing.name)
+        const cachedFile = cacheGet(filePath, listing.oid)
+        if (cachedFile) {
+            cached.set(listing.oid, cachedFile.content)
         } else {
-            uncached.push(itemPath)
+            uncached.push(filePath)
         }
     }
 
@@ -73,8 +73,8 @@ const getListing = async <T>(config: TRepoConfig, path: string) => {
         }
 
         resultFiles.getValue().forEach((file) => {
-            cacheSet(file.path, file.oid, file.text)
-            cached.set(file.oid, file.text)
+            cacheSet(file)
+            cached.set(file.oid, file.content)
         })
     }
 
