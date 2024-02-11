@@ -1,20 +1,16 @@
 <script lang="ts">
     import { onMount } from 'svelte'
     import type { TEntry } from '../ts/types'
-    import { getCollectionListing } from '../ts/github/persistance'
+    import { getDefinitionsListing } from '../ts/github/persistance'
     import { repoConfigStore } from '../ts/stores/repoConfig'
     import { push } from 'svelte-spa-router'
-
-    export let params = {
-        collection: ''
-    }
 
     let entries: TEntry[] = []
 
     let error = ''
 
-    const loadCollection = async (collection: string) => {
-        const result = await getCollectionListing($repoConfigStore, collection)
+    const load = async () => {
+        const result = await getDefinitionsListing($repoConfigStore)
         if (result.hasError()) {
             error = result.getError()
             return
@@ -25,11 +21,11 @@
     }
 
     onMount(async () => {
-        loadCollection('search-engine')
+        load()
     })
 </script>
 
-<h3>Collection {params.collection}</h3>
+<h3>Definitions</h3>
 
 {#if error}
     <p class="bg-red-300">{error}</p>
@@ -50,8 +46,7 @@
             <td class="p-3"
                 ><button
                     class="btn-base"
-                    on:click={() =>
-                        push(`#/collections/${params.collection}/${item.id}`)}
+                    on:click={() => push('#/collections/' + item.id)}
                     >Show</button
                 ></td
             >

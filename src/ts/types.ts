@@ -1,11 +1,3 @@
-/**
- * Navigation entry
- */
-export type TNavEntry = {
-    label: string
-    path: string
-}
-
 export type TValidatorDefinition = {
     validator: string
     props?: Record<string, any>
@@ -20,16 +12,12 @@ export type TField = {
     validators: TValidatorDefinition[]
 }
 
-export type TDefinition = {
+/**
+ * Navigation entry
+ */
+export type TNavEntry = {
     label: string
-    fields: TField[]
-}
-
-export type TItem = {
-    id: string
-    title: string
-    modified: number
-    data: any
+    path: string
 }
 
 /**
@@ -48,4 +36,28 @@ export type TFile = {
     text: string
     oid: string
     path: string
+}
+
+/**
+ * The definition of an entry of a directory listing. This can be a collection
+ * definition or a collection item. The type is used for tables.
+ */
+export type TEntry = {
+    id: string
+    title: string
+    modified: number
+}
+
+/**
+ * Definition of an item in a collection.
+ */
+export type TItem = TEntry & {
+    data: any
+}
+
+/**
+ * Definition of a collection definition.
+ */
+export type TDefinition = TEntry & {
+    fields: TField[]
 }

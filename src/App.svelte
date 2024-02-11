@@ -10,18 +10,23 @@
     import type { TNavEntry } from './ts/types'
     import Collections from './routes/Collections.svelte'
     import Collection from './routes/Collection.svelte'
+    import Definitions from './routes/Definitions.svelte'
+    import Item from './routes/Item.svelte'
 
     const routes = {
         '/': Home,
         '/about': About,
+        '/definitions': Definitions,
         '/collections': Collections,
         '/collections/:collection': Collection,
+        '/collections/:collection/:item': Item,
         '*': NotFound
     }
 
     const entries: TNavEntry[] = [
         { label: 'Home', path: '#/' },
         { label: 'About', path: '#/about' },
+        { label: 'Definitions', path: '#/definitions' },
         { label: 'Collections', path: '#/collections' }
     ]
 </script>

@@ -1,6 +1,6 @@
 import { resultError, resultSuccess } from '../libs/result'
 import type { TRepoConfig } from '../stores/repoConfig'
-import type { TItem, TListing } from '../types'
+import type { TEntry, TListing } from '../types'
 import { cacheGet, cacheSet } from './cache'
 import { ghGetFiles, ghGetListing } from './github'
 
@@ -10,6 +10,14 @@ import { ghGetFiles, ghGetListing } from './github'
 const getCollectionPath = (config: TRepoConfig, collection: string) => {
     const result = config.prefix ? config.prefix.concat('/') : ''
     return result.concat('collections', '/', collection)
+}
+
+/**
+ * The method creates the path for definitions.
+ */
+const getDefinitionsPath = (config: TRepoConfig) => {
+    const result = config.prefix ? config.prefix.concat('/') : ''
+    return result.concat('definitions')
 }
 
 /**
@@ -33,29 +41,33 @@ const loadFromCache = (collectionPath: string, listings: TListing[]) => {
 }
 
 /**
- * The function gets the items of a collection from cache or from the server.
+ * The function is called with a path of a directory and it returns the entries
+ * of that directory with their content.
  */
-export const colGetCollection = async (
-    config: TRepoConfig,
-    collection: string
-) => {
-    const collectionPath = getCollectionPath(config, collection)
-
-    const resultListing = await ghGetListing(config, collectionPath)
+const getListing = async <T>(config: TRepoConfig, path: string) => {
+    //
+    // Get the listing without content
+    //
+    const resultListing = await ghGetListing(config, path)
     if (resultListing.hasError()) {
-        return resultError<TItem[]>(
-            `Unable to get collection: ${collection} - error: ${resultListing.getError()}`
+        return resultError<T[]>(
+            `Unable to get listing for: ${path} - error: ${resultListing.getError()}`
         )
     }
     const listings = resultListing.getValue()
-    const { cached, uncached } = loadFromCache(collectionPath, listings)
-
+    //
+    // Get the cached content for the listing
+    //
+    const { cached, uncached } = loadFromCache(path, listings)
     console.log('listing:', listings, 'uncached:', uncached, 'cached:', cached)
 
+    //
+    // Get the content of the entries, which are not cached.
+    //
     if (uncached.length > 0) {
         const resultFiles = await ghGetFiles(config, uncached)
         if (resultFiles.hasError()) {
-            return resultError<TItem[]>(
+            return resultError<T[]>(
                 `Unable to get files: ${uncached} - ${resultFiles.getError()}`
             )
         }
@@ -66,17 +78,30 @@ export const colGetCollection = async (
         })
     }
 
-    const items: TItem[] = []
+    const t: T[] = []
 
     for (const listing of listings) {
-        let item = cached.get(listing.oid)
-        if (!item) {
-            return resultError<TItem[]>(
-                `Collection: ${collection} item not found: ${listing.name}`
+        let file = cached.get(listing.oid)
+        if (!file) {
+            return resultError<T[]>(
+                `Listing for: ${path} file not found: ${listing.name}`
             )
         }
-        items.push(JSON.parse(item))
+        t.push(JSON.parse(file))
     }
 
-    return resultSuccess(items)
+    return resultSuccess(t)
+}
+
+export const getCollectionListing = async (
+    config: TRepoConfig,
+    collection: string
+) => {
+    const path = getCollectionPath(config, collection)
+    return getListing<TEntry>(config, path)
+}
+
+export const getDefinitionsListing = async (config: TRepoConfig) => {
+    const path = getDefinitionsPath(config)
+    return getListing<TEntry>(config, path)
 }

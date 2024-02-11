@@ -9,7 +9,9 @@
     import type { TDefinition } from '../ts/types'
 
     const defintion: TDefinition = {
-        label: 'Search Engine',
+        id: 'search-engine',
+        title: 'Search Engine',
+        modified: new Date().getTime(),
         fields: [
             {
                 id: 'label',
@@ -113,7 +115,7 @@
     })
 </script>
 
-<FormWrapper label={defintion.label} {submit}>
+<FormWrapper label={defintion.title} {submit}>
     {#each defintion.fields as field}
         <svelte:component
             this={componentRegistry[field.component]}
