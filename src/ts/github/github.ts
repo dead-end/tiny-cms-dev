@@ -141,6 +141,12 @@ export const ghGetFiles = async (config: TRepoConfig, paths: string[]) => {
             files.push(file)
         }
 
+        if (paths.length !== files.length) {
+            return resultError<TFile[]>(
+                `Expected: ${paths.length} current: ${files.length}`
+            )
+        }
+
         return resultSuccess<TFile[]>(files)
     } catch (e) {
         console.log('Error', e)

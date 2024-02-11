@@ -1,6 +1,6 @@
 import { resultError, resultSuccess } from '../libs/result'
 import type { TRepoConfig } from '../stores/repoConfig'
-import type { TEntry, TListing } from '../types'
+import type { TEntry, TItem, TListing } from '../types'
 import { cacheGet, cacheSet } from './cache'
 import { ghGetFiles, ghGetListing } from './github'
 
@@ -10,6 +10,10 @@ import { ghGetFiles, ghGetListing } from './github'
 const getCollectionPath = (config: TRepoConfig, collection: string) => {
     const result = config.prefix ? config.prefix.concat('/') : ''
     return result.concat('collections', '/', collection)
+}
+
+const getItemPath = (config: TRepoConfig, collection: string, item: string) => {
+    return getCollectionPath(config, collection).concat('/', item, '.json')
 }
 
 /**
@@ -44,13 +48,13 @@ const loadFromCache = (path: string, listings: TListing[]) => {
  * The function is called with a path of a directory and it returns the entries
  * of that directory with their content.
  */
-const getListing = async <T>(config: TRepoConfig, path: string) => {
+const getListing = async (config: TRepoConfig, path: string) => {
     //
     // Get the listing without content
     //
     const resultListing = await ghGetListing(config, path)
     if (resultListing.hasError()) {
-        return resultError<T[]>(
+        return resultError<TEntry[]>(
             `Unable to get listing for: ${path} - error: ${resultListing.getError()}`
         )
     }
@@ -67,7 +71,7 @@ const getListing = async <T>(config: TRepoConfig, path: string) => {
     if (uncached.length > 0) {
         const resultFiles = await ghGetFiles(config, uncached)
         if (resultFiles.hasError()) {
-            return resultError<T[]>(
+            return resultError<TEntry[]>(
                 `Unable to get files: ${uncached} - ${resultFiles.getError()}`
             )
         }
@@ -78,13 +82,13 @@ const getListing = async <T>(config: TRepoConfig, path: string) => {
         })
     }
 
-    const t: T[] = []
+    const t: TEntry[] = []
 
     for (const listing of listings) {
         let file = cached.get(listing.oid)
         console.log('cached', cached)
         if (!file) {
-            return resultError<T[]>(
+            return resultError<TEntry[]>(
                 `Listing for: ${path} file not found: ${listing.name}`
             )
         }
@@ -99,10 +103,29 @@ export const getCollectionListing = async (
     collection: string
 ) => {
     const path = getCollectionPath(config, collection)
-    return getListing<TEntry>(config, path)
+    return getListing(config, path)
 }
 
 export const getDefinitionsListing = async (config: TRepoConfig) => {
     const path = getDefinitionsPath(config)
-    return getListing<TEntry>(config, path)
+    return getListing(config, path)
+}
+
+export const getItemFile = async (
+    config: TRepoConfig,
+    collection: string,
+    item: string
+) => {
+    const path = getItemPath(config, collection, item)
+
+    const result = await ghGetFiles(config, [path])
+    if (result.hasError()) {
+        return resultError<TItem>(
+            `Unable to get file: ${path} - ${result.getError()}`
+        )
+    }
+
+    const file = result.getValue()[0]
+    cacheSet(file)
+    return resultSuccess<TItem>(JSON.parse(file.text))
 }
