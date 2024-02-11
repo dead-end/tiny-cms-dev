@@ -5,19 +5,22 @@
     export let entries: TNavEntry[] = []
 </script>
 
-<ul class="flex flex-col items-end py-4">
-    {#each entries as entry}
-        <li class="py-2">
-            <a class="hover:underline hover:text-gray-900" href={entry.path}
-                >{entry.label}</a
+<nav class="col-span-1 text-end bg-gray-50">
+    <h1 class="text-2xl font-bold bg-blue-600 text-white py-6 pr-4">
+        Tiny CMS
+    </h1>
+    <ul class="flex flex-col items-end">
+        {#each entries as entry}
+            <li
+                class="py-4 px-4 border-b w-full hover:bg-gray-100 hover:text-gray-900 active:bg-gray-100 transition duration-200 ease-in-out"
             >
-        </li>
-    {/each}
-    <li class="py-2">
-        <a
-            class="hover:underline hover:text-gray-900"
-            href="#/"
-            on:click={repoConfigStore.logout}>Logout</a
+                <a href={entry.path}>{entry.label}</a>
+            </li>
+        {/each}
+        <li
+            class="py-4 px-4 border-b w-full hover:bg-gray-100 hover:text-gray-900 active:bg-gray-100 transition duration-200 ease-in-out"
         >
-    </li>
-</ul>
+            <a href="#/" on:click={repoConfigStore.logout}>Logout</a>
+        </li>
+    </ul>
+</nav>

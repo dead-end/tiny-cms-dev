@@ -3,15 +3,27 @@
 @tailwind utilities;
 
 @layer components {
-  .input-base {
-    @apply outline-none focus:outline-none border border-blue-400 focus:border-blue-500 ring-blue-400 focus:ring-blue-500 shadow rounded w-full p-2;
-  }
+    .input-base {
+        @apply outline-none focus:outline-none border border-blue-400 focus:border-blue-500 ring-blue-400 focus:ring-blue-500 shadow rounded w-full p-2;
+    }
 
-  .btn-base {
-    @apply px-4 py-2 bg-blue-600 hover:bg-blue-700 shadow rounded text-white;
-  }
+    .btn-base {
+        @apply px-4 py-2 shadow rounded text-white font-bold text-sm bg-blue-600 hover:bg-blue-700 transition duration-200 ease-in-out;
+    }
 
-  .label-base {
-    @apply block text-gray-700 text-sm font-bold;
-  }
+    .label-base {
+        @apply block text-gray-700 text-sm font-bold;
+    }
+
+    .tb-head {
+        @apply border-b text-left bg-gray-500 text-white;
+    }
+
+    .tb-row {
+        @apply border-b hover:bg-gray-50 transition duration-200 ease-in-out;
+    }
+
+    .tb-cell {
+        @apply px-6 py-4;
+    }
 }
