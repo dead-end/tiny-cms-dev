@@ -1,18 +1,18 @@
 <script lang="ts">
     import { onMount } from 'svelte'
-    import { getItemFile } from '../ts/github/persistance'
+    import { getItemFile, updateItemFile } from '../ts/github/persistance'
     import { repoConfigStore } from '../ts/stores/repoConfig'
-    import type { TItem } from '../ts/types'
+    import type { TCommit, TItem } from '../ts/types'
 
     export let params = {
         collection: '',
         item: ''
     }
 
-    let item: TItem
+    let commitItem: TCommit<TItem>
     let error: string
 
-    onMount(async () => {
+    const load = async () => {
         const result = await getItemFile(
             $repoConfigStore,
             params.collection,
@@ -24,21 +24,39 @@
             return
         }
         error = ''
-        item = result.getValue()
-    })
+        commitItem = result.getValue()
+        console.log('commitItem', commitItem)
+    }
+
+    const update = async () => {
+        commitItem.data.modified = new Date().getTime()
+        updateItemFile(
+            $repoConfigStore,
+            params.collection,
+            params.item,
+            commitItem.commit,
+            JSON.stringify(commitItem.data)
+        )
+    }
+
+    onMount(load)
 </script>
 
 {#if error}
     <p class="bg-red-300">{error}</p>
 {/if}
 
-{#if item}
-    <h1 class="text-xl">{item.title}</h1>
+{#if commitItem}
+    <h1 class="text-xl">{commitItem.data.title}</h1>
+    <h1 class="text-sm">{commitItem.commit}</h1>
     <ul>
-        <li>Id: {item.id}</li>
+        <li>Id: {commitItem.data.id}</li>
         <li>Collection: {params.collection}</li>
-        <li>Modified: {new Date(item.modified).toLocaleString()}</li>
-        <li>Title: {item.title}</li>
+        <li>Modified: {new Date(commitItem.data.modified).toLocaleString()}</li>
+        <li>Title: {commitItem.data.title}</li>
     </ul>
-    <p>{JSON.stringify(item.data)}</p>
+    <p>{JSON.stringify(commitItem.data.data)}</p>
+
+    <button on:click={load} class="btn-base">Refresh</button>
+    <button on:click={update} class="btn-base">Update</button>
 {/if}

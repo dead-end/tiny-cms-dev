@@ -1,8 +1,11 @@
-import { resultError, resultSuccess } from '../libs/result'
+import Result from '../libs/result'
 import type { TRepoConfig } from '../stores/repoConfig'
-import type { TEntry, TItem, TListing } from '../types'
+import type { TCommit, TEntry, TFile, TItem, TListing } from '../types'
 import { cacheGet, cacheSet } from './cache'
-import { ghGetFiles, ghGetListing } from './github'
+import { ghCheckFile, ghGetFile } from './ghGetFile'
+import { ghGetFiles } from './ghGetFiles'
+import { ghGetListing } from './ghGetListing'
+import { ghUpdateContent } from './ghUpdateFile'
 
 /**
  * The method creates the path for a collection.
@@ -49,12 +52,14 @@ const loadFromCache = (path: string, listings: TListing[]) => {
  * of that directory with their content.
  */
 const getListing = async (config: TRepoConfig, path: string) => {
+    const result = new Result<TEntry[]>()
+
     //
     // Get the listing without content
     //
     const resultListing = await ghGetListing(config, path)
     if (resultListing.hasError()) {
-        return resultError<TEntry[]>(
+        return result.failed(
             `Unable to get listing for: ${path} - error: ${resultListing.getError()}`
         )
     }
@@ -71,7 +76,7 @@ const getListing = async (config: TRepoConfig, path: string) => {
     if (uncached.length > 0) {
         const resultFiles = await ghGetFiles(config, uncached)
         if (resultFiles.hasError()) {
-            return resultError<TEntry[]>(
+            return result.failed(
                 `Unable to get files: ${uncached} - ${resultFiles.getError()}`
             )
         }
@@ -88,14 +93,14 @@ const getListing = async (config: TRepoConfig, path: string) => {
         let file = cached.get(listing.oid)
         console.log('cached', cached)
         if (!file) {
-            return resultError<TEntry[]>(
+            return result.failed(
                 `Listing for: ${path} file not found: ${listing.name}`
             )
         }
         t.push(JSON.parse(file))
     }
 
-    return resultSuccess(t)
+    return result.success(t)
 }
 
 export const getCollectionListing = async (
@@ -116,16 +121,60 @@ export const getItemFile = async (
     collection: string,
     item: string
 ) => {
+    const result = new Result<TCommit<TItem>>()
+
     const path = getItemPath(config, collection, item)
 
-    const result = await ghGetFiles(config, [path])
-    if (result.hasError()) {
-        return resultError<TItem>(
-            `Unable to get file: ${path} - ${result.getError()}`
+    const resultCheck = await ghCheckFile(config, path)
+    if (resultCheck.hasError()) {
+        return result.failed(
+            `Unable to get file: ${path} - ${resultCheck.getError()}`
         )
     }
 
-    const file = result.getValue()[0]
-    cacheSet(file)
-    return resultSuccess<TItem>(JSON.parse(file.text))
+    const cached = cacheGet(path, resultCheck.getValue().oid)
+    if (cached) {
+        console.log('From Cache:', cached)
+        return result.success({
+            data: JSON.parse(cached.text),
+            commit: resultCheck.getValue().commit
+        })
+    }
+
+    const resultContent = await ghGetFile(config, path)
+    if (resultContent.hasError()) {
+        return result.failed(
+            `Unable to get file: ${path} - ${resultContent.getError()}`
+        )
+    }
+
+    const commitFile: TCommit<TFile> = resultContent.getValue()
+
+    cacheSet(commitFile.data)
+    console.log('Set Cache:', commitFile)
+    return result.success({
+        data: JSON.parse(commitFile.data.text),
+        commit: commitFile.commit
+    })
+}
+
+export const updateItemFile = async (
+    config: TRepoConfig,
+    collection: string,
+    item: string,
+    commit: string,
+    content: string
+) => {
+    const res = new Result<string>()
+
+    const path = getItemPath(config, collection, item)
+    const resultUpdate = await ghUpdateContent(config, path, commit, content)
+
+    if (resultUpdate.hasError()) {
+        return res.failed(
+            `Unable to get file: ${path} - ${resultUpdate.getError()}`
+        )
+    }
+
+    return res.success(resultUpdate.getValue())
 }
