@@ -61,3 +61,11 @@ export type TItem = TEntry & {
 export type TDefinition = TEntry & {
     fields: TField[]
 }
+
+/**
+ * With a commit id
+ */
+export type TCommit<T> = {
+    data: T
+    commit: string
+}
