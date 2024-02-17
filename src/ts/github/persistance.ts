@@ -1,6 +1,13 @@
 import Result from '../libs/result'
 import type { TRepoConfig } from '../stores/repoConfig'
-import type { TCommit, TEntry, TFile, TItem, TListing } from '../types'
+import type {
+    TCommit,
+    TDefinition,
+    TEntry,
+    TFile,
+    TItem,
+    TListing
+} from '../types'
 import { cacheGet, cacheSet } from './cache'
 import { ghCheckFile, ghGetFile } from './ghGetFile'
 import { ghGetFiles } from './ghGetFiles'
@@ -13,6 +20,10 @@ import { ghUpdateContent } from './ghUpdateFile'
 const getDefinitionsPath = (config: TRepoConfig) => {
     const result = config.prefix ? config.prefix.concat('/') : ''
     return result.concat('definitions')
+}
+
+const getDefinitionPath = (config: TRepoConfig, collection: string) => {
+    return getDefinitionsPath(config).concat('/', collection, '.json')
 }
 
 /**
@@ -128,23 +139,15 @@ export const getDefinitionsListing = async (config: TRepoConfig) => {
 }
 
 /**
- * The function gets an item with the commit id.
+ * The function gets a file for an item or a definition.
  */
-export const getItemFile = async (
-    config: TRepoConfig,
-    collection: string,
-    item: string
-) => {
-    const result = new Result<TCommit<TItem>>()
+const getFile = async <T>(config: TRepoConfig, path: string) => {
+    const result = new Result<TCommit<T>>()
 
-    //
-    // Get the oid and the commit id of the file.
-    //
-    const path = getItemPath(config, collection, item)
     const resultCheck = await ghCheckFile(config, path)
     if (resultCheck.hasError()) {
         return result.failed(
-            `Unable to get file: ${path} - ${resultCheck.getError()}`
+            `Unable to get: ${path} - ${resultCheck.getError()}`
         )
     }
     //
@@ -177,6 +180,29 @@ export const getItemFile = async (
         data: JSON.parse(commitFile.data.text),
         commit: commitFile.commit
     })
+}
+
+/**
+ * The function gets an item file.
+ */
+export const getItemFile = async (
+    config: TRepoConfig,
+    collection: string,
+    item: string
+) => {
+    const path = getItemPath(config, collection, item)
+    return getFile<TItem>(config, path)
+}
+
+/**
+ * The function gets a definition file.
+ */
+export const getDefinitionFile = async (
+    config: TRepoConfig,
+    collection: string
+) => {
+    const path = getDefinitionPath(config, collection)
+    return getFile<TDefinition>(config, path)
 }
 
 /**
