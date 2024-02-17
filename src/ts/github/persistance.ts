@@ -187,12 +187,12 @@ export const updateItemFile = async (
     collection: string,
     item: string,
     commit: string,
-    content: string
+    data: TItem
 ) => {
     const res = new Result<TCommit<TItem>>()
 
     const path = getItemPath(config, collection, item)
-    const resultUpdate = await ghUpdateContent(config, path, commit, content)
+    const resultUpdate = await ghUpdateContent(config, path, commit, data)
 
     if (resultUpdate.hasError()) {
         return res.failed(
@@ -204,6 +204,6 @@ export const updateItemFile = async (
 
     return res.success({
         commit: resultUpdate.getValue().commit,
-        data: JSON.parse(content)
+        data: JSON.parse(resultUpdate.getValue().data.text)
     })
 }

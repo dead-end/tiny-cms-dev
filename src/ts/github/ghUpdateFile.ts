@@ -1,6 +1,6 @@
 import Result from '../libs/result'
 import type { TRepoConfig } from '../stores/repoConfig'
-import type { TCommit, TFile } from '../types'
+import type { TCommit, TEntry, TFile } from '../types'
 import { processQuery } from './github'
 
 const query = `
@@ -63,10 +63,12 @@ export const ghUpdateContent = async (
     repoConfig: TRepoConfig,
     path: string,
     commit: string,
-    content: string
+    entry: TEntry
 ) => {
     const res = new Result<TCommit<TFile>>()
     try {
+        entry.modified = new Date().getTime()
+        const content = JSON.stringify(entry)
         const result = await processQuery(
             repoConfig.token,
             getBody(repoConfig, path, commit, btoa(content))
