@@ -20,8 +20,9 @@ export const processQuery = async (token: string, body: any) => {
         const response = await fetch(GQL_URL, data)
 
         if (!response.ok) {
-            console.log(response)
-            return res.failed('Response is not 200!')
+            return res.failed(
+                `Response: ${response.status} - ${response.statusText}`
+            )
         }
 
         const json = await response.json()
@@ -35,7 +36,6 @@ export const processQuery = async (token: string, body: any) => {
 
         return res.success(json)
     } catch (e) {
-        console.log('Error', e)
         return res.failed(`Unable to process query: ${e} `)
     }
 }

@@ -39,6 +39,15 @@ export type TFile = {
 }
 
 /**
+ * If we want to update a file, we need the oid and the commit id.
+ */
+export type TCheckFile = {
+    oid: string
+    path: string
+    commit: string
+}
+
+/**
  * The definition of an entry of a directory listing. This can be a collection
  * definition or a collection item. The type is used for tables.
  */

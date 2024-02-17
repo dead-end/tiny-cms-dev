@@ -1,5 +1,6 @@
 import Result from '../libs/result'
 import type { TRepoConfig } from '../stores/repoConfig'
+import type { TCommit, TFile } from '../types'
 import { processQuery } from './github'
 
 const query = `
@@ -18,29 +19,44 @@ mutation ($committableBranch: CommittableBranch!, $path: String!, $content: Base
         expectedHeadOid: $oid
     }) {
         commit {
-            commitUrl
+            oid
+            file (path:$path) {
+              oid
+            }
         }
     }
 }
 `
 
+/**
+ * Get the request body with the query and its variables.
+ */
 const getBody = (
     repoConfig: TRepoConfig,
     path: string,
     oid: string,
     content: string
 ) => {
-    const variables = {
-        committableBranch: {
-            repositoryNameWithOwner: `${repoConfig.owner}/${repoConfig.name}`,
-            branchName: repoConfig.branch
-        },
-        path: path,
-        content: content,
-        oid: oid
+    return {
+        query,
+        variables: {
+            committableBranch: {
+                repositoryNameWithOwner: `${repoConfig.owner}/${repoConfig.name}`,
+                branchName: repoConfig.branch
+            },
+            path: path,
+            content: content,
+            oid: oid
+        }
     }
+}
 
-    return { query, variables }
+const getCommit = (data: any) => {
+    return data.createCommitOnBranch.commit.oid as string
+}
+
+const getOid = (data: any) => {
+    return data.createCommitOnBranch.commit.file.oid as string
 }
 
 export const ghUpdateContent = async (
@@ -49,7 +65,7 @@ export const ghUpdateContent = async (
     commit: string,
     content: string
 ) => {
-    const res = new Result<string>()
+    const res = new Result<TCommit<TFile>>()
     try {
         const result = await processQuery(
             repoConfig.token,
@@ -62,10 +78,16 @@ export const ghUpdateContent = async (
 
         console.log('result.getValue()', result.getValue())
 
-        return res.success(
-            result.getValue().data.repository.ref.target.history.nodes[0]
-                .oid as string
-        )
+        const data = result.getValue().data
+
+        return res.success({
+            commit: getCommit(data),
+            data: {
+                path: path,
+                oid: getOid(data),
+                text: content
+            }
+        })
     } catch (e) {
         return res.failed(`Error: ${e} `)
     }

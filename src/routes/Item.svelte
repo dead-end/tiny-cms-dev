@@ -30,13 +30,20 @@
 
     const update = async () => {
         commitItem.data.modified = new Date().getTime()
-        updateItemFile(
+        const result = await updateItemFile(
             $repoConfigStore,
             params.collection,
             params.item,
             commitItem.commit,
             JSON.stringify(commitItem.data)
         )
+
+        if (result.hasError()) {
+            error = result.getError()
+            return
+        }
+
+        commitItem = result.getValue()
     }
 
     onMount(load)

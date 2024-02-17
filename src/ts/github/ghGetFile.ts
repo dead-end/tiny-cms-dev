@@ -1,14 +1,11 @@
 import Result from '../libs/result'
 import type { TRepoConfig } from '../stores/repoConfig'
-import type { TCommit, TFile } from '../types'
+import type { TCheckFile, TCommit, TFile } from '../types'
 import { processQuery } from './github'
 
-export type TCheckFile = {
-    oid: string
-    path: string
-    commit: string
-}
-
+/**
+ * The query gets the oid of the file and the commit id.
+ */
 const queryWithoutCount = `
 query getFile($owner: String!, $name: String!, $branch: String!, $exp: String!) {
     repository(owner: $owner, name: $name) {
@@ -58,7 +55,9 @@ query getFile($owner: String!, $name: String!, $branch: String!, $exp: String!) 
     }
   }    
 `
-
+/**
+ * Get the request body with the query and its variables.
+ */
 const getBody = (repoConfig: TRepoConfig, query: string, path: string) => {
     return {
         query: query,

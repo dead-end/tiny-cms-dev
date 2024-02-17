@@ -8,18 +8,6 @@ import { ghGetListing } from './ghGetListing'
 import { ghUpdateContent } from './ghUpdateFile'
 
 /**
- * The method creates the path for a collection.
- */
-const getCollectionPath = (config: TRepoConfig, collection: string) => {
-    const result = config.prefix ? config.prefix.concat('/') : ''
-    return result.concat('collections', '/', collection)
-}
-
-const getItemPath = (config: TRepoConfig, collection: string, item: string) => {
-    return getCollectionPath(config, collection).concat('/', item, '.json')
-}
-
-/**
  * The method creates the path for definitions.
  */
 const getDefinitionsPath = (config: TRepoConfig) => {
@@ -28,7 +16,24 @@ const getDefinitionsPath = (config: TRepoConfig) => {
 }
 
 /**
- * The function loads a entries from the cache.
+ * The method creates the path for a collection.
+ */
+const getCollectionPath = (config: TRepoConfig, collection: string) => {
+    const result = config.prefix ? config.prefix.concat('/') : ''
+    return result.concat('collections', '/', collection)
+}
+
+/**
+ * The method creates the path for an item in a collection.
+ */
+const getItemPath = (config: TRepoConfig, collection: string, item: string) => {
+    return getCollectionPath(config, collection).concat('/', item, '.json')
+}
+
+/**
+ * The function is called with a directory listing. For each entry it checks if
+ * there is a version in the cache. It returns a map of the cached entrys and a
+ * list of the uncached entries.
  */
 const loadFromCache = (path: string, listings: TListing[]) => {
     const cached = new Map<string, string>()
@@ -49,18 +54,19 @@ const loadFromCache = (path: string, listings: TListing[]) => {
 
 /**
  * The function is called with a path of a directory and it returns the entries
- * of that directory with their content.
+ * of that directory with their content. (In fact the entires are items or
+ * definitions)
  */
 const getListing = async (config: TRepoConfig, path: string) => {
-    const result = new Result<TEntry[]>()
+    const res = new Result<TEntry[]>()
 
     //
     // Get the listing without content
     //
     const resultListing = await ghGetListing(config, path)
     if (resultListing.hasError()) {
-        return result.failed(
-            `Unable to get listing for: ${path} - error: ${resultListing.getError()}`
+        return res.failed(
+            `Listing for: ${path} - error: ${resultListing.getError()}`
         )
     }
     const listings = resultListing.getValue()
@@ -76,7 +82,7 @@ const getListing = async (config: TRepoConfig, path: string) => {
     if (uncached.length > 0) {
         const resultFiles = await ghGetFiles(config, uncached)
         if (resultFiles.hasError()) {
-            return result.failed(
+            return res.failed(
                 `Unable to get files: ${uncached} - ${resultFiles.getError()}`
             )
         }
@@ -87,22 +93,24 @@ const getListing = async (config: TRepoConfig, path: string) => {
         })
     }
 
-    const t: TEntry[] = []
+    const entries: TEntry[] = []
 
     for (const listing of listings) {
-        let file = cached.get(listing.oid)
-        console.log('cached', cached)
-        if (!file) {
-            return result.failed(
+        let text = cached.get(listing.oid)
+        if (!text) {
+            return res.failed(
                 `Listing for: ${path} file not found: ${listing.name}`
             )
         }
-        t.push(JSON.parse(file))
+        entries.push(JSON.parse(text))
     }
 
-    return result.success(t)
+    return res.success(entries)
 }
 
+/**
+ * The function returns the directory listing of a collection.
+ */
 export const getCollectionListing = async (
     config: TRepoConfig,
     collection: string
@@ -111,11 +119,17 @@ export const getCollectionListing = async (
     return getListing(config, path)
 }
 
+/**
+ * The function returns the directory listing of the definitions.
+ */
 export const getDefinitionsListing = async (config: TRepoConfig) => {
     const path = getDefinitionsPath(config)
     return getListing(config, path)
 }
 
+/**
+ * The function gets an item with the commit id.
+ */
 export const getItemFile = async (
     config: TRepoConfig,
     collection: string,
@@ -123,15 +137,19 @@ export const getItemFile = async (
 ) => {
     const result = new Result<TCommit<TItem>>()
 
+    //
+    // Get the oid and the commit id of the file.
+    //
     const path = getItemPath(config, collection, item)
-
     const resultCheck = await ghCheckFile(config, path)
     if (resultCheck.hasError()) {
         return result.failed(
             `Unable to get file: ${path} - ${resultCheck.getError()}`
         )
     }
-
+    //
+    // Return the cached version, if there is one and it is valid.
+    //
     const cached = cacheGet(path, resultCheck.getValue().oid)
     if (cached) {
         console.log('From Cache:', cached)
@@ -140,16 +158,19 @@ export const getItemFile = async (
             commit: resultCheck.getValue().commit
         })
     }
-
+    //
+    // Get the current version of the file.
+    //
     const resultContent = await ghGetFile(config, path)
     if (resultContent.hasError()) {
         return result.failed(
             `Unable to get file: ${path} - ${resultContent.getError()}`
         )
     }
-
+    //
+    // Update the cache and return the result.
+    //
     const commitFile: TCommit<TFile> = resultContent.getValue()
-
     cacheSet(commitFile.data)
     console.log('Set Cache:', commitFile)
     return result.success({
@@ -158,6 +179,9 @@ export const getItemFile = async (
     })
 }
 
+/**
+ * The function updates an item. (The commit is the commit id)
+ */
 export const updateItemFile = async (
     config: TRepoConfig,
     collection: string,
@@ -165,7 +189,7 @@ export const updateItemFile = async (
     commit: string,
     content: string
 ) => {
-    const res = new Result<string>()
+    const res = new Result<TCommit<TItem>>()
 
     const path = getItemPath(config, collection, item)
     const resultUpdate = await ghUpdateContent(config, path, commit, content)
@@ -176,5 +200,10 @@ export const updateItemFile = async (
         )
     }
 
-    return res.success(resultUpdate.getValue())
+    cacheSet(resultUpdate.getValue().data)
+
+    return res.success({
+        commit: resultUpdate.getValue().commit,
+        data: JSON.parse(content)
+    })
 }

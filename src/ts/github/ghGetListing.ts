@@ -3,6 +3,10 @@ import type { TRepoConfig } from '../stores/repoConfig'
 import type { TListing } from '../types'
 import { processQuery } from './github'
 
+/**
+ * The query gets the directory listing of a path. It contains the type but not
+ * the content of a file.
+ */
 const query = `
 query Listing($owner: String!, $name: String!, $path: String!) {
     repository(owner: $owner, name: $name) {
@@ -18,7 +22,9 @@ query Listing($owner: String!, $name: String!, $path: String!) {
     }
   }
     `
-
+/**
+ * Get the request body with the query and its variables.
+ */
 const getBody = (config: TRepoConfig, path: string) => {
     return {
         query,
