@@ -11,7 +11,7 @@
     const load = async () => {
         const result = await getDefinitionsListing($repoConfigStore)
         if (result.hasError()) {
-            errorStore.addError(result.getError())
+            errorStore.set(result.getError())
             return
         }
 

@@ -34,7 +34,7 @@
         )
 
         if (result.hasError()) {
-            errorStore.addError(result.getError())
+            errorStore.set(result.getError())
             return
         }
         definition = result.getValue().data
@@ -49,7 +49,7 @@
         )
 
         if (result.hasError()) {
-            errorStore.addError(result.getError())
+            errorStore.set(result.getError())
             return
         }
         commit = result.getValue().commit
@@ -67,7 +67,7 @@
         )
 
         if (result.hasError()) {
-            errorStore.addError(result.getError())
+            errorStore.set(result.getError())
             return
         }
 
@@ -96,7 +96,7 @@
         console.log(item.data)
 
         if (!changed) {
-            errorStore.addError('The item did not changed!')
+            errorStore.set('The item did not changed!')
             return
         }
         updateItem()

@@ -3,19 +3,17 @@
     import PopupWrapper from './PopupWrapper.svelte'
 
     const onOk = () => {
-        errorStore.resetErrors()
+        errorStore.set('')
     }
 </script>
 
-{#if $errorStore.length !== 0}
+{#if $errorStore !== ''}
     <PopupWrapper>
-        <div class="text-lg pb-2 my-6 border-b text-red-900">Errors</div>
-        <ul>
-            {#each $errorStore as error}
-                <li>{error}</li>
-            {/each}
-        </ul>
-        <div class="pt-4">
+        <div class="text-lg pb-2 border-b text-red-900">Errors</div>
+        <div class="my-6">
+            {$errorStore}
+        </div>
+        <div>
             <button class="btn-base" on:click={onOk}>Ok</button>
         </div>
     </PopupWrapper>
