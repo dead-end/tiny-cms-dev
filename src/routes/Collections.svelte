@@ -1,12 +1,12 @@
 <script lang="ts">
     import { componentRegistry } from '../ts/components'
-    import FormWrapper from '../components/FormWrapper.svelte'
     import { createFormValidator } from '../ts/validation/formValidator'
     import {
         validatorRegistry,
         type TValidatorFunction
     } from '../ts/validation/validators'
     import type { TDefinition } from '../ts/types'
+    import CardWrapper from '../components/CardWrapper.svelte'
 
     const defintion: TDefinition = {
         id: 'search-engine',
@@ -115,15 +115,20 @@
     })
 </script>
 
-<FormWrapper label={defintion.title} {submit}>
-    {#each defintion.fields as field}
-        <svelte:component
-            this={componentRegistry[field.component]}
-            id={field.id}
-            label={field.label}
-            value={typeof data[field.id] === 'undefined' ? '' : data[field.id]}
-            error={formErrors[field.id]}
-            {...field.props}
-        />
-    {/each}
-</FormWrapper>
+<CardWrapper label={defintion.title}>
+    <form on:submit|preventDefault={submit}>
+        {#each defintion.fields as field}
+            <svelte:component
+                this={componentRegistry[field.component]}
+                id={field.id}
+                label={field.label}
+                value={typeof data[field.id] === 'undefined'
+                    ? ''
+                    : data[field.id]}
+                error={formErrors[field.id]}
+                {...field.props}
+            />
+        {/each}
+        <button class="btn-base my-4" type="submit">Submit</button>
+    </form>
+</CardWrapper>

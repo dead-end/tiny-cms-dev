@@ -9,10 +9,9 @@
         validateMin,
         validateMax
     } from '../ts/validation/validators'
-
-    import FormWrapper from './FormWrapper.svelte'
     import TextInput from './input/TextInput.svelte'
     import { formDataStrValue } from '../ts/libs/utils'
+    import CardWrapper from './CardWrapper.svelte'
 
     let owner = ''
     let name = ''
@@ -67,61 +66,65 @@
 </script>
 
 <div class="w-full max-w-xs m-auto">
-    <FormWrapper label="Login" {submit}>
-        <TextInput
-            label="Repository Owner"
-            id="owner"
-            value={owner}
-            error={formErrors['owner']}
-            type="text"
-        />
+    <CardWrapper label="Login">
+        <form on:submit|preventDefault={submit}>
+            <TextInput
+                label="Repository Owner"
+                id="owner"
+                value={owner}
+                error={formErrors['owner']}
+                type="text"
+            />
 
-        <TextInput
-            label="Repository Name"
-            id="name"
-            value={name}
-            error={formErrors['name']}
-            type="text"
-        />
+            <TextInput
+                label="Repository Name"
+                id="name"
+                value={name}
+                error={formErrors['name']}
+                type="text"
+            />
 
-        <TextInput
-            label="Branch"
-            id="branch"
-            value={branch}
-            error={formErrors['branch']}
-            type="text"
-        />
+            <TextInput
+                label="Branch"
+                id="branch"
+                value={branch}
+                error={formErrors['branch']}
+                type="text"
+            />
 
-        <TextInput
-            label="Prefix"
-            id="prefix"
-            value={prefix}
-            error={formErrors['prefix']}
-            type="text"
-        />
+            <TextInput
+                label="Prefix"
+                id="prefix"
+                value={prefix}
+                error={formErrors['prefix']}
+                type="text"
+            />
 
-        <TextInput
-            label="Token"
-            id="token"
-            value={token}
-            error={formErrors['token']}
-            type="password"
-        />
+            <TextInput
+                label="Token"
+                id="token"
+                value={token}
+                error={formErrors['token']}
+                type="password"
+            />
 
-        <TextInput
-            label="Password"
-            id="password"
-            value={password}
-            error={formErrors['password']}
-            type="password"
-        />
+            <TextInput
+                label="Password"
+                id="password"
+                value={password}
+                error={formErrors['password']}
+                type="password"
+            />
 
-        <TextInput
-            label="Confirmation"
-            id="confirm"
-            value={confirm}
-            error={formErrors['confirm']}
-            type="password"
-        />
-    </FormWrapper>
+            <TextInput
+                label="Confirmation"
+                id="confirm"
+                value={confirm}
+                error={formErrors['confirm']}
+                type="password"
+            />
+
+            <button class="btn-base my-4" type="submit">Submit</button>
+        </form>
+    </CardWrapper>
 </div>

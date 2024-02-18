@@ -7,12 +7,12 @@
     } from '../ts/github/persistance'
     import { repoConfigStore } from '../ts/stores/repoConfig'
     import type { TDefinition, TItem } from '../ts/types'
-    import FormWrapper from '../components/FormWrapper.svelte'
     import { componentRegistry } from '../ts/components'
     import { createFormValidator } from '../ts/validation/formValidator'
     import type { TValidatorFunction } from '../ts/validation/validators'
     import { errorStore } from '../ts/stores/errorStore'
     import { defaultString } from '../ts/libs/utils'
+    import CardWrapper from '../components/CardWrapper.svelte'
 
     export let params = {
         collection: '',
@@ -109,29 +109,33 @@
 </script>
 
 {#if item && definition}
-    <FormWrapper
-        label={`Collection: ${definition.title} Item: ${item.title}`}
-        {submit}
-    >
-        <div class="text-sm text-right text-gray-500 pb-4">
-            <div>
-                Modifield: {new Date(item.modified).toLocaleString()}
+    <CardWrapper label={`Collection: ${definition.title} Item: ${item.title}`}>
+        <form on:submit|preventDefault={submit}>
+            <div class="text-sm text-right text-gray-500 pb-4">
+                <div>
+                    Modifield: {new Date(item.modified).toLocaleString()}
+                </div>
+                <div>
+                    Commit: {commit.substring(0, 7)}
+                </div>
             </div>
-            <div>
-                Commit: {commit.substring(0, 7)}
-            </div>
-        </div>
-        {#each definition.fields as field}
-            <svelte:component
-                this={componentRegistry[field.component]}
-                id={field.id}
-                label={field.label}
-                value={defaultString(item.data[field.id])}
-                error={formErrors[field.id]}
-                {...field.props}
-            />
-        {/each}
-    </FormWrapper>
+            {#each definition.fields as field}
+                <svelte:component
+                    this={componentRegistry[field.component]}
+                    id={field.id}
+                    label={field.label}
+                    value={defaultString(item.data[field.id])}
+                    error={formErrors[field.id]}
+                    {...field.props}
+                />
+            {/each}
 
-    <button on:click={loadItem} class="btn-base">Refresh</button>
+            <div class="my-4 flex gap-4">
+                <button class="btn-base" type="submit">Submit</button>
+                <button class="btn-base" type="button" on:click={loadItem}
+                    >Refresh</button
+                >
+            </div>
+        </form>
+    </CardWrapper>
 {/if}

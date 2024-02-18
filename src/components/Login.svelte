@@ -6,9 +6,8 @@
         validateRequired,
         type TValidatorFunction
     } from '../ts/validation/validators'
-
-    import FormWrapper from './FormWrapper.svelte'
     import TextInput from './input/TextInput.svelte'
+    import CardWrapper from './CardWrapper.svelte'
 
     const formValidators: Record<string, TValidatorFunction[]> = {
         password: [validateRequired()]
@@ -36,18 +35,21 @@
 </script>
 
 <div class="w-full max-w-xs m-auto">
-    <FormWrapper label="Login" {submit}>
-        <TextInput
-            label="Password"
-            id="password"
-            value=""
-            error={formErrors['password']}
-            type="password"
-        />
-        <button
-            type="button"
-            class="btn-base my-4 mr-2"
-            on:click={repoConfigStore.reset}>Reset</button
-        >
-    </FormWrapper>
+    <CardWrapper label="Login">
+        <form on:submit|preventDefault={submit}>
+            <TextInput
+                label="Password"
+                id="password"
+                value=""
+                error={formErrors['password']}
+                type="password"
+            />
+            <button
+                type="button"
+                class="btn-base my-4 mr-2"
+                on:click={repoConfigStore.reset}>Reset</button
+            >
+            <button class="btn-base my-4" type="submit">Submit</button>
+        </form>
+    </CardWrapper>
 </div>
