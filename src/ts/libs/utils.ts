@@ -22,3 +22,10 @@ export const arrayBufferToBase64 = (buffer: ArrayBuffer) => {
 export const base64ToArrayBuffer = (base64: string) => {
     return Uint8Array.from(atob(base64), (c) => c.charCodeAt(0)).buffer
 }
+
+/**
+ * The function returns an empty string, if the value is not defined.
+ */
+export const defaultString = (value: any) => {
+    return typeof value === 'undefined' ? '' : value
+}
