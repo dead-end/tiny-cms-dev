@@ -12,6 +12,7 @@
     import Collection from './routes/Collection.svelte'
     import Definitions from './routes/Definitions.svelte'
     import Item from './routes/Item.svelte'
+    import ErrorShow from './components/ErrorShow.svelte'
 
     const routes = {
         '/': Home,
@@ -37,6 +38,7 @@
             <Navigation {entries} />
             <div class="col-span-4 p-8 h-screen">
                 <div class="w-full">
+                    <ErrorShow />
                     <Routes {routes} />
                 </div>
             </div>
