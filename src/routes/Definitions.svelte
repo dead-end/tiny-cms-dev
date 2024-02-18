@@ -4,19 +4,17 @@
     import { getDefinitionsListing } from '../ts/github/persistance'
     import { repoConfigStore } from '../ts/stores/repoConfig'
     import { push } from 'svelte-spa-router'
+    import { errorStore } from '../ts/stores/errorStore'
 
     let entries: TEntry[] = []
-
-    let error = ''
 
     const load = async () => {
         const result = await getDefinitionsListing($repoConfigStore)
         if (result.hasError()) {
-            error = result.getError()
+            errorStore.addError(result.getError())
             return
         }
 
-        error = ''
         entries = result.getValue()
     }
 
@@ -24,10 +22,6 @@
         load()
     })
 </script>
-
-{#if error}
-    <p class="bg-red-300">{error}</p>
-{/if}
 
 <h3 class="text-xl pb-6">Definitions</h3>
 <table class="bg-white shadow w-full">

@@ -1,18 +1,47 @@
 <script lang="ts">
     import { onMount } from 'svelte'
-    import { getItemFile, updateItemFile } from '../ts/github/persistance'
+    import {
+        getDefinitionFile,
+        getItemFile,
+        updateItemFile
+    } from '../ts/github/persistance'
     import { repoConfigStore } from '../ts/stores/repoConfig'
-    import type { TCommit, TItem } from '../ts/types'
+    import type { TDefinition, TItem } from '../ts/types'
+    import FormWrapper from '../components/FormWrapper.svelte'
+    import { componentRegistry } from '../ts/components'
+    import { createFormValidator } from '../ts/validation/formValidator'
+    import type { TValidatorFunction } from '../ts/validation/validators'
+    import { errorStore } from '../ts/stores/errorStore'
+    import { defaultString } from '../ts/libs/utils'
 
     export let params = {
         collection: '',
         item: ''
     }
 
-    let commitItem: TCommit<TItem>
-    let error: string
+    let definition: TDefinition
+    let item: TItem
+    let commit: string
 
-    const load = async () => {
+    const formValidators: Record<string, TValidatorFunction[]> = {}
+
+    let { formErrors, validateForm } = createFormValidator(formValidators)
+
+    const loadDefinition = async () => {
+        const result = await getDefinitionFile(
+            $repoConfigStore,
+            params.collection
+        )
+
+        if (result.hasError()) {
+            errorStore.addError(result.getError())
+            return
+        }
+        definition = result.getValue().data
+        console.log('definition', definition)
+    }
+
+    const loadItem = async () => {
         const result = await getItemFile(
             $repoConfigStore,
             params.collection,
@@ -20,49 +49,89 @@
         )
 
         if (result.hasError()) {
-            error = result.getError()
+            errorStore.addError(result.getError())
             return
         }
-        error = ''
-        commitItem = result.getValue()
-        console.log('commitItem', commitItem)
+        commit = result.getValue().commit
+        item = result.getValue().data
+        console.log('item', item, 'commit', commit)
     }
 
-    const update = async () => {
+    const updateItem = async () => {
         const result = await updateItemFile(
             $repoConfigStore,
             params.collection,
             params.item,
-            commitItem.commit,
-            commitItem.data
+            commit,
+            item
         )
 
         if (result.hasError()) {
-            error = result.getError()
+            errorStore.addError(result.getError())
             return
         }
 
-        commitItem = result.getValue()
+        commit = result.getValue().commit
+        item = result.getValue().data
     }
 
-    onMount(load)
+    const submit = (event: Event) => {
+        const formData = new FormData(event.target as HTMLFormElement)
+
+        if (!validateForm(formData)) {
+            formErrors = formErrors
+            return
+        }
+
+        let changed = false
+
+        definition.fields.forEach((field) => {
+            let value = formData.get(field.id)
+            if (item.data[field.id] !== value) {
+                item.data[field.id] = value
+                changed = true
+            }
+        })
+
+        console.log(item.data)
+
+        if (!changed) {
+            errorStore.addError('The item did not changed!')
+            return
+        }
+        updateItem()
+    }
+
+    onMount(() => {
+        loadItem()
+        loadDefinition()
+    })
 </script>
 
-{#if error}
-    <p class="bg-red-300">{error}</p>
-{/if}
+{#if item && definition}
+    <FormWrapper
+        label={`Collection: ${definition.title} Item: ${item.title}`}
+        {submit}
+    >
+        <div class="text-sm text-right text-gray-500 pb-4">
+            <div>
+                Modifield: {new Date(item.modified).toLocaleString()}
+            </div>
+            <div>
+                Commit: {commit.substring(0, 7)}
+            </div>
+        </div>
+        {#each definition.fields as field}
+            <svelte:component
+                this={componentRegistry[field.component]}
+                id={field.id}
+                label={field.label}
+                value={defaultString(item.data[field.id])}
+                error={formErrors[field.id]}
+                {...field.props}
+            />
+        {/each}
+    </FormWrapper>
 
-{#if commitItem}
-    <h1 class="text-xl">{commitItem.data.title}</h1>
-    <h1 class="text-sm">{commitItem.commit}</h1>
-    <ul>
-        <li>Id: {commitItem.data.id}</li>
-        <li>Collection: {params.collection}</li>
-        <li>Modified: {new Date(commitItem.data.modified).toLocaleString()}</li>
-        <li>Title: {commitItem.data.title}</li>
-    </ul>
-    <p>{JSON.stringify(commitItem.data.data)}</p>
-
-    <button on:click={load} class="btn-base">Refresh</button>
-    <button on:click={update} class="btn-base">Update</button>
+    <button on:click={loadItem} class="btn-base">Refresh</button>
 {/if}
