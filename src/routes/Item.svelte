@@ -19,6 +19,7 @@
         item: ''
     }
 
+    let disabled = true
     let definition: TDefinition
     let item: TItem
     let commit: string
@@ -100,6 +101,7 @@
             return
         }
         updateItem()
+        disabled = true
     }
 
     onMount(() => {
@@ -126,15 +128,21 @@
                     label={field.label}
                     value={defaultString(item.data[field.id])}
                     error={formErrors[field.id]}
+                    {disabled}
                     {...field.props}
                 />
             {/each}
 
             <div class="my-4 flex gap-4">
-                <button class="btn-base" type="submit">Submit</button>
-                <button class="btn-base" type="button" on:click={loadItem}
-                    >Refresh</button
-                >
+                {#if disabled}
+                    <button
+                        class="btn-base"
+                        type="button"
+                        on:click={() => (disabled = false)}>Edit</button
+                    >
+                {:else}
+                    <button class="btn-base" type="submit">Submit</button>
+                {/if}
             </div>
         </form>
     </CardWrapper>

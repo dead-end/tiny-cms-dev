@@ -5,6 +5,7 @@
     export let label: string
     export let value: string
     export let error: string
+    export let disabled = false
 
     const onblur = () => {
         if (error) {
@@ -14,5 +15,12 @@
 </script>
 
 <InputWrapper {id} {label} {error}>
-    <textarea {id} name={id} class="input-base mb-2" {value} on:blur={onblur} />
+    <textarea
+        {id}
+        name={id}
+        class="input-base mb-2"
+        {value}
+        on:blur={onblur}
+        {disabled}
+    />
 </InputWrapper>

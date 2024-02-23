@@ -5,6 +5,7 @@
     export let label: string
     export let value: string
     export let error: string
+    export let disabled = false
 
     export let type: 'text' | 'password' | 'date' | 'number' = 'text'
 
@@ -23,5 +24,6 @@
         {type}
         {value}
         on:blur={onblur}
+        {disabled}
     />
 </InputWrapper>
