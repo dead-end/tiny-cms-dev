@@ -1,50 +1,126 @@
 <script lang="ts">
     import { repoConfigStore } from '../ts/stores/repoConfig'
-    import { createFormValidator } from '../ts/validation/formValidator'
+    import { formCreateValidator } from '../ts/validation/formValidator'
     import { replace } from 'svelte-spa-router'
-    import {
-        type TValidatorFunction,
-        validateFieldEquals,
-        validateRequired,
-        validateMin,
-        validateMax
-    } from '../ts/validation/validators'
-    import TextInput from './input/TextInput.svelte'
     import { formDataStrValue } from '../ts/libs/utils'
     import CardWrapper from './CardWrapper.svelte'
+    import type { TField } from '../ts/types'
+    import InputFields from './InputFields.svelte'
+    import ButtonWrapper from './ButtonWrapper.svelte'
 
-    let owner = ''
-    let name = ''
-    let branch = 'main'
-    let prefix = ''
-    let token = ''
-    let password = ''
-    let confirm = ''
+    const fieldsDefault = (fields: TField[]) => {
+        const result: Record<string, any> = {}
+        fields.forEach((field) => (result[field.id] = field.value))
+        return result
+    }
 
-    const formValidators = new Map<string, TValidatorFunction[]>()
-    formValidators.set('owner', [validateRequired()])
-    formValidators.set('name', [validateRequired()])
-    formValidators.set('branch', [validateRequired()])
-    formValidators.set('token', [validateRequired()])
-    formValidators.set('password', [
-        validateRequired(),
-        validateMin({ min: 5 }),
-        validateMax({ max: 15 })
-    ])
-    formValidators.set('confirm', [
-        validateRequired(),
-        validateFieldEquals({
-            field: 'password',
-            msg: 'Password do not match!'
-        })
-    ])
+    const fields: TField[] = [
+        {
+            id: 'owner',
+            label: 'Repository Owner',
+            component: 'text',
+            value: '',
+            validators: [
+                {
+                    validator: 'required'
+                }
+            ]
+        },
+        {
+            id: 'name',
+            label: 'Repository Name',
+            component: 'text',
+            value: '',
+            validators: [
+                {
+                    validator: 'required'
+                }
+            ]
+        },
+        {
+            id: 'branch',
+            label: 'Branch',
+            component: 'text',
+            value: 'main',
+            validators: [
+                {
+                    validator: 'required'
+                }
+            ]
+        },
+        {
+            id: 'prefix',
+            label: 'Prefix',
+            component: 'text',
+            value: '',
+            validators: []
+        },
+        {
+            id: 'token',
+            label: 'Token',
+            component: 'text',
+            type: 'password',
+            value: '',
+            validators: [
+                {
+                    validator: 'required'
+                }
+            ]
+        },
+        {
+            id: 'password',
+            label: 'Password',
+            component: 'text',
+            type: 'password',
+            value: '',
+            validators: [
+                {
+                    validator: 'required'
+                },
+                {
+                    validator: 'min',
+                    props: {
+                        min: 5
+                    }
+                },
+                {
+                    validator: 'max',
+                    props: {
+                        max: 15
+                    }
+                }
+            ]
+        },
+        {
+            id: 'confirm',
+            label: 'Confirm',
+            component: 'text',
+            type: 'password',
+            value: '',
+            validators: [
+                {
+                    validator: 'required'
+                },
+                {
+                    validator: 'fieldEquals',
+                    props: {
+                        field: 'password',
+                        msg: 'Password do not match!'
+                    }
+                }
+            ]
+        }
+    ]
 
-    let { formErrors, validateForm } = createFormValidator(formValidators)
+    const data = fieldsDefault(fields)
+
+    let { formErrors, formValidate, formFieldsUpdate } = formCreateValidator()
+    formFieldsUpdate(fields)
 
     const submit = (event: Event) => {
         const formData = new FormData(event.target as HTMLFormElement)
 
-        if (!validateForm(formData)) {
+        if (!formValidate(formData)) {
             formErrors = formErrors
             return
         }
@@ -67,63 +143,10 @@
 <div class="w-full max-w-xs m-auto">
     <CardWrapper label="Login">
         <form on:submit|preventDefault={submit}>
-            <TextInput
-                label="Repository Owner"
-                id="owner"
-                value={owner}
-                error={formErrors.get('owner')}
-                type="text"
-            />
-
-            <TextInput
-                label="Repository Name"
-                id="name"
-                value={name}
-                error={formErrors.get('name')}
-                type="text"
-            />
-
-            <TextInput
-                label="Branch"
-                id="branch"
-                value={branch}
-                error={formErrors.get('branch')}
-                type="text"
-            />
-
-            <TextInput
-                label="Prefix"
-                id="prefix"
-                value={prefix}
-                error={formErrors.get('prefix')}
-                type="text"
-            />
-
-            <TextInput
-                label="Token"
-                id="token"
-                value={token}
-                error={formErrors.get('token')}
-                type="password"
-            />
-
-            <TextInput
-                label="Password"
-                id="password"
-                value={password}
-                error={formErrors.get('password')}
-                type="password"
-            />
-
-            <TextInput
-                label="Confirmation"
-                id="confirm"
-                value={confirm}
-                error={formErrors.get('confirm')}
-                type="password"
-            />
-
-            <button class="btn-base my-4" type="submit">Submit</button>
+            <InputFields {fields} {data} {formErrors} disabled={false} />
+            <ButtonWrapper>
+                <button class="btn-base" type="submit">Submit</button>
+            </ButtonWrapper>
         </form>
     </CardWrapper>
 </div>

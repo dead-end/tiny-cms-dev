@@ -7,14 +7,11 @@
     } from '../ts/github/persistance'
     import { repoConfigStore } from '../ts/stores/repoConfig'
     import type { TDefinition, TItem } from '../ts/types'
-    import {
-        createFormValidator,
-        updateFormValidator
-    } from '../ts/validation/formValidator'
-    import { type TValidatorFunction } from '../ts/validation/validators'
+    import { formCreateValidator } from '../ts/validation/formValidator'
     import { errorStore } from '../ts/stores/errorStore'
     import CardWrapper from '../components/CardWrapper.svelte'
     import InputFields from '../components/InputFields.svelte'
+    import ButtonWrapper from '../components/ButtonWrapper.svelte'
 
     export let params = {
         collection: '',
@@ -26,8 +23,7 @@
     let item: TItem
     let commit: string
 
-    const formValidators = new Map<string, TValidatorFunction[]>()
-    let { formErrors, validateForm } = createFormValidator(formValidators)
+    let { formErrors, formValidate, formFieldsUpdate } = formCreateValidator()
 
     const loadDefinition = async () => {
         const result = await getDefinitionFile(
@@ -41,7 +37,7 @@
         }
         definition = result.getValue().data
 
-        updateFormValidator(formValidators, definition.fields)
+        formFieldsUpdate(definition.fields)
     }
 
     const loadItem = async () => {
@@ -81,7 +77,7 @@
     const submit = (event: Event) => {
         const formData = new FormData(event.target as HTMLFormElement)
 
-        if (!validateForm(formData)) {
+        if (!formValidate(formData)) {
             formErrors = formErrors
             return
         }
@@ -131,7 +127,7 @@
                 {disabled}
             />
 
-            <div class="my-4 flex gap-4">
+            <ButtonWrapper>
                 {#if disabled}
                     <button
                         class="btn-base"
@@ -140,8 +136,13 @@
                     >
                 {:else}
                     <button class="btn-base" type="submit">Submit</button>
+                    <button
+                        class="btn-base"
+                        type="button"
+                        on:click={() => (disabled = true)}>Cancel</button
+                    >
                 {/if}
-            </div>
+            </ButtonWrapper>
         </form>
     </CardWrapper>
 {/if}

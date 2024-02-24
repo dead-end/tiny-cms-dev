@@ -1,10 +1,6 @@
 <script lang="ts">
     import { componentRegistry } from '../ts/components'
-    import {
-        createFormValidator,
-        updateFormValidator
-    } from '../ts/validation/formValidator'
-    import { type TValidatorFunction } from '../ts/validation/validators'
+    import { formCreateValidator } from '../ts/validation/formValidator'
     import type { TDefinition } from '../ts/types'
     import CardWrapper from '../components/CardWrapper.svelte'
 
@@ -63,13 +59,13 @@
 
     let data: Record<string, any> = {}
 
-    const formValidators = new Map<string, TValidatorFunction[]>()
-    let { formErrors, validateForm } = createFormValidator(formValidators)
+    let { formErrors, formValidate, formFieldsUpdate } = formCreateValidator()
+    formFieldsUpdate(defintion.fields)
 
     const submit = (event: Event) => {
         const formData = new FormData(event.target as HTMLFormElement)
 
-        if (!validateForm(formData)) {
+        if (!formValidate(formData)) {
             formErrors = formErrors
             return
         }
@@ -80,8 +76,6 @@
 
         console.log(data)
     }
-
-    updateFormValidator(formValidators, defintion.fields)
 </script>
 
 <CardWrapper label={defintion.title}>

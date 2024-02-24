@@ -1,9 +1,8 @@
 import type { TField } from '../types'
 import { validatorRegistry, type TValidatorFunction } from './validators'
 
-export const createFormValidator = (
-    formValidators: Map<string, TValidatorFunction[]>
-) => {
+export const formCreateValidator = () => {
+    let formValidators = new Map<string, TValidatorFunction[]>()
     let formErrors = new Map<string, string>()
 
     /**
@@ -32,7 +31,7 @@ export const createFormValidator = (
      * The function is calles with the form data and starts all registered validator
      * functions. It returns ok if all validators return ok.
      */
-    const validateForm = (formData: FormData) => {
+    const formValidate = (formData: FormData) => {
         let ok = true
         formValidators.forEach((validatorFunctions, field) => {
             if (!validateField(formData, field, validatorFunctions)) {
@@ -42,27 +41,24 @@ export const createFormValidator = (
         return ok
     }
 
-    return { formErrors, validateForm }
-}
+    /**
+     * Update the form validators map with the fields.
+     */
+    const formFieldsUpdate = (fields: TField[]) => {
+        formValidators.clear()
 
-/**
- * Update the form validators map with the fields.
- */
-export const updateFormValidator = (
-    formValidators: Map<string, TValidatorFunction[]>,
-    fields: TField[]
-) => {
-    formValidators.clear()
+        fields.forEach((field) => {
+            const validatorFunctions: TValidatorFunction[] = []
 
-    fields.forEach((field) => {
-        const validatorFunctions: TValidatorFunction[] = []
+            field.validators.forEach((validator) => {
+                validatorFunctions.push(
+                    validatorRegistry[validator.validator](validator.props)
+                )
+            })
 
-        field.validators.forEach((validator) => {
-            validatorFunctions.push(
-                validatorRegistry[validator.validator](validator.props)
-            )
+            formValidators.set(field.id, validatorFunctions)
         })
+    }
 
-        formValidators.set(field.id, validatorFunctions)
-    })
+    return { formErrors, formValidate, formFieldsUpdate }
 }
