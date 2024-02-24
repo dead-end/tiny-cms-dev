@@ -1,7 +1,8 @@
-import type { TValidatorFunction } from './validators'
+import type { TField } from '../types'
+import { validatorRegistry, type TValidatorFunction } from './validators'
 
 export const createFormValidator = (
-    formValidators: Record<string, TValidatorFunction[]>
+    formValidators: Map<string, TValidatorFunction[]>
 ) => {
     let formErrors: Record<string, string> = {}
 
@@ -20,6 +21,7 @@ export const createFormValidator = (
             const msg = validator(formData.get(field), formData)
             if (msg) {
                 formErrors[field] = msg
+                console.log('Form Error:', msg)
                 return false
             }
         }
@@ -32,13 +34,35 @@ export const createFormValidator = (
      */
     const validateForm = (formData: FormData) => {
         let ok = true
-        for (const field in formValidators) {
-            if (!validateField(formData, field, formValidators[field])) {
+        formValidators.forEach((validatorFunctions, field) => {
+            if (!validateField(formData, field, validatorFunctions)) {
                 ok = false
             }
-        }
+        })
         return ok
     }
 
     return { formErrors, validateForm }
+}
+
+/**
+ * Update the form validators map with the fields.
+ */
+export const updateFormValidator = (
+    formValidators: Map<string, TValidatorFunction[]>,
+    fields: TField[]
+) => {
+    formValidators.clear()
+
+    fields.forEach((field) => {
+        const validatorFunctions: TValidatorFunction[] = []
+
+        field.validators.forEach((validator) => {
+            validatorFunctions.push(
+                validatorRegistry[validator.validator](validator.props)
+            )
+        })
+
+        formValidators.set(field.id, validatorFunctions)
+    })
 }
