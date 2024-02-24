@@ -41,8 +41,7 @@
                 formDataStrValue(formData.get('password'))
             )
         } catch (e) {
-            formErrors.set('password', 'Unable to login!')
-            console.log('Unable to login!', e)
+            formErrors = formErrors.set('password', 'Unable to login!')
         }
     }
 </script>
