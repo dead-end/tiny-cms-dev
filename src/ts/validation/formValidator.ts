@@ -4,7 +4,7 @@ import { validatorRegistry, type TValidatorFunction } from './validators'
 export const createFormValidator = (
     formValidators: Map<string, TValidatorFunction[]>
 ) => {
-    let formErrors: Record<string, string> = {}
+    let formErrors = new Map<string, string>()
 
     /**
      * The function validates the value of a field, by calling all validators of the
@@ -15,12 +15,12 @@ export const createFormValidator = (
         field: string,
         fieldValidators: TValidatorFunction[]
     ) => {
-        formErrors[field] = ''
+        formErrors.set(field, '')
 
         for (const validator of fieldValidators) {
             const msg = validator(formData.get(field), formData)
             if (msg) {
-                formErrors[field] = msg
+                formErrors.set(field, msg)
                 console.log('Form Error:', msg)
                 return false
             }
