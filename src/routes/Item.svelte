@@ -8,11 +8,15 @@
     import { repoConfigStore } from '../ts/stores/repoConfig'
     import type { TDefinition, TItem } from '../ts/types'
     import { componentRegistry } from '../ts/components'
-    import { createFormValidator } from '../ts/validation/formValidator'
-    import type { TValidatorFunction } from '../ts/validation/validators'
+    import {
+        createFormValidator,
+        updateFormValidator
+    } from '../ts/validation/formValidator'
+    import { type TValidatorFunction } from '../ts/validation/validators'
     import { errorStore } from '../ts/stores/errorStore'
     import { defaultString } from '../ts/libs/utils'
     import CardWrapper from '../components/CardWrapper.svelte'
+    import InputFields from '../components/InputFields.svelte'
 
     export let params = {
         collection: '',
@@ -24,9 +28,10 @@
     let item: TItem
     let commit: string
 
-    const formValidators: Record<string, TValidatorFunction[]> = {}
+    const formValidators = new Map<string, TValidatorFunction[]>()
 
     let { formErrors, validateForm } = createFormValidator(formValidators)
+    console.log('formErrors', formErrors, 'validateForm', validateForm)
 
     const loadDefinition = async () => {
         const result = await getDefinitionFile(
@@ -39,7 +44,8 @@
             return
         }
         definition = result.getValue().data
-        console.log('definition', definition)
+
+        updateFormValidator(formValidators, definition.fields)
     }
 
     const loadItem = async () => {
@@ -121,13 +127,21 @@
                     Commit: {commit.substring(0, 7)}
                 </div>
             </div>
+            <!--
+            <InputFields
+                fields={definition.fields}
+                data={item.data}
+                {formErrors}
+                {disabled}
+            />
+-->
             {#each definition.fields as field}
                 <svelte:component
                     this={componentRegistry[field.component]}
                     id={field.id}
                     label={field.label}
                     value={defaultString(item.data[field.id])}
-                    error={formErrors[field.id]}
+                    error={formErrors.get(field.id)}
                     {disabled}
                     {...field.props}
                 />

@@ -21,24 +21,23 @@
     let password = ''
     let confirm = ''
 
-    const formValidators: Record<string, TValidatorFunction[]> = {
-        owner: [validateRequired()],
-        name: [validateRequired()],
-        branch: [validateRequired()],
-        token: [validateRequired()],
-        password: [
-            validateRequired(),
-            validateMin({ min: 5 }),
-            validateMax({ max: 15 })
-        ],
-        confirm: [
-            validateRequired(),
-            validateFieldEquals({
-                field: 'password',
-                msg: 'Password do not match!'
-            })
-        ]
-    }
+    const formValidators = new Map<string, TValidatorFunction[]>()
+    formValidators.set('owner', [validateRequired()])
+    formValidators.set('name', [validateRequired()])
+    formValidators.set('branch', [validateRequired()])
+    formValidators.set('token', [validateRequired()])
+    formValidators.set('password', [
+        validateRequired(),
+        validateMin({ min: 5 }),
+        validateMax({ max: 15 })
+    ])
+    formValidators.set('confirm', [
+        validateRequired(),
+        validateFieldEquals({
+            field: 'password',
+            msg: 'Password do not match!'
+        })
+    ])
 
     let { formErrors, validateForm } = createFormValidator(formValidators)
 
@@ -72,7 +71,7 @@
                 label="Repository Owner"
                 id="owner"
                 value={owner}
-                error={formErrors['owner']}
+                error={formErrors.get('owner')}
                 type="text"
             />
 
@@ -80,7 +79,7 @@
                 label="Repository Name"
                 id="name"
                 value={name}
-                error={formErrors['name']}
+                error={formErrors.get('name')}
                 type="text"
             />
 
@@ -88,7 +87,7 @@
                 label="Branch"
                 id="branch"
                 value={branch}
-                error={formErrors['branch']}
+                error={formErrors.get('branch')}
                 type="text"
             />
 
@@ -96,7 +95,7 @@
                 label="Prefix"
                 id="prefix"
                 value={prefix}
-                error={formErrors['prefix']}
+                error={formErrors.get('prefix')}
                 type="text"
             />
 
@@ -104,7 +103,7 @@
                 label="Token"
                 id="token"
                 value={token}
-                error={formErrors['token']}
+                error={formErrors.get('token')}
                 type="password"
             />
 
@@ -112,7 +111,7 @@
                 label="Password"
                 id="password"
                 value={password}
-                error={formErrors['password']}
+                error={formErrors.get('password')}
                 type="password"
             />
 
@@ -120,7 +119,7 @@
                 label="Confirmation"
                 id="confirm"
                 value={confirm}
-                error={formErrors['confirm']}
+                error={formErrors.get('confirm')}
                 type="password"
             />
 

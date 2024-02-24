@@ -1,6 +1,9 @@
 <script lang="ts">
     import { componentRegistry } from '../ts/components'
-    import { createFormValidator } from '../ts/validation/formValidator'
+    import {
+        createFormValidator,
+        updateFormValidator
+    } from '../ts/validation/formValidator'
     import {
         validatorRegistry,
         type TValidatorFunction
@@ -61,19 +64,9 @@
         ]
     }
 
-    /*
-    let data: Record<string, any> = {
-        label: 'My Label',
-        text: 'My Text',
-        date: '2024-01-27',
-        number: 10
-    }
-    */
-
     let data: Record<string, any> = {}
 
-    const formValidators: Record<string, TValidatorFunction[]> = {}
-
+    const formValidators = new Map<string, TValidatorFunction[]>()
     let { formErrors, validateForm } = createFormValidator(formValidators)
 
     const submit = (event: Event) => {
@@ -91,28 +84,7 @@
         console.log(data)
     }
 
-    defintion.fields.forEach((field) => {
-        /*
-        if (typeof data[field.id] === 'undefined') {
-            if (typeof field.value === 'undefined') {
-                data[field.id] = ''
-            } else {
-                data[field.id] = field?.value
-            }
-        }*/
-
-        formValidators[field.id] = []
-
-        field.validators.forEach((validator) => {
-            try {
-                formValidators[field.id].push(
-                    validatorRegistry[validator.validator](validator.props)
-                )
-            } catch (e) {
-                console.log('Field:', field.id, e)
-            }
-        })
-    })
+    updateFormValidator(formValidators, defintion.fields)
 </script>
 
 <CardWrapper label={defintion.title}>
@@ -125,7 +97,7 @@
                 value={typeof data[field.id] === 'undefined'
                     ? ''
                     : data[field.id]}
-                error={formErrors[field.id]}
+                error={formErrors.get(field.id)}
                 {...field.props}
             />
         {/each}
