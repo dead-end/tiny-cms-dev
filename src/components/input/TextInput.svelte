@@ -4,7 +4,7 @@
     export let id: string
     export let label: string
     export let value: string
-    export let error: string
+    export let error: string | undefined
     export let disabled = false
 
     export let type: 'text' | 'password' | 'date' | 'number' = 'text'

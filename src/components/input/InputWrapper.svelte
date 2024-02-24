@@ -1,7 +1,7 @@
 <script lang="ts">
     export let id: string
     export let label: string
-    export let error: string
+    export let error: string | undefined
 </script>
 
 <div>
