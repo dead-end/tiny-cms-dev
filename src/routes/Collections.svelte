@@ -4,10 +4,7 @@
         createFormValidator,
         updateFormValidator
     } from '../ts/validation/formValidator'
-    import {
-        validatorRegistry,
-        type TValidatorFunction
-    } from '../ts/validation/validators'
+    import { type TValidatorFunction } from '../ts/validation/validators'
     import type { TDefinition } from '../ts/types'
     import CardWrapper from '../components/CardWrapper.svelte'
 

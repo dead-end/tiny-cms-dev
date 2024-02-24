@@ -7,14 +7,12 @@
     } from '../ts/github/persistance'
     import { repoConfigStore } from '../ts/stores/repoConfig'
     import type { TDefinition, TItem } from '../ts/types'
-    import { componentRegistry } from '../ts/components'
     import {
         createFormValidator,
         updateFormValidator
     } from '../ts/validation/formValidator'
     import { type TValidatorFunction } from '../ts/validation/validators'
     import { errorStore } from '../ts/stores/errorStore'
-    import { defaultString } from '../ts/libs/utils'
     import CardWrapper from '../components/CardWrapper.svelte'
     import InputFields from '../components/InputFields.svelte'
 
@@ -29,9 +27,7 @@
     let commit: string
 
     const formValidators = new Map<string, TValidatorFunction[]>()
-
     let { formErrors, validateForm } = createFormValidator(formValidators)
-    console.log('formErrors', formErrors, 'validateForm', validateForm)
 
     const loadDefinition = async () => {
         const result = await getDefinitionFile(
@@ -127,25 +123,13 @@
                     Commit: {commit.substring(0, 7)}
                 </div>
             </div>
-            <!--
+
             <InputFields
                 fields={definition.fields}
                 data={item.data}
                 {formErrors}
                 {disabled}
             />
--->
-            {#each definition.fields as field}
-                <svelte:component
-                    this={componentRegistry[field.component]}
-                    id={field.id}
-                    label={field.label}
-                    value={defaultString(item.data[field.id])}
-                    error={formErrors.get(field.id)}
-                    {disabled}
-                    {...field.props}
-                />
-            {/each}
 
             <div class="my-4 flex gap-4">
                 {#if disabled}

@@ -7,6 +7,7 @@ export type TField = {
     id: string
     label: string
     component: string
+    type?: string
     value?: string
     props?: Record<string, any>
     validators: TValidatorDefinition[]
