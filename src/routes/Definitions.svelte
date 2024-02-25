@@ -42,7 +42,7 @@
                 <td class="tb-cell"
                     ><button
                         class="btn-base"
-                        on:click={() => push('#/collections/' + item.tc_id)}
+                        on:click={() => push('#/collection/' + item.tc_id)}
                         >Show</button
                     ></td
                 >

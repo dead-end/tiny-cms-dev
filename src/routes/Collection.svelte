@@ -4,6 +4,7 @@
     import { getCollectionListing } from '../ts/github/persistance'
     import { repoConfigStore } from '../ts/stores/repoConfig'
     import { push } from 'svelte-spa-router'
+    import ButtonWrapper from '../components/ButtonWrapper.svelte'
 
     export let params = {
         collection: ''
@@ -55,10 +56,17 @@
                     class="btn-base"
                     on:click={() =>
                         push(
-                            `#/collections/${params.collection}/${item.tc_id}`
+                            `#/collection/${params.collection}/item/${item.tc_id}`
                         )}>Show</button
                 ></td
             >
         </tr>
     {/each}
 </table>
+<ButtonWrapper>
+    <button
+        class="btn-base"
+        on:click={() => push(`#/collection/${params.collection}/create`)}
+        >Create</button
+    >
+</ButtonWrapper>
