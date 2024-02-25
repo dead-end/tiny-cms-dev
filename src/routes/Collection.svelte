@@ -45,17 +45,18 @@
     </tr>
     {#each entries as item}
         <tr class="tb-row">
-            <td class="tb-cell">{item.id}</td>
-            <td class="tb-cell">{item.title}</td>
+            <td class="tb-cell">{item.tc_id}</td>
+            <td class="tb-cell">{item.tc_title}</td>
             <td class="tb-cell"
-                >{new Date(item.modified).toLocaleDateString()}</td
+                >{new Date(item.tc_modified).toLocaleDateString()}</td
             >
             <td class="tb-cell"
                 ><button
                     class="btn-base"
                     on:click={() =>
-                        push(`#/collections/${params.collection}/${item.id}`)}
-                    >Show</button
+                        push(
+                            `#/collections/${params.collection}/${item.tc_id}`
+                        )}>Show</button
                 ></td
             >
         </tr>

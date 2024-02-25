@@ -5,9 +5,9 @@
     import CardWrapper from '../components/CardWrapper.svelte'
 
     const defintion: TDefinition = {
-        id: 'search-engine',
-        title: 'Search Engine',
-        modified: new Date().getTime(),
+        tc_id: 'search-engine',
+        tc_title: 'Search Engine',
+        tc_modified: new Date().getTime(),
         fields: [
             {
                 id: 'label',
@@ -78,7 +78,7 @@
     }
 </script>
 
-<CardWrapper label={defintion.title}>
+<CardWrapper label={defintion.tc_title}>
     <form on:submit|preventDefault={submit}>
         {#each defintion.fields as field}
             <svelte:component

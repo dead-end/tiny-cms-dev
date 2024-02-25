@@ -53,9 +53,9 @@ export type TCheckFile = {
  * definition or a collection item. The type is used for tables.
  */
 export type TEntry = {
-    id: string
-    title: string
-    modified: number
+    tc_id: string
+    tc_title: string
+    tc_modified: number
 }
 
 /**

@@ -49,7 +49,12 @@
 <div class="w-full max-w-xs m-auto">
     <CardWrapper label="Login">
         <form on:submit|preventDefault={submit}>
-            <InputFields {fields} {data} {formErrors} disabled={false} />
+            <InputFields
+                {fields}
+                {data}
+                {formErrors}
+                disableFct={() => false}
+            />
             <ButtonWrapper>
                 <button
                     type="button"
