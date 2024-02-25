@@ -6,7 +6,7 @@
     export let field: TField
     export let data: Record<string, any>
     export let formErrors: Map<string, string>
-    export let disableFct: (id: string) => boolean
+    export let disabled: boolean
 
     let type = field.type ? { type: field.type } : {}
 </script>
@@ -18,6 +18,6 @@
     value={defaultString(data[field.id])}
     error={formErrors.get(field.id)}
     {...type}
-    disabled={disableFct(field.id)}
+    {disabled}
     {...field.props}
 />
