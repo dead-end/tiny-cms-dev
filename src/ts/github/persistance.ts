@@ -9,6 +9,7 @@ import type {
     TListing
 } from '../types'
 import { cacheGet, cacheSet } from './cache'
+import { ghGetCommit } from './ghGetCommit'
 import { ghCheckFile, ghGetFile } from './ghGetFile'
 import { ghGetFiles } from './ghGetFiles'
 import { ghGetListing } from './ghGetListing'
@@ -217,6 +218,10 @@ export const updateItemFile = async (
 ) => {
     const res = new Result<TCommit<TItem>>()
 
+    if (!collection || !item || !commit || !data) {
+        return res.failed('updateItemFile - Insufficient parameter')
+    }
+
     const path = getItemPath(config, collection, item)
     const resultUpdate = await ghUpdateContent(config, path, commit, data)
 
@@ -232,4 +237,8 @@ export const updateItemFile = async (
         commit: resultUpdate.getValue().commit,
         data: JSON.parse(resultUpdate.getValue().data.text)
     })
+}
+
+export const getLastCommit = async (config: TRepoConfig) => {
+    return ghGetCommit(config)
 }

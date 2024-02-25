@@ -67,7 +67,7 @@ export const ghUpdateContent = async (
 ) => {
     const res = new Result<TCommit<TFile>>()
     try {
-        entry.modified = new Date().getTime()
+        entry.tc_modified = new Date().getTime()
         const content = JSON.stringify(entry)
         const result = await processQuery(
             repoConfig.token,

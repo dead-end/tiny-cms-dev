@@ -62,7 +62,7 @@ export type TEntry = {
  * Definition of an item in a collection.
  */
 export type TItem = TEntry & {
-    data: any
+    data: Record<string, any>
 }
 
 /**
