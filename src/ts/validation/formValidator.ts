@@ -62,3 +62,19 @@ export const formCreateValidator = () => {
 
     return { formErrors, formValidate, formFieldsUpdate }
 }
+
+export const formDataChanged = (
+    fields: TField[],
+    formData: FormData,
+    data: Record<string, any>
+) => {
+    let changed = false
+
+    fields.forEach((field) => {
+        if (data[field.id] !== formData.get(field.id)) {
+            changed = true
+        }
+    })
+
+    return changed
+}

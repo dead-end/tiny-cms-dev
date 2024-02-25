@@ -3,33 +3,39 @@
     import {
         getDefinitionFile,
         getItemFile,
+        getLastCommit,
         updateItemFile
     } from '../ts/github/persistance'
     import { repoConfigStore } from '../ts/stores/repoConfig'
-    import type { TDefinition, TItem } from '../ts/types'
-    import { formCreateValidator } from '../ts/validation/formValidator'
+    import type { TDefinition, TField, TItem } from '../ts/types'
+    import {
+        formCreateValidator,
+        formDataChanged
+    } from '../ts/validation/formValidator'
     import { errorStore } from '../ts/stores/errorStore'
     import CardWrapper from '../components/CardWrapper.svelte'
     import InputFields from '../components/InputFields.svelte'
     import ButtonWrapper from '../components/ButtonWrapper.svelte'
+    import { location, push } from 'svelte-spa-router'
+    import { itemFromFormData, item2Data, item2Meta } from '../ts/item'
 
     export let params = {
         collection: '',
         item: ''
     }
 
-    let disabled = true
-    let disableFct: (id: string) => boolean
-    $: disableFct = disabled
-        ? (id: string) => true
-        : (id: string) => id === 'tc_id'
+    let isCreate: boolean = $location.endsWith(
+        `/collection/${params.collection}/create`
+    )
+    let disabled = !isCreate
 
     let definition: TDefinition
     let item: TItem
     let commit: string
 
-    const metaFields = [
-        {
+    const metaFields: TField[] = []
+    if (isCreate) {
+        metaFields.push({
             id: 'tc_id',
             component: 'text',
             label: 'Id',
@@ -44,48 +50,136 @@
                     }
                 }
             ]
-        },
-        {
-            id: 'tc_title',
-            component: 'text',
-            label: 'Title',
-            validators: [
-                {
-                    validator: 'required'
-                },
-                {
-                    validator: 'max',
-                    props: {
-                        max: 32
-                    }
+        })
+    }
+    metaFields.push({
+        id: 'tc_title',
+        component: 'text',
+        label: 'Title',
+        validators: [
+            {
+                validator: 'required'
+            },
+            {
+                validator: 'max',
+                props: {
+                    max: 32
                 }
-            ]
-        }
-    ]
+            }
+        ]
+    })
 
     let {
         formErrors: formErrorsMeta,
         formValidate: formValidateMeta,
         formFieldsUpdate: formFieldsUpdateMeta
     } = formCreateValidator()
-    formFieldsUpdateMeta(metaFields)
     let metaData: Record<string, string> = {}
 
-    let { formErrors, formValidate, formFieldsUpdate } = formCreateValidator()
+    let {
+        formErrors: formErrorsData,
+        formValidate: formValidateData,
+        formFieldsUpdate: formFieldsUpdateData
+    } = formCreateValidator()
+    let itemData: Record<string, string> = {}
 
-    const loadDefinition = async () => {
-        const result = await getDefinitionFile(
+    const updateItem = async (updatedItem: TItem) => {
+        const result = await updateItemFile(
             $repoConfigStore,
-            params.collection
+            params.collection,
+            updatedItem.tc_id,
+            commit,
+            updatedItem
         )
 
         if (result.hasError()) {
             errorStore.set(result.getError())
+            return false
+        }
+
+        commit = result.getValue().commit
+        item = result.getValue().data
+        return true
+    }
+
+    const submit = async (event: Event) => {
+        const formData = new FormData(event.target as HTMLFormElement)
+
+        //
+        // Check errors
+        //
+        let hasError = false
+
+        if (!formValidateMeta(formData)) {
+            formErrorsMeta = formErrorsMeta
+            hasError = true
+        }
+
+        if (!formValidateData(formData)) {
+            formErrorsData = formErrorsData
+            hasError = true
+        }
+
+        if (hasError) {
             return
         }
-        definition = result.getValue().data
 
-        formFieldsUpdate(definition.fields)
+        //
+        // Check changed
+        //
+        const changedData = formDataChanged(
+            definition.fields,
+            formData,
+            itemData
+        )
+        const changedMeta = formDataChanged(metaFields, formData, metaData)
+
+        if (!changedData && !changedMeta) {
+            errorStore.set('The item did not changed!')
+            return
+        }
+
+        //
+        // Update
+        //
+        const result = itemFromFormData(
+            item,
+            isCreate,
+            formData,
+            definition.fields
+        )
+        if (result.hasError()) {
+            errorStore.set(result.getError())
+            return
+        }
+
+        if (!(await updateItem(result.getValue()))) {
+            return
+        }
+
+        //
+        // After update
+        //
+        if (isCreate) {
+            push(`#/collection/${params.collection}`)
+            return
+        }
+        disabled = true
+    }
+
+    const initItem = (definition: TDefinition) => {
+        const newItem: TItem = {
+            tc_id: '',
+            tc_title: '',
+            tc_modified: 0,
+            data: {}
+        }
+
+        definition.fields.forEach((field) => {
+            newItem.data[field.id] = field.value
+        })
+
+        item = newItem
     }
 
     const loadItem = async () => {
@@ -101,61 +195,47 @@
         }
         commit = result.getValue().commit
         item = result.getValue().data
-        console.log('item', item, 'commit', commit)
-
-        metaData['tc_id'] = item.tc_id
-        metaData['tc_title'] = item.tc_title
     }
 
-    const updateItem = async () => {
-        const result = await updateItemFile(
+    const loadDefinition = async () => {
+        const result = await getDefinitionFile(
             $repoConfigStore,
-            params.collection,
-            params.item,
-            commit,
-            item
+            params.collection
         )
 
         if (result.hasError()) {
             errorStore.set(result.getError())
             return
         }
-
-        commit = result.getValue().commit
-        item = result.getValue().data
+        definition = result.getValue().data
     }
 
-    const submit = (event: Event) => {
-        const formData = new FormData(event.target as HTMLFormElement)
+    const loadCommit = async () => {
+        const result = await getLastCommit($repoConfigStore)
 
-        if (!formValidate(formData)) {
-            formErrors = formErrors
+        if (result.hasError()) {
+            errorStore.set(result.getError())
             return
         }
 
-        let changed = false
-
-        definition.fields.forEach((field) => {
-            let value = formData.get(field.id)
-            if (item.data[field.id] !== value) {
-                item.data[field.id] = value
-                changed = true
-            }
-        })
-
-        console.log(item.data)
-
-        if (!changed) {
-            errorStore.set('The item did not changed!')
-            return
-        }
-        updateItem()
-        disabled = true
+        commit = result.getValue()
     }
 
-    onMount(() => {
-        loadItem()
-        loadDefinition()
+    onMount(async () => {
+        await loadDefinition()
+
+        if (isCreate) {
+            initItem(definition)
+            await loadCommit()
+        } else {
+            await loadItem()
+        }
+
+        formFieldsUpdateData(definition.fields)
+        formFieldsUpdateMeta(metaFields)
+
+        metaData = item2Meta(isCreate, item, metaData)
+        itemData = item2Data(item, itemData)
     })
 </script>
 
@@ -164,27 +244,31 @@
         label={`Collection: ${definition.tc_title} Item: ${item.tc_title}`}
     >
         <form on:submit|preventDefault={submit}>
-            <div class="text-sm text-right text-gray-500 pb-4">
-                <div>
-                    Modifield: {new Date(item.tc_modified).toLocaleString()}
+            {#if !isCreate}
+                <div class="text-sm text-right text-gray-500 pb-4">
+                    <div>
+                        Modifield: {new Date(item.tc_modified).toLocaleString()}
+                    </div>
+                    <div>
+                        Commit: {commit.substring(0, 7)}
+                    </div>
                 </div>
-                <div>
-                    Commit: {commit.substring(0, 7)}
-                </div>
-            </div>
+
+                <h3 class="pb-4">ID: {item.tc_id}</h3>
+            {/if}
 
             <InputFields
                 fields={metaFields}
                 data={metaData}
                 formErrors={formErrorsMeta}
-                {disableFct}
+                {disabled}
             />
 
             <InputFields
                 fields={definition.fields}
-                data={item.data}
-                {formErrors}
-                {disableFct}
+                data={itemData}
+                formErrors={formErrorsData}
+                {disabled}
             />
 
             <ButtonWrapper>
@@ -202,6 +286,12 @@
                         on:click={() => (disabled = true)}>Cancel</button
                     >
                 {/if}
+                <button
+                    class="btn-base"
+                    type="button"
+                    on:click={() => push(`#/collection/${params.collection}`)}
+                    >Collection</button
+                >
             </ButtonWrapper>
         </form>
     </CardWrapper>
