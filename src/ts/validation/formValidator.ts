@@ -72,11 +72,11 @@ export const formDataChanged = (
     formData: FormData,
     data: TData
 ) => {
-    fields.forEach((field) => {
+    for (const field of fields) {
         if (data[field.id] !== formData.get(field.id)) {
             return true
         }
-    })
+    }
 
     return false
 }
