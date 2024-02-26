@@ -8,7 +8,8 @@ import type {
     TItem,
     TListing
 } from '../types'
-import { cacheGet, cacheSet } from './cache'
+import { cacheGet, cacheRemove, cacheSet } from './cache'
+import { ghDeleteFile } from './ghDeleteFile'
 import { ghGetCommit } from './ghGetCommit'
 import { ghCheckFile, ghGetFile } from './ghGetFile'
 import { ghGetFiles } from './ghGetFiles'
@@ -241,4 +242,30 @@ export const updateItemFile = async (
 
 export const getLastCommit = async (config: TRepoConfig) => {
     return ghGetCommit(config)
+}
+
+export const deleteItemFile = async (
+    config: TRepoConfig,
+    collection: string,
+    item: string,
+    commit: string
+) => {
+    const res = new Result<string>()
+
+    if (!collection || !item || !commit) {
+        return res.failed('updateItemFile - Insufficient parameter')
+    }
+
+    const path = getItemPath(config, collection, item)
+    const resultDelete = await ghDeleteFile(config, path, commit)
+
+    if (resultDelete.hasError()) {
+        return res.failed(
+            `Unable to get file: ${path} - ${resultDelete.getError()}`
+        )
+    }
+
+    cacheRemove(path)
+
+    return res.success(resultDelete.getValue())
 }

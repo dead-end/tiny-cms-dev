@@ -1,10 +1,15 @@
 <script lang="ts">
     import { onMount } from 'svelte'
     import type { TEntry } from '../ts/types'
-    import { getCollectionListing } from '../ts/github/persistance'
+    import {
+        deleteItemFile,
+        getCollectionListing,
+        getLastCommit
+    } from '../ts/github/persistance'
     import { repoConfigStore } from '../ts/stores/repoConfig'
     import { push } from 'svelte-spa-router'
     import ButtonWrapper from '../components/ButtonWrapper.svelte'
+    import { errorStore } from '../ts/stores/errorStore'
 
     export let params = {
         collection: ''
@@ -25,8 +30,31 @@
         entries = result.getValue()
     }
 
+    const deleteItem = async (item: string) => {
+        const resultCommit = await getLastCommit($repoConfigStore)
+
+        if (resultCommit.hasError()) {
+            errorStore.set(resultCommit.getError())
+            return
+        }
+
+        const resultDelete = await deleteItemFile(
+            $repoConfigStore,
+            params.collection,
+            item,
+            resultCommit.getValue()
+        )
+
+        if (resultDelete.hasError()) {
+            errorStore.set(resultDelete.getError())
+            return
+        }
+
+        loadCollection(params.collection)
+    }
+
     onMount(async () => {
-        loadCollection('search-engine')
+        loadCollection(params.collection)
     })
 </script>
 
@@ -51,15 +79,21 @@
             <td class="tb-cell"
                 >{new Date(item.tc_modified).toLocaleDateString()}</td
             >
-            <td class="tb-cell"
-                ><button
-                    class="btn-base"
-                    on:click={() =>
-                        push(
-                            `#/collection/${params.collection}/item/${item.tc_id}`
-                        )}>Show</button
-                ></td
-            >
+            <td class="tb-cell">
+                <ButtonWrapper>
+                    <button
+                        class="btn-base"
+                        on:click={() =>
+                            push(
+                                `#/collection/${params.collection}/item/${item.tc_id}`
+                            )}>Show</button
+                    >
+                    <button
+                        class="btn-base"
+                        on:click={() => deleteItem(item.tc_id)}>Delete</button
+                    >
+                </ButtonWrapper>
+            </td>
         </tr>
     {/each}
 </table>

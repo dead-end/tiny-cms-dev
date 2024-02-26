@@ -1,6 +1,5 @@
 import Result from '../libs/result'
 import type { TRepoConfig } from '../stores/repoConfig'
-import type { TCheckFile, TCommit, TFile } from '../types'
 import { processQuery } from './github'
 
 /**

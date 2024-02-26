@@ -28,3 +28,7 @@ export const cacheGet = (path: string, oid: string) => {
 
     return file
 }
+
+export const cacheRemove = (path: string) => {
+    sessionStorage.removeItem(PREFIX + path)
+}
