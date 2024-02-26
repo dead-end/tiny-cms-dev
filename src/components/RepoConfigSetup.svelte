@@ -4,12 +4,12 @@
     import { replace } from 'svelte-spa-router'
     import { formDataStrValue } from '../ts/libs/utils'
     import CardWrapper from './CardWrapper.svelte'
-    import type { TField } from '../ts/types'
+    import type { TData, TField } from '../ts/types'
     import InputFields from './InputFields.svelte'
     import ButtonWrapper from './ButtonWrapper.svelte'
 
     const fieldsDefault = (fields: TField[]) => {
-        const result: Record<string, any> = {}
+        const result: TData = {}
         fields.forEach((field) => (result[field.id] = field.value))
         return result
     }

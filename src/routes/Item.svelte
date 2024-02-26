@@ -7,7 +7,7 @@
         updateItemFile
     } from '../ts/github/persistance'
     import { repoConfigStore } from '../ts/stores/repoConfig'
-    import type { TDefinition, TField, TItem } from '../ts/types'
+    import type { TData, TDefinition, TField, TItem } from '../ts/types'
     import {
         formCreateValidator,
         formDataChanged
@@ -74,14 +74,14 @@
         formValidate: formValidateMeta,
         formFieldsUpdate: formFieldsUpdateMeta
     } = formCreateValidator()
-    let metaData: Record<string, string> = {}
+    let metaData: TData = {}
 
     let {
         formErrors: formErrorsData,
         formValidate: formValidateData,
         formFieldsUpdate: formFieldsUpdateData
     } = formCreateValidator()
-    let itemData: Record<string, string> = {}
+    let itemData: TData = {}
 
     const updateItem = async (updatedItem: TItem) => {
         const result = await updateItemFile(

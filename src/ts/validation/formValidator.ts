@@ -1,4 +1,4 @@
-import type { TField } from '../types'
+import type { TData, TField } from '../types'
 import { validatorRegistry, type TValidatorFunction } from './validators'
 
 export const formCreateValidator = () => {
@@ -66,7 +66,7 @@ export const formCreateValidator = () => {
 export const formDataChanged = (
     fields: TField[],
     formData: FormData,
-    data: Record<string, any>
+    data: TData
 ) => {
     let changed = false
 

@@ -59,13 +59,6 @@ export type TEntry = {
 }
 
 /**
- * Definition of an item in a collection.
- */
-export type TItem = TEntry & {
-    data: Record<string, any>
-}
-
-/**
  * Definition of a collection definition.
  */
 export type TDefinition = TEntry & {
@@ -78,4 +71,16 @@ export type TDefinition = TEntry & {
 export type TCommit<T> = {
     data: T
     commit: string
+}
+
+/**
+ * The data of a collections
+ */
+export type TData = Record<string, any>
+
+/**
+ * Definition of an item in a collection.
+ */
+export type TItem = TEntry & {
+    data: TData
 }
