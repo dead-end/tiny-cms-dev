@@ -1,6 +1,7 @@
 import type { TData, TField } from '../types'
 import { validatorRegistry, type TValidatorFunction } from './validators'
 
+// TODO: native input errors
 export const formCreateValidator = () => {
     let formValidators = new Map<string, TValidatorFunction[]>()
     let formErrors = new Map<string, string>()
@@ -63,18 +64,19 @@ export const formCreateValidator = () => {
     return { formErrors, formValidate, formFieldsUpdate }
 }
 
+/**
+ * The function checks if the submitted data changed.
+ */
 export const formDataChanged = (
     fields: TField[],
     formData: FormData,
     data: TData
 ) => {
-    let changed = false
-
     fields.forEach((field) => {
         if (data[field.id] !== formData.get(field.id)) {
-            changed = true
+            return true
         }
     })
 
-    return changed
+    return false
 }

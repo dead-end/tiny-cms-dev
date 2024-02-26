@@ -1,5 +1,7 @@
 import Result from './libs/result'
-import type { TField, TItem } from './types'
+import type { TData, TField, TItem } from './types'
+
+// TODO: name of the file correct?
 
 export const item2Data = (item: TItem, itemData: Record<string, string>) => {
     itemData = item.data
@@ -45,4 +47,14 @@ export const itemFromFormData = (
     })
 
     return res.success(item)
+}
+
+// TODO: check if all fields have a default value and handle missing values.
+/**
+ * The function initializes the data object with its default values.
+ */
+export const fieldsDefault = (fields: TField[]) => {
+    const result: TData = {}
+    fields.forEach((field) => (result[field.id] = field.value))
+    return result
 }

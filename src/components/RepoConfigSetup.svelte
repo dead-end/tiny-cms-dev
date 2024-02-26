@@ -7,12 +7,7 @@
     import type { TData, TField } from '../ts/types'
     import InputFields from './InputFields.svelte'
     import ButtonWrapper from './ButtonWrapper.svelte'
-
-    const fieldsDefault = (fields: TField[]) => {
-        const result: TData = {}
-        fields.forEach((field) => (result[field.id] = field.value))
-        return result
-    }
+    import { fieldsDefault } from '../ts/item'
 
     const fields: TField[] = [
         {

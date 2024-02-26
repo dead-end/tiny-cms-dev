@@ -17,7 +17,12 @@
     import InputFields from '../components/InputFields.svelte'
     import ButtonWrapper from '../components/ButtonWrapper.svelte'
     import { location, push } from 'svelte-spa-router'
-    import { itemFromFormData, item2Data, item2Meta } from '../ts/item'
+    import {
+        itemFromFormData,
+        item2Data,
+        item2Meta,
+        fieldsDefault
+    } from '../ts/item'
 
     export let params = {
         collection: '',
@@ -168,18 +173,12 @@
     }
 
     const initItem = (definition: TDefinition) => {
-        const newItem: TItem = {
+        item = {
             tc_id: '',
             tc_title: '',
             tc_modified: 0,
-            data: {}
+            data: fieldsDefault(definition.fields)
         }
-
-        definition.fields.forEach((field) => {
-            newItem.data[field.id] = field.value
-        })
-
-        item = newItem
     }
 
     const loadItem = async () => {
