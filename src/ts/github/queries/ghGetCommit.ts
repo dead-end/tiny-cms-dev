@@ -1,5 +1,5 @@
-import type { TRepoConfig } from '../stores/repoConfig'
-import { processGithubQuery } from './github'
+import type { TRepoConfig } from '../../stores/repoConfig'
+import { processGithubQuery } from '../github'
 
 /**
  * The query gets the last commit.

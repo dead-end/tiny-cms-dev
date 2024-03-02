@@ -1,6 +1,6 @@
-import type { TRepoConfig } from '../stores/repoConfig'
-import type { TListing } from '../types'
-import { processGithubQuery } from './github'
+import type { TRepoConfig } from '../../stores/repoConfig'
+import type { TListing } from '../../types'
+import { processGithubQuery } from '../github'
 
 /**
  * The query gets the directory listing of a path. It contains the type but not
