@@ -1,9 +1,8 @@
-import Result from '../libs/result'
 import type { TRepoConfig } from '../stores/repoConfig'
-import { processQuery } from './github'
+import { processGithubQuery } from './github'
 
 /**
- * The query gets the last commit
+ * The query gets the last commit.
  */
 const query = `
 query getCommit($owner: String!, $name: String!, $branch: String!) {
@@ -37,28 +36,17 @@ const getBody = (repoConfig: TRepoConfig, query: string) => {
 }
 
 const getCommit = (repository: any) => {
-    return repository.ref.target.history.nodes[0].oid
+    return repository.ref.target.history.nodes[0].oid as string
 }
 
 /**
  * The function gets the last commit.
  */
 export const ghGetCommit = async (repoConfig: TRepoConfig) => {
-    const res = new Result<string>()
+    const queryResult = await processGithubQuery(
+        repoConfig.token,
+        getBody(repoConfig, query)
+    )
 
-    try {
-        const resultQuery = await processQuery(
-            repoConfig.token,
-            getBody(repoConfig, query)
-        )
-        if (resultQuery.hasError()) {
-            return res.failed(resultQuery.getError())
-        }
-
-        const repository = resultQuery.getValue().data.repository
-
-        return res.success(getCommit(repository))
-    } catch (e) {
-        return res.failed(`Error: ${e} `)
-    }
+    return getCommit(queryResult.data.repository)
 }
