@@ -29,6 +29,9 @@ export const cacheGet = (path: string, oid: string) => {
     return file
 }
 
+/**
+ * The function removes an item from the cache.
+ */
 export const cacheRemove = (path: string) => {
     sessionStorage.removeItem(PREFIX + path)
 }
