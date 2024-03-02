@@ -1,9 +1,8 @@
-import Result from '../libs/result'
 import type { TRepoConfig } from '../stores/repoConfig'
-import { processQuery } from './github'
+import { processGithubQuery } from './github'
 
 /**
- * The query deletes a file
+ * The query deletes a file.
  */
 const query = `
 mutation ($committableBranch: CommittableBranch!, $path: String!, $oid: GitObjectID!) {
@@ -47,29 +46,21 @@ const getBody = (repoConfig: TRepoConfig, path: string, oid: string) => {
 }
 
 const getCommit = (data: any) => {
-    return data.createCommitOnBranch.commit.oid
+    return data.createCommitOnBranch.commit.oid as string
 }
 
 /**
- * The function gets the last commit.
+ * The function deletes a file.
  */
 export const ghDeleteFile = async (
     repoConfig: TRepoConfig,
     path: string,
     commit: string
 ) => {
-    const res = new Result<string>()
+    const queryResult = await processGithubQuery(
+        repoConfig.token,
+        getBody(repoConfig, path, commit)
+    )
 
-    try {
-        const resultQuery = await processQuery(
-            repoConfig.token,
-            getBody(repoConfig, path, commit)
-        )
-        if (resultQuery.hasError()) {
-            return res.failed(resultQuery.getError())
-        }
-        return res.success(getCommit(resultQuery.getValue().data))
-    } catch (e) {
-        return res.failed(`Error: ${e} `)
-    }
+    return getCommit(queryResult.data)
 }
