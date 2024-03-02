@@ -1,28 +1,29 @@
 <script lang="ts">
-    import { onMount } from 'svelte'
-    import {
-        getDefinitionFile,
-        getItemFile,
-        getLastCommit,
-        updateItemFile
-    } from '../ts/github/persistance'
-    import { repoConfigStore } from '../ts/stores/repoConfig'
-    import type { TData, TDefinition, TField, TItem } from '../ts/types'
     import {
         formCreateValidator,
         formDataChanged
     } from '../ts/validation/formValidator'
-    import { errorStore } from '../ts/stores/errorStore'
-    import CardWrapper from '../components/CardWrapper.svelte'
-    import InputFields from '../components/InputFields.svelte'
-    import ButtonWrapper from '../components/ButtonWrapper.svelte'
-    import { location, push } from 'svelte-spa-router'
     import {
         itemFromFormData,
         item2Data,
         item2Meta,
         fieldsDefault
     } from '../ts/item'
+    import {
+        updateItemFile,
+        getItemFile,
+        getDefinitionFile
+    } from '../ts/github/persistFiles'
+    import { onMount } from 'svelte'
+    import { repoConfigStore } from '../ts/stores/repoConfig'
+    import { errorStore } from '../ts/stores/errorStore'
+    import { location, push } from 'svelte-spa-router'
+    import { getErrorMsg } from '../ts/libs/utils'
+    import { getLastCommit } from '../ts/github/persistUtils'
+    import type { TData, TDefinition, TField, TItem } from '../ts/types'
+    import CardWrapper from '../components/CardWrapper.svelte'
+    import InputFields from '../components/InputFields.svelte'
+    import ButtonWrapper from '../components/ButtonWrapper.svelte'
 
     export let params = {
         collection: '',
@@ -88,23 +89,29 @@
     } = formCreateValidator()
     let itemData: TData = {}
 
+    /**
+     * Update the item and return a boolean to show success. This is used to
+     * prevent a redirect on failures.
+     */
     const updateItem = async (updatedItem: TItem) => {
-        const result = await updateItemFile(
-            $repoConfigStore,
-            params.collection,
-            updatedItem.tc_id,
-            commit,
-            updatedItem
-        )
+        try {
+            const commitItem = await updateItemFile(
+                $repoConfigStore,
+                params.collection,
+                updatedItem.tc_id,
+                commit,
+                updatedItem
+            )
 
-        if (result.hasError()) {
-            errorStore.set(result.getError())
-            return false
+            commit = commitItem.commit
+            item = commitItem.data
+
+            return true
+        } catch (e) {
+            errorStore.set(getErrorMsg(e))
         }
 
-        commit = result.getValue().commit
-        item = result.getValue().data
-        return true
+        return false
     }
 
     const submit = async (event: Event) => {
@@ -172,6 +179,9 @@
         disabled = true
     }
 
+    /**
+     * Get an initial item for a creation.
+     */
     const initItem = (definition: TDefinition) => {
         item = {
             tc_id: '',
@@ -181,45 +191,54 @@
         }
     }
 
+    /**
+     * Load the item from the repository.
+     */
     const loadItem = async () => {
-        const result = await getItemFile(
-            $repoConfigStore,
-            params.collection,
-            params.item
-        )
+        try {
+            const commitItem = await getItemFile(
+                $repoConfigStore,
+                params.collection,
+                params.item
+            )
 
-        if (result.hasError()) {
-            errorStore.set(result.getError())
-            return
+            commit = commitItem.commit
+            item = commitItem.data
+        } catch (e) {
+            errorStore.set(getErrorMsg(e))
         }
-        commit = result.getValue().commit
-        item = result.getValue().data
     }
 
+    /**
+     * Loading the definition of the item.
+     */
     const loadDefinition = async () => {
-        const result = await getDefinitionFile(
-            $repoConfigStore,
-            params.collection
-        )
+        try {
+            const commitDefinition = await getDefinitionFile(
+                $repoConfigStore,
+                params.collection
+            )
 
-        if (result.hasError()) {
-            errorStore.set(result.getError())
-            return
+            definition = commitDefinition.data
+        } catch (e) {
+            errorStore.set(getErrorMsg(e))
         }
-        definition = result.getValue().data
     }
 
+    /**
+     * Load the last commit of the repository.
+     */
     const loadCommit = async () => {
-        const result = await getLastCommit($repoConfigStore)
-
-        if (result.hasError()) {
-            errorStore.set(result.getError())
-            return
+        try {
+            commit = await getLastCommit($repoConfigStore)
+        } catch (e) {
+            errorStore.set(getErrorMsg(e))
         }
-
-        commit = result.getValue()
     }
 
+    /**
+     * Load everything on mount.
+     */
     onMount(async () => {
         await loadDefinition()
 

@@ -1,22 +1,21 @@
 <script lang="ts">
     import { onMount } from 'svelte'
     import type { TEntry } from '../ts/types'
-    import { getDefinitionsListing } from '../ts/github/persistance'
     import { repoConfigStore } from '../ts/stores/repoConfig'
     import { push } from 'svelte-spa-router'
     import { errorStore } from '../ts/stores/errorStore'
     import CardWrapper from '../components/CardWrapper.svelte'
+    import { getErrorMsg } from '../ts/libs/utils'
+    import { getDefinitionsListing } from '../ts/github/persistListings'
 
     let entries: TEntry[] = []
 
     const load = async () => {
-        const result = await getDefinitionsListing($repoConfigStore)
-        if (result.hasError()) {
-            errorStore.set(result.getError())
-            return
+        try {
+            entries = await getDefinitionsListing($repoConfigStore)
+        } catch (e) {
+            errorStore.set(getErrorMsg(e))
         }
-
-        entries = result.getValue()
     }
 
     onMount(async () => {

@@ -1,15 +1,14 @@
 <script lang="ts">
     import { onMount } from 'svelte'
     import type { TEntry } from '../ts/types'
-    import {
-        deleteItemFile,
-        getCollectionListing,
-        getLastCommit
-    } from '../ts/github/persistance'
     import { repoConfigStore } from '../ts/stores/repoConfig'
     import { push } from 'svelte-spa-router'
     import ButtonWrapper from '../components/ButtonWrapper.svelte'
     import { errorStore } from '../ts/stores/errorStore'
+    import { getErrorMsg } from '../ts/libs/utils'
+    import { getCollectionListing } from '../ts/github/persistListings'
+    import { getLastCommit } from '../ts/github/persistUtils'
+    import { deleteItemFile } from '../ts/github/persistFiles'
 
     export let params = {
         collection: ''
@@ -17,50 +16,35 @@
 
     let entries: TEntry[] = []
 
-    let error = ''
-
     const loadCollection = async (collection: string) => {
-        const result = await getCollectionListing($repoConfigStore, collection)
-        if (result.hasError()) {
-            error = result.getError()
-            return
+        try {
+            entries = await getCollectionListing($repoConfigStore, collection)
+        } catch (e) {
+            errorStore.set(getErrorMsg(e))
         }
-
-        error = ''
-        entries = result.getValue()
     }
 
     const deleteItem = async (item: string) => {
-        const resultCommit = await getLastCommit($repoConfigStore)
+        try {
+            const lastCommit = await getLastCommit($repoConfigStore)
 
-        if (resultCommit.hasError()) {
-            errorStore.set(resultCommit.getError())
-            return
+            const newCommit = await deleteItemFile(
+                $repoConfigStore,
+                params.collection,
+                item,
+                lastCommit
+            )
+
+            loadCollection(params.collection)
+        } catch (e) {
+            errorStore.set(getErrorMsg(e))
         }
-
-        const resultDelete = await deleteItemFile(
-            $repoConfigStore,
-            params.collection,
-            item,
-            resultCommit.getValue()
-        )
-
-        if (resultDelete.hasError()) {
-            errorStore.set(resultDelete.getError())
-            return
-        }
-
-        loadCollection(params.collection)
     }
 
     onMount(async () => {
         loadCollection(params.collection)
     })
 </script>
-
-{#if error}
-    <p class="bg-red-300">{error}</p>
-{/if}
 
 <h3 class="text-xl pb-6">
     Collection {params.collection}
