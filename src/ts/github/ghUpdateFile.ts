@@ -1,8 +1,10 @@
-import Result from '../libs/result'
 import type { TRepoConfig } from '../stores/repoConfig'
 import type { TCommit, TEntry, TFile } from '../types'
-import { processQuery } from './github'
+import { processGithubQuery } from './github'
 
+/*
+ * The query updates the content of a file.
+ */
 const query = `
 mutation ($committableBranch: CommittableBranch!, $path: String!, $content: Base64String!, $oid: GitObjectID!) {
     createCommitOnBranch (input: {
@@ -59,38 +61,30 @@ const getOid = (data: any) => {
     return data.createCommitOnBranch.commit.file.oid as string
 }
 
+/**
+ * The function updates the content of a file.
+ */
 export const ghUpdateContent = async (
     repoConfig: TRepoConfig,
     path: string,
     commit: string,
     entry: TEntry
 ) => {
-    const res = new Result<TCommit<TFile>>()
-    try {
-        entry.tc_modified = new Date().getTime()
-        const content = JSON.stringify(entry)
-        const result = await processQuery(
-            repoConfig.token,
-            getBody(repoConfig, path, commit, btoa(content))
-        )
+    entry.tc_modified = new Date().getTime()
+    const content = JSON.stringify(entry)
 
-        if (result.hasError()) {
-            return res.failed(result.getError())
+    const queryResult = await processGithubQuery(
+        repoConfig.token,
+        getBody(repoConfig, path, commit, btoa(content))
+    )
+
+    const result: TCommit<TFile> = {
+        commit: getCommit(queryResult.data),
+        data: {
+            path: path,
+            oid: getOid(queryResult.data),
+            text: content
         }
-
-        console.log('result.getValue()', result.getValue())
-
-        const data = result.getValue().data
-
-        return res.success({
-            commit: getCommit(data),
-            data: {
-                path: path,
-                oid: getOid(data),
-                text: content
-            }
-        })
-    } catch (e) {
-        return res.failed(`Error: ${e} `)
     }
+    return result
 }
