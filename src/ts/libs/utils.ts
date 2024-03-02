@@ -29,3 +29,13 @@ export const base64ToArrayBuffer = (base64: string) => {
 export const defaultString = (value: any) => {
     return typeof value === 'undefined' ? '' : value
 }
+
+/**
+ * The function gets a string from something, that was thrown.
+ */
+export const getErrorMsg = (e: any) => {
+    if (e instanceof Error) {
+        return e.message
+    }
+    return JSON.stringify(e)
+}
