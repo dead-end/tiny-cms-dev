@@ -12,13 +12,13 @@
     <ul class="flex flex-col items-end">
         {#each entries as entry}
             <li
-                class="py-4 px-4 border-b w-full hover:bg-gray-100 hover:text-gray-900 active:bg-gray-100 transition duration-200 ease-in-out"
+                class="py-4 px-4 border-b w-full hover:bg-gray-100 hover:text-gray-900 active:bg-gray-100 tc-transition"
             >
                 <a href={entry.path}>{entry.label}</a>
             </li>
         {/each}
         <li
-            class="py-4 px-4 border-b w-full hover:bg-gray-100 hover:text-gray-900 active:bg-gray-100 transition duration-200 ease-in-out"
+            class="py-4 px-4 border-b w-full hover:bg-gray-100 hover:text-gray-900 active:bg-gray-100 tc-transition"
         >
             <a href="#/" on:click={repoConfigStore.logout}>Logout</a>
         </li>

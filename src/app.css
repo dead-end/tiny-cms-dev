@@ -3,12 +3,16 @@
 @tailwind utilities;
 
 @layer components {
+    .tc-transition {
+        @apply transition duration-200 ease-in-out;
+    }
+
     .input-base {
         @apply outline-none focus:outline-none border border-blue-400 focus:border-blue-500 ring-blue-400 focus:ring-blue-500 shadow rounded w-full p-2 disabled:bg-gray-50 disabled:text-gray-500;
     }
 
     .btn-base {
-        @apply px-4 py-2 shadow rounded text-white font-bold text-sm bg-blue-600 hover:bg-blue-700 transition duration-200 ease-in-out;
+        @apply px-4 py-2 shadow rounded text-white font-bold text-sm bg-blue-600 hover:bg-blue-700 tc-transition;
     }
 
     .label-base {
@@ -20,7 +24,7 @@
     }
 
     .tb-row {
-        @apply border-b hover:bg-gray-50 transition duration-200 ease-in-out;
+        @apply border-b hover:bg-gray-50 tc-transition;
     }
 
     .tb-cell {
