@@ -1,7 +1,6 @@
-import Result from '../libs/result'
 import type { TRepoConfig } from '../stores/repoConfig'
 import type { TCheckFile, TCommit, TFile } from '../types'
-import { processQuery } from './github'
+import { processGithubQuery } from './github'
 
 /**
  * The query gets the oid of the file and the commit id.
@@ -71,69 +70,54 @@ const getBody = (repoConfig: TRepoConfig, query: string, path: string) => {
 }
 
 const getCommit = (repository: any) => {
-    return repository.ref.target.history.nodes[0].oid
+    return repository.ref.target.history.nodes[0].oid as string
 }
 
 const getOid = (repository: any) => {
-    return repository.object.oid
+    return repository.object.oid as string
 }
 
 const getText = (repository: any) => {
-    return repository.object.text
+    return repository.object.text as string
 }
 
 /**
  * The function gets the oid and the commit for a file.
  */
 export const ghCheckFile = async (repoConfig: TRepoConfig, path: string) => {
-    const res = new Result<TCheckFile>()
-    try {
-        const resultQuery = await processQuery(
-            repoConfig.token,
-            getBody(repoConfig, queryWithoutCount, path)
-        )
-        if (resultQuery.hasError()) {
-            return res.failed(resultQuery.getError())
-        }
+    const queryResult = await processGithubQuery(
+        repoConfig.token,
+        getBody(repoConfig, queryWithoutCount, path)
+    )
 
-        const repository = resultQuery.getValue().data.repository
+    const repository = queryResult.data.repository
 
-        return res.success({
-            path: path,
-            oid: getOid(repository),
-            commit: getCommit(repository)
-        })
-    } catch (e) {
-        return res.failed(`Error: ${e} `)
+    const result: TCheckFile = {
+        path: path,
+        oid: getOid(repository),
+        commit: getCommit(repository)
     }
+    return result
 }
 
 /**
  * The function gets the oid, the commit and the content for a file.
  */
 export const ghGetFile = async (repoConfig: TRepoConfig, path: string) => {
-    const res = new Result<TCommit<TFile>>()
+    const queryResult = await processGithubQuery(
+        repoConfig.token,
+        getBody(repoConfig, queryWithCount, path)
+    )
 
-    try {
-        const resultQuery = await processQuery(
-            repoConfig.token,
-            getBody(repoConfig, queryWithCount, path)
-        )
-        if (resultQuery.hasError()) {
-            return res.failed(resultQuery.getError())
-        }
+    const repository = queryResult.data.repository
 
-        const repository = resultQuery.getValue().data.repository
-
-        return res.success({
-            data: {
-                path: path,
-                oid: getOid(repository),
-                text: getText(repository)
-            },
-            commit: getCommit(repository)
-        })
-    } catch (e) {
-        return res.failed(`Error: ${e} `)
+    const result: TCommit<TFile> = {
+        data: {
+            path: path,
+            oid: getOid(repository),
+            text: getText(repository)
+        },
+        commit: getCommit(repository)
     }
+    return result
 }
