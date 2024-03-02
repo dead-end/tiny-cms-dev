@@ -1,7 +1,6 @@
-import Result from '../libs/result'
 import type { TRepoConfig } from '../stores/repoConfig'
 import type { TFile } from '../types'
-import { processQuery } from './github'
+import { processGithubQuery } from './github'
 
 /**
  * The function returns a graphql query to get the content of files in a
@@ -46,35 +45,24 @@ const filesQuery = (config: TRepoConfig, paths: string[]) => {
  * The function gets the content of a list of files.
  */
 export const ghGetFiles = async (config: TRepoConfig, paths: string[]) => {
-    const res = new Result<TFile[]>()
-    try {
-        const resultQuery = await processQuery(
-            config.token,
-            filesQuery(config, paths)
-        )
-        if (resultQuery.hasError()) {
-            return res.failed(resultQuery.getError())
-        }
+    const queryResult = await processGithubQuery(
+        config.token,
+        filesQuery(config, paths)
+    )
 
-        const repository = resultQuery.getValue().data.repository
-        const files: TFile[] = []
+    const repository = queryResult.data.repository
+    const files: TFile[] = []
 
-        for (const [key, value] of Object.entries(repository)) {
-            const path = paths[parseInt(key.substring(1))]
-            const file = value as TFile
-            file.path = path
-            files.push(file)
-        }
-
-        if (paths.length !== files.length) {
-            return res.failed(
-                `Expected: ${paths.length} current: ${files.length}`
-            )
-        }
-
-        return res.success(files)
-    } catch (e) {
-        console.log('Error', e)
-        return res.failed(`Error: ${e} `)
+    for (const [key, value] of Object.entries(repository)) {
+        const path = paths[parseInt(key.substring(1))]
+        const file = value as TFile
+        file.path = path
+        files.push(file)
     }
+
+    if (paths.length !== files.length) {
+        throw new Error(`Expected: ${paths.length} current: ${files.length}`)
+    }
+
+    return files
 }
