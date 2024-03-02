@@ -1,7 +1,6 @@
-import Result from '../libs/result'
 import type { TRepoConfig } from '../stores/repoConfig'
 import type { TListing } from '../types'
-import { processQuery } from './github'
+import { processGithubQuery } from './github'
 
 /**
  * The query gets the directory listing of a path. It contains the type but not
@@ -40,19 +39,9 @@ const getBody = (config: TRepoConfig, path: string) => {
  * The function gets the files from a directory, without their contents.
  */
 export const ghGetListing = async (config: TRepoConfig, path: string) => {
-    const res = new Result<TListing[]>()
-    try {
-        const resultQuery = await processQuery(
-            config.token,
-            getBody(config, path)
-        )
-        if (resultQuery.hasError()) {
-            return res.failed(resultQuery.getError())
-        }
-        return res.success(
-            resultQuery.getValue().data.repository.object.entries as TListing[]
-        )
-    } catch (e) {
-        return res.failed(`Error: ${e} `)
-    }
+    const queryResult = await processGithubQuery(
+        config.token,
+        getBody(config, path)
+    )
+    return queryResult.data.repository.object.entries as TListing[]
 }
