@@ -1,6 +1,6 @@
 import type { TRepoConfig } from '../../stores/repoConfig'
 import type { TCheckFile, TCommit, TFile } from '../../types'
-import { processGithubQuery } from '../github'
+import { processGithubQuery } from './github'
 
 /**
  * The query gets the oid of the file and the commit id.

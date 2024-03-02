@@ -1,6 +1,6 @@
 import type { TRepoConfig } from '../../stores/repoConfig'
 import type { TFile } from '../../types'
-import { processGithubQuery } from '../github'
+import { processGithubQuery } from './github'
 
 /**
  * The function returns a graphql query to get the content of files in a
