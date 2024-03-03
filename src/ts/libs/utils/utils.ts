@@ -1,15 +1,4 @@
 /**
- * The function ensures that a FormData values exists and has a string value.
- * This value is returned.
- */
-export const formDataStrValue = (value: FormDataEntryValue | null): string => {
-    if (value === null || typeof value !== 'string') {
-        throw Error(`Invalid value: ${value}`)
-    }
-    return value.trim()
-}
-
-/**
  * The function returns a base64 from an ArrayBuffer.
  */
 export const arrayBufferToBase64 = (buffer: ArrayBuffer) => {

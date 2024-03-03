@@ -1,5 +1,5 @@
+import { formDataStr } from './libs/utils/formData'
 import type { TData, TField, TItem } from './types'
-import { formDataStr } from './validation/formValidator'
 
 /**
  * The function is called with an item object and maps it to a flat map.
