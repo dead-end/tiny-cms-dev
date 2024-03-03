@@ -1,44 +1,41 @@
-import Result from './libs/result'
 import type { TData, TField, TItem } from './types'
 
-// TODO: name of the file correct?
-
-export const item2Data = (item: TItem, itemData: Record<string, string>) => {
-    itemData = item.data
-    return itemData
-}
-
-export const item2Meta = (
-    isCreate: boolean,
-    item: TItem,
-    metaData: Record<string, string>
-) => {
+/**
+ * The function is called with an item object and maps it to a flat map.
+ */
+export const itemToData = (isCreate: boolean, item: TItem, data: TData) => {
     if (isCreate) {
-        metaData['tc_id'] = item.tc_id
+        data['tc_id'] = item.tc_id
     }
-    metaData['tc_title'] = item.tc_title
-    return metaData
+    data['tc_title'] = item.tc_title
+
+    for (const key in item.data) {
+        data[key] = item.data[key]
+    }
+    return data
 }
 
+/**
+ * The function is called with form data and maps it to an item instance.
+ */
 export const itemFromFormData = (
     item: TItem,
     isCreate: boolean,
     formData: FormData,
     fields: TField[]
 ) => {
-    const res = new Result<TItem>()
     let tmp
 
     if (isCreate) {
         tmp = formData.get('tc_id')
         if (!tmp) {
-            return res.failed('No id')
+            throw new Error('No id')
         }
         item.tc_id = tmp as string
     }
     tmp = formData.get('tc_title')
     if (!tmp) {
-        return res.failed('No title')
+        throw new Error('No title')
     }
     item.tc_title = tmp as string
 
@@ -46,15 +43,5 @@ export const itemFromFormData = (
         item.data[field.id] = formData.get(field.id)
     })
 
-    return res.success(item)
-}
-
-// TODO: check if all fields have a default value and handle missing values.
-/**
- * The function initializes the data object with its default values.
- */
-export const fieldsDefault = (fields: TField[]) => {
-    const result: TData = {}
-    fields.forEach((field) => (result[field.id] = field.value))
-    return result
+    return item
 }
