@@ -2,7 +2,7 @@ import type { TData, TField } from '../types'
 import { validatorRegistry, type TValidatorFunction } from './validators'
 
 // TODO: native input errors
-export const formCreateValidator = () => {
+export const formCreateValidator = (fields?: TField[]) => {
     let formValidators = new Map<string, TValidatorFunction[]>()
     let formErrors = new Map<string, string>()
 
@@ -46,8 +46,6 @@ export const formCreateValidator = () => {
      * Update the form validators map with the fields.
      */
     const formFieldsUpdate = (fields: TField[]) => {
-        formValidators.clear()
-
         fields.forEach((field) => {
             const validatorFunctions: TValidatorFunction[] = []
 
@@ -59,6 +57,11 @@ export const formCreateValidator = () => {
 
             formValidators.set(field.id, validatorFunctions)
         })
+        return fields
+    }
+
+    if (fields) {
+        formFieldsUpdate(fields)
     }
 
     return { formErrors, formValidate, formFieldsUpdate }
