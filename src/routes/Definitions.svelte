@@ -5,8 +5,9 @@
     import { push } from 'svelte-spa-router'
     import { errorStore } from '../ts/stores/errorStore'
     import CardWrapper from '../components/CardWrapper.svelte'
-    import { getErrorMsg } from '../ts/libs/utils'
+    import { getErrorMsg } from '../ts/libs/utils/utils'
     import { getDefinitionsListing } from '../ts/github/persistListings'
+    import ButtonWrapper from '../components/ButtonWrapper.svelte'
 
     let entries: TEntry[] = []
 
@@ -38,13 +39,15 @@
                 <td class="tb-cell"
                     >{new Date(item.tc_modified).toLocaleDateString()}</td
                 >
-                <td class="tb-cell"
-                    ><button
-                        class="btn-base"
-                        on:click={() => push('#/collection/' + item.tc_id)}
-                        >Show</button
-                    ></td
-                >
+                <td class="tb-cell">
+                    <ButtonWrapper>
+                        <button
+                            class="btn-base"
+                            on:click={() => push('#/collection/' + item.tc_id)}
+                            >Show</button
+                        ></ButtonWrapper
+                    >
+                </td>
             </tr>
         {/each}
     </table>
