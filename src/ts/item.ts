@@ -1,4 +1,5 @@
 import type { TData, TField, TItem } from './types'
+import { formDataStr } from './validation/formValidator'
 
 /**
  * The function is called with an item object and maps it to a flat map.
@@ -27,17 +28,9 @@ export const itemFromFormData = (
     let tmp
 
     if (isCreate) {
-        tmp = formData.get('tc_id')
-        if (!tmp) {
-            throw new Error('No id')
-        }
-        item.tc_id = tmp as string
+        item.tc_id = formDataStr(formData, 'tc_id', 'No id')
     }
-    tmp = formData.get('tc_title')
-    if (!tmp) {
-        throw new Error('No title')
-    }
-    item.tc_title = tmp as string
+    item.tc_title = formDataStr(formData, 'tc_title', 'No title')
 
     fields.forEach((field) => {
         item.data[field.id] = formData.get(field.id)
