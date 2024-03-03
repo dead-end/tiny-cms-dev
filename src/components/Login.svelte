@@ -1,6 +1,6 @@
 <script lang="ts">
     import { repoConfigStore } from '../ts/stores/repoConfig'
-    import { formDataStrValue } from '../ts/libs/utils'
+    import { formDataStrValue } from '../ts/libs/utils/formData'
     import { formCreateValidator } from '../ts/validation/formValidator'
     import CardWrapper from './CardWrapper.svelte'
     import type { TField } from '../ts/types'
@@ -25,8 +25,7 @@
         password: ''
     }
 
-    let { formErrors, formValidate, formFieldsUpdate } = formCreateValidator()
-    formFieldsUpdate(fields)
+    let { formErrors, formValidate } = formCreateValidator(fields)
 
     const submit = async (event: Event) => {
         const formData = new FormData(event.target as HTMLFormElement)
