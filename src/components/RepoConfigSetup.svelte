@@ -1,15 +1,13 @@
 <script lang="ts">
     import { repoConfigStore } from '../ts/stores/repoConfig'
-    import {
-        fieldsDefault,
-        formCreateValidator
-    } from '../ts/validation/formValidator'
+    import { formCreateValidator } from '../ts/validation/formValidator'
     import { replace } from 'svelte-spa-router'
     import { formDataStrValue } from '../ts/libs/utils/formData'
     import CardWrapper from './CardWrapper.svelte'
     import type { TField } from '../ts/types'
     import InputFields from './InputFields.svelte'
     import ButtonWrapper from './ButtonWrapper.svelte'
+    import { fieldsDefault } from '../ts/libs/utils/fields'
 
     const fields: TField[] = [
         {
