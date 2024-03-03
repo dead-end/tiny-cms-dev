@@ -1,4 +1,4 @@
-import { arrayBufferToBase64, base64ToArrayBuffer } from './utils'
+import { arrayBufferToBase64, base64ToArrayBuffer } from './utils/utils'
 
 /**
  * The function creates random data and stores it in the local storage.

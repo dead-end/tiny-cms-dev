@@ -1,6 +1,6 @@
 <script lang="ts">
     import { componentRegistry } from '../ts/components'
-    import { defaultString } from '../ts/libs/utils'
+    import { defaultString } from '../ts/libs/utils/utils'
     import type { TData, TField } from '../ts/types'
 
     export let field: TField

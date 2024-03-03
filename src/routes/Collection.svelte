@@ -5,7 +5,7 @@
     import { push } from 'svelte-spa-router'
     import ButtonWrapper from '../components/ButtonWrapper.svelte'
     import { errorStore } from '../ts/stores/errorStore'
-    import { getErrorMsg } from '../ts/libs/utils'
+    import { getErrorMsg } from '../ts/libs/utils/utils'
     import { getCollectionListing } from '../ts/github/persistListings'
     import { getLastCommit } from '../ts/github/persistUtils'
     import { deleteItemFile } from '../ts/github/persistFiles'
