@@ -8,6 +8,7 @@
     import InputFields from './InputFields.svelte'
     import ButtonWrapper from './ButtonWrapper.svelte'
     import { fieldsDefault } from '../ts/libs/utils/fields'
+    import FlexColWrapper from './FlexColWrapper.svelte'
 
     const fields: TField[] = [
         {
@@ -137,10 +138,12 @@
 <div class="w-full max-w-xs m-auto">
     <CardWrapper label="Login">
         <form on:submit|preventDefault={submit}>
-            <InputFields {fields} {data} {formErrors} disabled={false} />
-            <ButtonWrapper>
-                <button class="btn-base" type="submit">Submit</button>
-            </ButtonWrapper>
+            <FlexColWrapper>
+                <InputFields {fields} {data} {formErrors} disabled={false} />
+                <ButtonWrapper>
+                    <button class="btn-base" type="submit">Submit</button>
+                </ButtonWrapper>
+            </FlexColWrapper>
         </form>
     </CardWrapper>
 </div>

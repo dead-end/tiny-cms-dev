@@ -20,6 +20,7 @@
     import InputFields from '../components/InputFields.svelte'
     import ButtonWrapper from '../components/ButtonWrapper.svelte'
     import { fieldsDefault } from '../ts/libs/utils/fields'
+    import FlexColWrapper from '../components/FlexColWrapper.svelte'
 
     export let params = {
         collection: '',
@@ -226,31 +227,32 @@
 
                 <h3 class="pb-4">ID: {item.tc_id}</h3>
             {/if}
-
-            <InputFields {fields} {data} {formErrors} {disabled} />
-
-            <ButtonWrapper>
-                {#if disabled}
+            <FlexColWrapper>
+                <InputFields {fields} {data} {formErrors} {disabled} />
+                <ButtonWrapper>
+                    {#if disabled}
+                        <button
+                            class="btn-base"
+                            type="button"
+                            on:click={() => (disabled = false)}>Edit</button
+                        >
+                    {:else}
+                        <button class="btn-base" type="submit">Submit</button>
+                        <button
+                            class="btn-base"
+                            type="button"
+                            on:click={() => (disabled = true)}>Cancel</button
+                        >
+                    {/if}
                     <button
                         class="btn-base"
                         type="button"
-                        on:click={() => (disabled = false)}>Edit</button
+                        on:click={() =>
+                            push(`#/collection/${params.collection}`)}
+                        >Collection</button
                     >
-                {:else}
-                    <button class="btn-base" type="submit">Submit</button>
-                    <button
-                        class="btn-base"
-                        type="button"
-                        on:click={() => (disabled = true)}>Cancel</button
-                    >
-                {/if}
-                <button
-                    class="btn-base"
-                    type="button"
-                    on:click={() => push(`#/collection/${params.collection}`)}
-                    >Collection</button
-                >
-            </ButtonWrapper>
+                </ButtonWrapper>
+            </FlexColWrapper>
         </form>
     </CardWrapper>
 {/if}

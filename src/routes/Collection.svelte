@@ -9,6 +9,7 @@
     import { getCollectionListing } from '../ts/github/persistListings'
     import { getLastCommit } from '../ts/github/persistUtils'
     import { deleteItemFile } from '../ts/github/persistFiles'
+    import FlexColWrapper from '../components/FlexColWrapper.svelte'
 
     export let params = {
         collection: ''
@@ -49,42 +50,45 @@
 <h3 class="text-xl pb-6">
     Collection {params.collection}
 </h3>
-<table class="shadow w-full">
-    <tr class="tb-head">
-        <th class="tb-cell">ID</th>
-        <th class="tb-cell">Title</th>
-        <th class="tb-cell">Modified</th>
-        <th class="tb-cell"></th>
-    </tr>
-    {#each entries as item}
-        <tr class="tb-row">
-            <td class="tb-cell">{item.tc_id}</td>
-            <td class="tb-cell">{item.tc_title}</td>
-            <td class="tb-cell"
-                >{new Date(item.tc_modified).toLocaleDateString()}</td
-            >
-            <td class="tb-cell">
-                <ButtonWrapper>
-                    <button
-                        class="btn-base"
-                        on:click={() =>
-                            push(
-                                `#/collection/${params.collection}/item/${item.tc_id}`
-                            )}>Show</button
-                    >
-                    <button
-                        class="btn-base"
-                        on:click={() => deleteItem(item.tc_id)}>Delete</button
-                    >
-                </ButtonWrapper>
-            </td>
+<FlexColWrapper>
+    <table class="shadow w-full">
+        <tr class="tb-head">
+            <th class="tb-cell">ID</th>
+            <th class="tb-cell">Title</th>
+            <th class="tb-cell">Modified</th>
+            <th class="tb-cell"></th>
         </tr>
-    {/each}
-</table>
-<ButtonWrapper>
-    <button
-        class="btn-base"
-        on:click={() => push(`#/collection/${params.collection}/create`)}
-        >Create</button
-    >
-</ButtonWrapper>
+        {#each entries as item}
+            <tr class="tb-row">
+                <td class="tb-cell">{item.tc_id}</td>
+                <td class="tb-cell">{item.tc_title}</td>
+                <td class="tb-cell"
+                    >{new Date(item.tc_modified).toLocaleDateString()}</td
+                >
+                <td class="tb-cell">
+                    <ButtonWrapper>
+                        <button
+                            class="btn-base"
+                            on:click={() =>
+                                push(
+                                    `#/collection/${params.collection}/item/${item.tc_id}`
+                                )}>Show</button
+                        >
+                        <button
+                            class="btn-base"
+                            on:click={() => deleteItem(item.tc_id)}
+                            >Delete</button
+                        >
+                    </ButtonWrapper>
+                </td>
+            </tr>
+        {/each}
+    </table>
+    <ButtonWrapper>
+        <button
+            class="btn-base"
+            on:click={() => push(`#/collection/${params.collection}/create`)}
+            >Create</button
+        >
+    </ButtonWrapper>
+</FlexColWrapper>
