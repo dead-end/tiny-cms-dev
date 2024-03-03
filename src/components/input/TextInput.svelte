@@ -20,7 +20,7 @@
     <input
         {id}
         name={id}
-        class="input-base mb-2"
+        class="input-base"
         {type}
         {value}
         on:blur={onblur}

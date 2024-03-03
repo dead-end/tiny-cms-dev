@@ -18,7 +18,7 @@
     <textarea
         {id}
         name={id}
-        class="input-base mb-2"
+        class="input-base"
         {value}
         on:blur={onblur}
         {disabled}
