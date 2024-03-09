@@ -11,7 +11,8 @@
     import Collection from './routes/Collection.svelte'
     import Definitions from './routes/Definitions.svelte'
     import Item from './routes/Item.svelte'
-    import ErrorShow from './components/ErrorShow.svelte'
+    import { errorStore } from './ts/stores/errorStore'
+    import Popup from './components/Popup.svelte'
 
     const routes = {
         '/': Home,
@@ -28,6 +29,15 @@
         { label: 'About', path: '#/about' },
         { label: 'Definitions', path: '#/definitions' }
     ]
+
+    const buttons = [
+        {
+            label: 'OK',
+            onclick: () => {
+                errorStore.set('')
+            }
+        }
+    ]
 </script>
 
 <main class="text-gray-600 max-w-screen-xl m-auto">
@@ -36,7 +46,14 @@
             <Navigation {entries} />
             <div class="col-span-4 p-8 h-screen">
                 <div class="w-full">
-                    <ErrorShow />
+                    {#if $errorStore !== ''}
+                        <Popup
+                            title="Errors"
+                            desc={$errorStore}
+                            {buttons}
+                            type="error"
+                        />
+                    {/if}
                     <Routes {routes} />
                 </div>
             </div>

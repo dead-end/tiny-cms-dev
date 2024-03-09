@@ -84,3 +84,11 @@ export type TData = Record<string, any>
 export type TItem = TEntry & {
     data: TData
 }
+
+/**
+ * Definition of a button for the popup window.
+ */
+export type TButton = {
+    label: string
+    onclick: () => void
+}
