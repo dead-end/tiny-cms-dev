@@ -10,7 +10,7 @@
     import Definitions from './routes/Definitions.svelte'
     import Item from './routes/Item.svelte'
     import { errorStore } from './ts/stores/errorStore'
-    import Popup from './components/Popup.svelte'
+    import Popup from './components/popup/Popup.svelte'
     import Definition from './routes/Definition.svelte'
 
     const routes = {

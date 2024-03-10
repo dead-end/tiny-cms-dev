@@ -9,7 +9,7 @@
     import { getDefinitionsListing } from '../ts/github/persistListings'
     import ButtonWrapper from '../components/ButtonWrapper.svelte'
     import FlexColWrapper from '../components/FlexColWrapper.svelte'
-    import Popup from '../components/Popup.svelte'
+    import DeleteEntryPopup from '../components/popup/DeleteEntryPopup.svelte'
     import { getLastCommit } from '../ts/github/persistUtils'
     import { deleteDefinitionFile } from '../ts/github/persistFiles'
 
@@ -95,26 +95,4 @@
     </FlexColWrapper>
 </CardWrapper>
 
-{#if deleteEntry}
-    <Popup
-        title="Delete Definition"
-        desc="Do you want to delete definition: '{deleteEntry.tc_title}'"
-        buttons={[
-            {
-                label: 'Close',
-                onclick: () => {
-                    deleteEntry = null
-                }
-            },
-            {
-                label: 'Delete',
-                onclick: async () => {
-                    if (deleteEntry) {
-                        await doDelete(deleteEntry.tc_id)
-                        deleteEntry = null
-                    }
-                }
-            }
-        ]}
-    />
-{/if}
+<DeleteEntryPopup {deleteEntry} {doDelete} />

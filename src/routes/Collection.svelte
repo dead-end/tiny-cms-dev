@@ -10,7 +10,7 @@
     import { getLastCommit } from '../ts/github/persistUtils'
     import { deleteItemFile } from '../ts/github/persistFiles'
     import FlexColWrapper from '../components/FlexColWrapper.svelte'
-    import Popup from '../components/Popup.svelte'
+    import DeleteEntryPopup from '../components/popup/DeleteEntryPopup.svelte'
 
     export let params = {
         collection: ''
@@ -20,7 +20,7 @@
 
     let entries: TEntry[] = []
 
-    const doDeleteItem = async (item: string) => {
+    const doDelete = async (item: string) => {
         try {
             const lastCommit = await getLastCommit($repoConfigStore)
             // TODO: unused
@@ -97,26 +97,4 @@
     </ButtonWrapper>
 </FlexColWrapper>
 
-{#if deleteEntry}
-    <Popup
-        title="Delete Item"
-        desc="Do you want to delete item: '{deleteEntry.tc_title}'"
-        buttons={[
-            {
-                label: 'Close',
-                onclick: () => {
-                    deleteEntry = null
-                }
-            },
-            {
-                label: 'Delete',
-                onclick: async () => {
-                    if (deleteEntry) {
-                        await doDeleteItem(deleteEntry.tc_id)
-                        deleteEntry = null
-                    }
-                }
-            }
-        ]}
-    />
-{/if}
+<DeleteEntryPopup {deleteEntry} {doDelete} />
