@@ -37,29 +37,14 @@ const getFile = async <T>(config: TRepoConfig, path: string) => {
 export const getItemFile = async (
     config: TRepoConfig,
     collection: string,
-    item: string
+    id: string
 ) => {
-    if (!collection || !item) {
+    if (!collection || !id) {
         throw new Error('getItemFile - Insufficient parameter')
     }
 
-    const path = getItemPath(config, collection, item)
+    const path = getItemPath(config, collection, id)
     return getFile<TItem>(config, path)
-}
-
-/**
- * The function gets a definition file.
- */
-export const getDefinitionFile = async (
-    config: TRepoConfig,
-    collection: string
-) => {
-    if (!collection) {
-        throw new Error('getDefinitionFile - Insufficient parameter')
-    }
-
-    const path = getDefinitionPath(config, collection)
-    return getFile<TDefinition>(config, path)
 }
 
 /**
@@ -68,15 +53,15 @@ export const getDefinitionFile = async (
 export const updateItemFile = async (
     config: TRepoConfig,
     collection: string,
-    item: string,
+    id: string,
     commit: string,
     data: TItem
 ) => {
-    if (!collection || !item || !commit || !data) {
+    if (!collection || !id || !commit || !data) {
         throw new Error('updateItemFile - Insufficient parameter')
     }
 
-    const path = getItemPath(config, collection, item)
+    const path = getItemPath(config, collection, id)
     const commitFile = await ghUpdateContent(config, path, commit, data)
 
     cacheSet(commitFile.data)
@@ -94,14 +79,71 @@ export const updateItemFile = async (
 export const deleteItemFile = async (
     config: TRepoConfig,
     collection: string,
-    item: string,
+    id: string,
     commit: string
 ) => {
-    if (!collection || !item || !commit) {
+    if (!collection || !id || !commit) {
         throw new Error('deleteItemFile - Insufficient parameter')
     }
 
-    const path = getItemPath(config, collection, item)
+    const path = getItemPath(config, collection, id)
+    const newCommit = await ghDeleteFile(config, path, commit)
+
+    cacheRemove(path)
+
+    return newCommit
+}
+
+/**
+ * The function gets a definition file.
+ */
+export const getDefinitionFile = async (config: TRepoConfig, id: string) => {
+    if (!id) {
+        throw new Error('getDefinitionFile - Insufficient parameter')
+    }
+
+    const path = getDefinitionPath(config, id)
+    return getFile<TDefinition>(config, path)
+}
+
+/**
+ * The function updates a definition file.
+ */
+export const updateDefinitionFile = async (
+    config: TRepoConfig,
+    id: string,
+    commit: string,
+    data: TDefinition
+) => {
+    if (!id || !commit || !data) {
+        throw new Error('updateDefinitionFile - Insufficient parameter')
+    }
+
+    const path = getDefinitionPath(config, id)
+    const commitFile = await ghUpdateContent(config, path, commit, data)
+
+    cacheSet(commitFile.data)
+
+    const result: TCommit<TDefinition> = {
+        commit: commitFile.commit,
+        data: JSON.parse(commitFile.data.text)
+    }
+    return result
+}
+
+/**
+ * The function deletes a definition file.
+ */
+export const deleteDefinitionFile = async (
+    config: TRepoConfig,
+    id: string,
+    commit: string
+) => {
+    if (!id || !commit) {
+        throw new Error('deleteDefinitionFile - Insufficient parameter')
+    }
+
+    const path = getDefinitionPath(config, id)
     const newCommit = await ghDeleteFile(config, path, commit)
 
     cacheRemove(path)
