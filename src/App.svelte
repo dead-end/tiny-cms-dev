@@ -1,8 +1,6 @@
 <script lang="ts">
     import Routes from 'svelte-spa-router'
-
     import AuthGard from './components/AuthGard.svelte'
-
     import Home from './routes/Home.svelte'
     import About from './routes/About.svelte'
     import NotFound from './routes/NotFound.svelte'
@@ -20,6 +18,7 @@
         '/about': About,
         '/definitions': Definitions,
         '/definitions/create': Definition,
+        '/definitions/definition/:definition': Definition,
         '/collection/:collection': Collection,
         '/collection/:collection/create': Item,
         '/collection/:collection/item/:item': Item,
