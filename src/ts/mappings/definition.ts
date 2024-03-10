@@ -1,5 +1,5 @@
-import { formDataStr } from './libs/utils/formData'
-import type { TData, TDefinition } from './types'
+import { formDataStr } from '../libs/utils/formData'
+import type { TData, TDefinition } from '../types'
 
 /**
  * The function maps the entry part of a definition to a map.
