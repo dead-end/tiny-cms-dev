@@ -25,8 +25,6 @@ export const itemFromFormData = (
     formData: FormData,
     fields: TField[]
 ) => {
-    let tmp
-
     if (isCreate) {
         item.tc_id = formDataStr(formData, 'tc_id', 'No id')
     }
