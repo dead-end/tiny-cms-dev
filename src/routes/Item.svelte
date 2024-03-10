@@ -3,7 +3,7 @@
         formCreateValidator,
         formDataChanged
     } from '../ts/validation/formValidator'
-    import { itemFromFormData, itemToData } from '../ts/item'
+    import { itemFromFormData, itemToData } from '../ts/mappings/item'
     import {
         getItemFile,
         getDefinitionFile,
@@ -21,6 +21,8 @@
     import ButtonWrapper from '../components/ButtonWrapper.svelte'
     import { fieldsDefault } from '../ts/libs/utils/fields'
     import FlexColWrapper from '../components/FlexColWrapper.svelte'
+    import { entryGet } from '../ts/entry'
+    import Entry from '../components/Entry.svelte'
 
     export let params = {
         collection: '',
@@ -36,41 +38,7 @@
     let item: TItem
     let commit: string
 
-    let fields: TField[] = []
-    if (isCreate) {
-        fields.push({
-            id: 'tc_id',
-            component: 'text',
-            label: 'Id',
-            validators: [
-                {
-                    validator: 'required'
-                },
-                {
-                    validator: 'max',
-                    props: {
-                        max: 32
-                    }
-                }
-            ]
-        })
-    }
-    fields.push({
-        id: 'tc_title',
-        component: 'text',
-        label: 'Title',
-        validators: [
-            {
-                validator: 'required'
-            },
-            {
-                validator: 'max',
-                props: {
-                    max: 32
-                }
-            }
-        ]
-    })
+    let fields: TField[] = entryGet(isCreate)
 
     let { formErrors, formValidate, formFieldsUpdate } = formCreateValidator()
     let data: TData = {}
@@ -148,65 +116,40 @@
     }
 
     /**
-     * Load the item from the repository.
+     * Load everything on mount.
      */
-    const loadItem = async () => {
+    onMount(async () => {
         try {
-            const commitItem = await getItemFile(
-                $repoConfigStore,
-                params.collection,
-                params.item
-            )
-
-            commit = commitItem.commit
-            item = commitItem.data
-        } catch (e) {
-            errorStore.set(getErrorMsg(e))
-        }
-    }
-
-    /**
-     * Loading the definition of the item.
-     */
-    const loadDefinition = async () => {
-        try {
+            //
+            // Load definition
+            //
             const commitDefinition = await getDefinitionFile(
                 $repoConfigStore,
                 params.collection
             )
-
             definition = commitDefinition.data
+
+            if (isCreate) {
+                initItem(definition)
+                commit = await getLastCommit($repoConfigStore)
+            } else {
+                //
+                // Load item
+                //
+                const commitItem = await getItemFile(
+                    $repoConfigStore,
+                    params.collection,
+                    params.item
+                )
+                item = commitItem.data
+                commit = commitItem.commit
+            }
+
+            fields = formFieldsUpdate(fields.concat(definition.fields))
+            data = itemToData(isCreate, item, data)
         } catch (e) {
             errorStore.set(getErrorMsg(e))
         }
-    }
-
-    /**
-     * Load the last commit of the repository.
-     */
-    const loadCommit = async () => {
-        try {
-            commit = await getLastCommit($repoConfigStore)
-        } catch (e) {
-            errorStore.set(getErrorMsg(e))
-        }
-    }
-
-    /**
-     * Load everything on mount.
-     */
-    onMount(async () => {
-        await loadDefinition()
-
-        if (isCreate) {
-            initItem(definition)
-            await loadCommit()
-        } else {
-            await loadItem()
-        }
-
-        fields = formFieldsUpdate(fields.concat(definition.fields))
-        data = itemToData(isCreate, item, data)
     })
 </script>
 
@@ -215,18 +158,8 @@
         label={`Collection: ${definition.tc_title} Item: ${item.tc_title}`}
     >
         <form on:submit|preventDefault={submit}>
-            {#if !isCreate}
-                <div class="text-sm text-right text-gray-500 pb-4">
-                    <div>
-                        Modifield: {new Date(item.tc_modified).toLocaleString()}
-                    </div>
-                    <div>
-                        Commit: {commit.substring(0, 7)}
-                    </div>
-                </div>
+            <Entry show={!isCreate} entry={item} {commit} />
 
-                <h3 class="pb-4">ID: {item.tc_id}</h3>
-            {/if}
             <FlexColWrapper>
                 <InputFields {fields} {data} {formErrors} {disabled} />
                 <ButtonWrapper>
@@ -238,11 +171,14 @@
                         >
                     {:else}
                         <button class="btn-base" type="submit">Submit</button>
-                        <button
-                            class="btn-base"
-                            type="button"
-                            on:click={() => (disabled = true)}>Cancel</button
-                        >
+                        {#if !isCreate}
+                            <button
+                                class="btn-base"
+                                type="button"
+                                on:click={() => (disabled = true)}
+                                >Cancel</button
+                            >
+                        {/if}
                     {/if}
                     <button
                         class="btn-base"
