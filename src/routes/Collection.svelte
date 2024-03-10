@@ -16,22 +16,14 @@
         collection: ''
     }
 
-    let deleteItem: TEntry | null = null
+    let deleteEntry: TEntry | null = null
 
     let entries: TEntry[] = []
-
-    const loadCollection = async (collection: string) => {
-        try {
-            entries = await getCollectionListing($repoConfigStore, collection)
-        } catch (e) {
-            errorStore.set(getErrorMsg(e))
-        }
-    }
 
     const doDeleteItem = async (item: string) => {
         try {
             const lastCommit = await getLastCommit($repoConfigStore)
-
+            // TODO: unused
             const newCommit = await deleteItemFile(
                 $repoConfigStore,
                 params.collection,
@@ -39,14 +31,24 @@
                 lastCommit
             )
 
-            loadCollection(params.collection)
+            entries = await getCollectionListing(
+                $repoConfigStore,
+                params.collection
+            )
         } catch (e) {
             errorStore.set(getErrorMsg(e))
         }
     }
 
     onMount(async () => {
-        loadCollection(params.collection)
+        try {
+            entries = await getCollectionListing(
+                $repoConfigStore,
+                params.collection
+            )
+        } catch (e) {
+            errorStore.set(getErrorMsg(e))
+        }
     })
 </script>
 
@@ -79,7 +81,7 @@
                         >
                         <button
                             class="btn-base"
-                            on:click={() => (deleteItem = item)}>Delete</button
+                            on:click={() => (deleteEntry = item)}>Delete</button
                         >
                     </ButtonWrapper>
                 </td>
@@ -95,23 +97,23 @@
     </ButtonWrapper>
 </FlexColWrapper>
 
-{#if deleteItem}
+{#if deleteEntry}
     <Popup
         title="Delete Item"
-        desc="Do you want to delete item: '{deleteItem.tc_title}'"
+        desc="Do you want to delete item: '{deleteEntry.tc_title}'"
         buttons={[
             {
                 label: 'Close',
                 onclick: () => {
-                    deleteItem = null
+                    deleteEntry = null
                 }
             },
             {
                 label: 'Delete',
                 onclick: async () => {
-                    if (deleteItem) {
-                        await doDeleteItem(deleteItem.tc_id)
-                        deleteItem = null
+                    if (deleteEntry) {
+                        await doDeleteItem(deleteEntry.tc_id)
+                        deleteEntry = null
                     }
                 }
             }
