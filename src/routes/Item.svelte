@@ -54,7 +54,8 @@
                 params.collection,
                 updatedItem.tc_id,
                 commit,
-                updatedItem
+                updatedItem,
+                isCreate
             )
 
             commit = commitItem.commit

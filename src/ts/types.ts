@@ -43,7 +43,7 @@ export type TFile = {
  * If we want to update a file, we need the oid and the commit id.
  */
 export type TCheckFile = {
-    oid: string
+    oid: string | null
     path: string
     commit: string
 }

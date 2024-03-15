@@ -12,6 +12,17 @@ import { ghUpdateContent } from './queries/ghUpdateFile'
 const getFile = async <T>(config: TRepoConfig, path: string) => {
     const checkFile = await ghCheckFile(config, path)
 
+    //
+    // File does not exist on the HEAD of the branch.
+    //
+    if (checkFile.oid === null) {
+        throw new Error(`File does not exist: ${path}`)
+    }
+
+    //
+    // Check if the path with the oid of the HEAD exists in the cache. Older
+    // versions are deleted.
+    //
     const cached = cacheGet(path, checkFile.oid)
     if (cached) {
         const result: TCommit<T> = {
@@ -21,6 +32,9 @@ const getFile = async <T>(config: TRepoConfig, path: string) => {
         return result
     }
 
+    //
+    // Get the file from the HEAD with its content and update the cache.
+    //
     const commitFile = await ghGetFile(config, path)
     cacheSet(commitFile.data)
 
@@ -29,6 +43,23 @@ const getFile = async <T>(config: TRepoConfig, path: string) => {
         commit: commitFile.commit
     }
     return result
+}
+
+/**
+ * The function returns true if the file exists on the branch with the given
+ * commit. If the commit does not match, we throw an error, because our version
+ * is stale and we need a refresh.
+ */
+const existsFile = async (
+    config: TRepoConfig,
+    path: string,
+    commit: string
+) => {
+    const checkFile = await ghCheckFile(config, path)
+    if (checkFile.commit !== commit) {
+        throw new Error(`Current commit: ${checkFile.commit} is not: ${commit}`)
+    }
+    return checkFile.oid !== null
 }
 
 /**
@@ -55,13 +86,17 @@ export const updateItemFile = async (
     collection: string,
     id: string,
     commit: string,
-    data: TItem
+    data: TItem,
+    create: boolean
 ) => {
     if (!collection || !id || !commit || !data) {
         throw new Error('updateItemFile - Insufficient parameter')
     }
 
     const path = getItemPath(config, collection, id)
+    if (create && (await existsFile(config, path, commit))) {
+        throw new Error(`Item with id: ${id} already exists!`)
+    }
     const commitFile = await ghUpdateContent(config, path, commit, data)
 
     cacheSet(commitFile.data)
@@ -113,13 +148,17 @@ export const updateDefinitionFile = async (
     config: TRepoConfig,
     id: string,
     commit: string,
-    data: TDefinition
+    data: TDefinition,
+    create: boolean
 ) => {
     if (!id || !commit || !data) {
         throw new Error('updateDefinitionFile - Insufficient parameter')
     }
 
     const path = getDefinitionPath(config, id)
+    if (create && (await existsFile(config, path, commit))) {
+        throw new Error(`Definition with id: ${id} already exists!`)
+    }
     const commitFile = await ghUpdateContent(config, path, commit, data)
 
     cacheSet(commitFile.data)

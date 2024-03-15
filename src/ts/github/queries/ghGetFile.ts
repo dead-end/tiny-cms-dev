@@ -3,7 +3,8 @@ import type { TCheckFile, TCommit, TFile } from '../../types'
 import { processGithubQuery } from './github'
 
 /**
- * The query gets the oid of the file and the commit id.
+ * The query gets the oid of the file (which may not exist) and the commit id
+ * of the branch.
  */
 const queryWithoutCount = `
 query getFile($owner: String!, $name: String!, $branch: String!, $exp: String!) {
@@ -69,11 +70,20 @@ const getBody = (repoConfig: TRepoConfig, query: string, path: string) => {
     }
 }
 
+/**
+ * The commit of the branch always exists.
+ */
 const getCommit = (repository: any) => {
     return repository.ref.target.history.nodes[0].oid as string
 }
 
+/**
+ * The oid may not exist if the file does not exist.
+ */
 const getOid = (repository: any) => {
+    if (repository.object === null) {
+        return null
+    }
     return repository.object.oid as string
 }
 
@@ -111,10 +121,15 @@ export const ghGetFile = async (repoConfig: TRepoConfig, path: string) => {
 
     const repository = queryResult.data.repository
 
+    const oid = getOid(repository)
+    if (oid === null) {
+        throw new Error(`File does not exist: ${path}`)
+    }
+
     const result: TCommit<TFile> = {
         data: {
             path: path,
-            oid: getOid(repository),
+            oid: oid,
             text: getText(repository)
         },
         commit: getCommit(repository)

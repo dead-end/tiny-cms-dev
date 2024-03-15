@@ -5,7 +5,7 @@
     import FlexColWrapper from '../components/FlexColWrapper.svelte'
     import InputFields from '../components/InputFields.svelte'
     import { entryGet } from '../ts/entry'
-    import type { TData, TDefinition, TEntry, TField } from '../ts/types'
+    import type { TData, TDefinition, TField } from '../ts/types'
     import {
         formCreateValidator,
         formDataChanged
@@ -46,7 +46,8 @@
                 $repoConfigStore,
                 updatedDefinition.tc_id,
                 commit,
-                updatedDefinition
+                updatedDefinition,
+                isCreate
             )
 
             commit = commitItem.commit
