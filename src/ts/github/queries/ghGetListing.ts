@@ -43,5 +43,13 @@ export const ghGetListing = async (config: TRepoConfig, path: string) => {
         config.token,
         getBody(config, path)
     )
+
+    //
+    // Return an empty list if the path does not exist.
+    //
+    if (queryResult.data.repository.object == null) {
+        return [] as TListing[]
+    }
+
     return queryResult.data.repository.object.entries as TListing[]
 }
