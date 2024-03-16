@@ -17,7 +17,7 @@
     import { getLastCommit } from '../ts/github/persistUtils'
     import type { TData, TDefinition, TField, TItem } from '../ts/types'
     import CardWrapper from '../components/CardWrapper.svelte'
-    import InputFields from '../components/InputFields.svelte'
+    import FormFields from '../components/FormFields.svelte'
     import ButtonWrapper from '../components/ButtonWrapper.svelte'
     import { fieldsDefault } from '../ts/libs/utils/fields'
     import FlexColWrapper from '../components/FlexColWrapper.svelte'
@@ -162,7 +162,7 @@
             <Entry show={!isCreate} entry={item} {commit} />
 
             <FlexColWrapper>
-                <InputFields {fields} {data} {formErrors} {disabled} />
+                <FormFields {fields} {data} {formErrors} {disabled} />
                 <ButtonWrapper>
                     {#if disabled}
                         <button

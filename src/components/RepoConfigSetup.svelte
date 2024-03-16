@@ -5,7 +5,7 @@
     import { formDataStrValue } from '../ts/libs/utils/formData'
     import CardWrapper from './CardWrapper.svelte'
     import type { TField } from '../ts/types'
-    import InputFields from './InputFields.svelte'
+    import FormFields from './FormFields.svelte'
     import ButtonWrapper from './ButtonWrapper.svelte'
     import { fieldsDefault } from '../ts/libs/utils/fields'
     import FlexColWrapper from './FlexColWrapper.svelte'
@@ -139,7 +139,7 @@
     <CardWrapper label="Login">
         <form on:submit|preventDefault={submit}>
             <FlexColWrapper>
-                <InputFields {fields} {data} {formErrors} disabled={false} />
+                <FormFields {fields} {data} {formErrors} disabled={false} />
                 <ButtonWrapper>
                     <button class="btn-base" type="submit">Submit</button>
                 </ButtonWrapper>

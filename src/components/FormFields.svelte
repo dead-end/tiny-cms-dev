@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { TData, TField } from '../ts/types'
-    import InputField from './InputField.svelte'
+    import FormField from './FormField.svelte'
 
     export let fields: TField[]
     export let data: TData
@@ -9,5 +9,5 @@
 </script>
 
 {#each fields as field}
-    <InputField {field} {data} {formErrors} {disabled} />
+    <FormField {field} {data} {formErrors} {disabled} />
 {/each}

@@ -9,7 +9,6 @@ export type TField = {
     component: string
     type?: string
     value?: string
-    props?: Record<string, any>
     validators: TValidatorDefinition[]
 }
 

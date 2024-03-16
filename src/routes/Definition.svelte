@@ -3,7 +3,7 @@
     import ButtonWrapper from '../components/ButtonWrapper.svelte'
     import CardWrapper from '../components/CardWrapper.svelte'
     import FlexColWrapper from '../components/FlexColWrapper.svelte'
-    import InputFields from '../components/InputFields.svelte'
+    import FormFields from '../components/FormFields.svelte'
     import { entryGet } from '../ts/entry'
     import type { TData, TDefinition, TField } from '../ts/types'
     import {
@@ -132,7 +132,7 @@
     <Entry show={!isCreate} entry={definition} {commit} />
     <form on:submit|preventDefault={submit}>
         <FlexColWrapper>
-            <InputFields {fields} {data} {formErrors} {disabled} />
+            <FormFields {fields} {data} {formErrors} {disabled} />
             <ButtonWrapper>
                 {#if disabled}
                     <button

@@ -19,5 +19,4 @@
     error={formErrors.get(field.id)}
     {...type}
     {disabled}
-    {...field.props}
 />

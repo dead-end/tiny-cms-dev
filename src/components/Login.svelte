@@ -4,7 +4,7 @@
     import { formCreateValidator } from '../ts/validation/formValidator'
     import CardWrapper from './CardWrapper.svelte'
     import type { TField } from '../ts/types'
-    import InputFields from './InputFields.svelte'
+    import FormFields from './FormFields.svelte'
     import ButtonWrapper from './ButtonWrapper.svelte'
     import FlexColWrapper from './FlexColWrapper.svelte'
 
@@ -50,7 +50,7 @@
     <CardWrapper label="Login">
         <form on:submit|preventDefault={submit}>
             <FlexColWrapper>
-                <InputFields {fields} {data} {formErrors} disabled={false} />
+                <FormFields {fields} {data} {formErrors} disabled={false} />
                 <ButtonWrapper>
                     <button
                         type="button"
