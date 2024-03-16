@@ -19,7 +19,7 @@
         {id}
         name={id}
         class="input-base"
-        type="text"
+        type="password"
         {value}
         on:blur={onblur}
         {disabled}

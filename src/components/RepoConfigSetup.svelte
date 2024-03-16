@@ -3,12 +3,12 @@
     import { formCreateValidator } from '../ts/validation/formValidator'
     import { replace } from 'svelte-spa-router'
     import { formDataStrValue } from '../ts/libs/utils/formData'
-    import CardWrapper from './CardWrapper.svelte'
+    import CardWrapper from './wrappers/CardWrapper.svelte'
     import type { TField } from '../ts/types'
     import FormFields from './FormFields.svelte'
-    import ButtonWrapper from './ButtonWrapper.svelte'
+    import ButtonWrapper from './wrappers/ButtonWrapper.svelte'
     import { fieldsDefault } from '../ts/libs/utils/fields'
-    import FlexColWrapper from './FlexColWrapper.svelte'
+    import FlexColWrapper from './wrappers/FlexColWrapper.svelte'
 
     const fields: TField[] = [
         {
@@ -54,8 +54,7 @@
         {
             id: 'token',
             label: 'Token',
-            component: 'text',
-            type: 'password',
+            component: 'password',
             value: '',
             validators: [
                 {
@@ -66,8 +65,7 @@
         {
             id: 'password',
             label: 'Password',
-            component: 'text',
-            type: 'password',
+            component: 'password',
             value: '',
             validators: [
                 {
@@ -90,8 +88,7 @@
         {
             id: 'confirm',
             label: 'Confirm',
-            component: 'text',
-            type: 'password',
+            component: 'password',
             value: '',
             validators: [
                 {

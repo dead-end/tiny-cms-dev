@@ -2,17 +2,16 @@
     import { repoConfigStore } from '../ts/stores/repoConfig'
     import { formDataStrValue } from '../ts/libs/utils/formData'
     import { formCreateValidator } from '../ts/validation/formValidator'
-    import CardWrapper from './CardWrapper.svelte'
+    import CardWrapper from './wrappers/CardWrapper.svelte'
     import type { TField } from '../ts/types'
     import FormFields from './FormFields.svelte'
-    import ButtonWrapper from './ButtonWrapper.svelte'
-    import FlexColWrapper from './FlexColWrapper.svelte'
+    import ButtonWrapper from './wrappers/ButtonWrapper.svelte'
+    import FlexColWrapper from './wrappers/FlexColWrapper.svelte'
 
     const fields: TField[] = [
         {
             id: 'password',
-            component: 'text',
-            type: 'password',
+            component: 'password',
             label: 'Password',
             validators: [
                 {

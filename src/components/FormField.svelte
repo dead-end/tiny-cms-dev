@@ -7,8 +7,6 @@
     export let data: TData
     export let formErrors: Map<string, string>
     export let disabled: boolean
-
-    let type = field.type ? { type: field.type } : {}
 </script>
 
 <svelte:component
@@ -17,6 +15,5 @@
     label={field.label}
     value={defaultString(data[field.id])}
     error={formErrors.get(field.id)}
-    {...type}
     {disabled}
 />
