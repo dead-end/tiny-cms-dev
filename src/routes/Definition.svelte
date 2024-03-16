@@ -1,8 +1,8 @@
 <script lang="ts">
     import { location, push } from 'svelte-spa-router'
-    import ButtonWrapper from '../components/ButtonWrapper.svelte'
-    import CardWrapper from '../components/CardWrapper.svelte'
-    import FlexColWrapper from '../components/FlexColWrapper.svelte'
+    import ButtonWrapper from '../components/wrappers/ButtonWrapper.svelte'
+    import CardWrapper from '../components/wrappers/CardWrapper.svelte'
+    import FlexColWrapper from '../components/wrappers/FlexColWrapper.svelte'
     import FormFields from '../components/FormFields.svelte'
     import { entryGet } from '../ts/entry'
     import type { TData, TDefinition, TField } from '../ts/types'

@@ -3,13 +3,13 @@
     import type { TEntry } from '../ts/types'
     import { repoConfigStore } from '../ts/stores/repoConfig'
     import { push } from 'svelte-spa-router'
-    import ButtonWrapper from '../components/ButtonWrapper.svelte'
+    import ButtonWrapper from '../components/wrappers/ButtonWrapper.svelte'
     import { errorStore } from '../ts/stores/errorStore'
     import { getErrorMsg } from '../ts/libs/utils/utils'
     import { getCollectionListing } from '../ts/github/persistListings'
     import { getLastCommit } from '../ts/github/persistUtils'
     import { deleteItemFile } from '../ts/github/persistFiles'
-    import FlexColWrapper from '../components/FlexColWrapper.svelte'
+    import FlexColWrapper from '../components/wrappers/FlexColWrapper.svelte'
     import DeleteEntryPopup from '../components/popup/DeleteEntryPopup.svelte'
 
     export let params = {

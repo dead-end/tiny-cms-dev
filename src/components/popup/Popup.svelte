@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { TButton } from '../../ts/types'
-    import ButtonWrapper from './../ButtonWrapper.svelte'
+    import ButtonWrapper from '../wrappers/ButtonWrapper.svelte'
 
     export let title: string
     export let desc: string
