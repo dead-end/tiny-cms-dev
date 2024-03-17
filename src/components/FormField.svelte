@@ -10,7 +10,7 @@
 </script>
 
 <svelte:component
-    this={componentRegistry[field.component]}
+    this={componentRegistry[field.component].component}
     id={field.id}
     label={field.label}
     value={defaultString(data[field.id])}
