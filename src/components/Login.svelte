@@ -3,23 +3,12 @@
     import { formDataStrValue } from '../ts/libs/utils/formData'
     import { formCreateValidator } from '../ts/validation/formValidator'
     import CardWrapper from './wrappers/CardWrapper.svelte'
-    import type { TField } from '../ts/types'
     import FormFields from './FormFields.svelte'
     import ButtonWrapper from './wrappers/ButtonWrapper.svelte'
     import FlexColWrapper from './wrappers/FlexColWrapper.svelte'
+    import { FLoginFields } from '../ts/fielddefs/loginFields'
 
-    const fields: TField[] = [
-        {
-            id: 'password',
-            component: 'password',
-            label: 'Password',
-            validators: [
-                {
-                    validator: 'required'
-                }
-            ]
-        }
-    ]
+    const fields = FLoginFields
 
     const data = {
         password: ''

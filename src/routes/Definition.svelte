@@ -4,7 +4,6 @@
     import CardWrapper from '../components/wrappers/CardWrapper.svelte'
     import FlexColWrapper from '../components/wrappers/FlexColWrapper.svelte'
     import FormFields from '../components/FormFields.svelte'
-    import { entryGet } from '../ts/entry'
     import type { TData, TDefinition, TField } from '../ts/types'
     import {
         formCreateValidator,
@@ -25,6 +24,7 @@
     import { getLastCommit } from '../ts/github/persistUtils'
     import Entry from '../components/Entry.svelte'
     import Field from '../components/Field.svelte'
+    import { getEntryFields } from '../ts/fielddefs/entryFields'
 
     export let params = {
         definition: ''
@@ -36,7 +36,7 @@
     let definition: TDefinition
     let commit: string
 
-    let fields: TField[] = entryGet(isCreate)
+    let fields: TField[] = getEntryFields(isCreate)
 
     let { formErrors, formValidate } = formCreateValidator(fields)
     let data: TData = {}

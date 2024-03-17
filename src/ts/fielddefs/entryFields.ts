@@ -1,15 +1,21 @@
-import type { TField } from './types'
+import type { TField } from '../types'
 
 /**
- * Definition of the is field.
+ * Definition of the id field of an entry.
  */
-const idField = {
+const FIdField = {
     id: 'tc_id',
     component: 'text',
     label: 'Id',
     validators: [
         {
             validator: 'required'
+        },
+        {
+            validator: 'regex',
+            props: {
+                regex: '^[a-zA-Z0-9_-]*$'
+            }
         },
         {
             validator: 'max',
@@ -21,9 +27,9 @@ const idField = {
 }
 
 /**
- * Definition of the title field.
+ * Definition of the title field of an Entry.
  */
-const titleField = {
+const FTitleField = {
     id: 'tc_title',
     component: 'text',
     label: 'Title',
@@ -41,14 +47,14 @@ const titleField = {
 }
 
 /**
- * The function returns the meta data for an item.
+ * Get the entry fields depending on the isCreate flag.
  */
-export const entryGet = (isCreate: boolean) => {
+export const getEntryFields = (isCreate: boolean) => {
     const fields: TField[] = []
     if (isCreate) {
-        fields.push(idField)
+        fields.push(FIdField)
     }
 
-    fields.push(titleField)
+    fields.push(FTitleField)
     return fields
 }

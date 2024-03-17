@@ -21,8 +21,8 @@
     import ButtonWrapper from '../components/wrappers/ButtonWrapper.svelte'
     import { fieldsDefault } from '../ts/libs/utils/fields'
     import FlexColWrapper from '../components/wrappers/FlexColWrapper.svelte'
-    import { entryGet } from '../ts/entry'
     import Entry from '../components/Entry.svelte'
+    import { getEntryFields } from '../ts/fielddefs/entryFields'
 
     export let params = {
         collection: '',
@@ -38,7 +38,7 @@
     let item: TItem
     let commit: string
 
-    let fields: TField[] = entryGet(isCreate)
+    let fields: TField[] = getEntryFields(isCreate)
 
     let { formErrors, formValidate, formFieldsUpdate } = formCreateValidator()
     let data: TData = {}
