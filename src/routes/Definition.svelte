@@ -24,6 +24,7 @@
     import { onMount } from 'svelte'
     import { getLastCommit } from '../ts/github/persistUtils'
     import Entry from '../components/Entry.svelte'
+    import Field from '../components/Field.svelte'
 
     export let params = {
         definition: ''
@@ -133,6 +134,13 @@
     <form on:submit|preventDefault={submit}>
         <FlexColWrapper>
             <FormFields {fields} {data} {formErrors} {disabled} />
+
+            {#if definition?.fields}
+                {#each definition.fields as field}
+                    <Field {field} />
+                {/each}
+            {/if}
+
             <ButtonWrapper>
                 {#if disabled}
                     <button
