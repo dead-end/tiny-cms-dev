@@ -1,5 +1,7 @@
 import AreaInput from '../components/input/AreaInput.svelte'
+import Checkbox from '../components/input/Checkbox.svelte'
 import PasswordInput from '../components/input/PasswordInput.svelte'
+import Selectbox from '../components/input/Selectbox.svelte'
 import TextInput from '../components/input/TextInput.svelte'
 import type { TComponent } from './types'
 
@@ -19,5 +21,13 @@ export const componentRegistry: Record<string, TComponent> = {
     area: {
         component: AreaInput,
         validators: ['required', 'min', 'max', 'regex']
+    },
+    checkbox: {
+        component: Checkbox,
+        validators: []
+    },
+    selectbox: {
+        component: Selectbox,
+        validators: ['required']
     }
 }
