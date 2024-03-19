@@ -1,5 +1,6 @@
 import type { TData, TField } from '../types'
-import { validatorRegistry, type TValidatorFunction } from './validators'
+import type { TValidatorFunction } from '../types/validators'
+import { validatorRegistry } from './validators'
 
 // TODO: native input errors
 export const formCreateValidator = (fields?: TField[]) => {
@@ -51,7 +52,7 @@ export const formCreateValidator = (fields?: TField[]) => {
 
             field.validators.forEach((validator) => {
                 validatorFunctions.push(
-                    validatorRegistry[validator.validator](validator.props)
+                    validatorRegistry[validator.validator](validator)
                 )
             })
 

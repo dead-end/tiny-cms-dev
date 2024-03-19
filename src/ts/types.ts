@@ -1,7 +1,4 @@
-export type TValidatorDefinition = {
-    validator: string
-    props?: Record<string, any>
-}
+import type { TValidatorDefinition } from './types/validators'
 
 export type TField = {
     id: string
