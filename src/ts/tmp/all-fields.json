@@ -1,0 +1,54 @@
+{
+    "tc_id": "all-fields",
+    "tc_title": "All Fields",
+    "tc_modified": 1707640660245,
+    "fields": [
+        {
+            "id": "desc",
+            "label": "Description",
+            "component": "area",
+            "validators": [
+                {
+                    "validator": "required"
+                }
+            ]
+        },
+        {
+            "id": "url",
+            "label": "Url",
+            "component": "text",
+            "props": {
+                "type": "text"
+            },
+            "validators": [
+                {
+                    "validator": "required"
+                },
+                {
+                    "validator": "regex",
+                    "props": {
+                        "regex": "^(http://|https://)*"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "checkbox",
+            "label": "Checkbox",
+            "component": "checkbox",
+            "value": "on",
+            "validators": []
+        },
+        {
+            "id": "selectbox",
+            "label": "Selectbox",
+            "component": "selectbox",
+            "value": "green,red,blue,black",
+            "validators": [
+                {
+                    "validator": "required"
+                }
+            ]
+        }
+    ]
+}
