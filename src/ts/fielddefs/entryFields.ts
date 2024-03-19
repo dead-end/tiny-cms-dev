@@ -3,7 +3,7 @@ import type { TField } from '../types'
 /**
  * Definition of the id field of an entry.
  */
-const FIdField = {
+const FIdField: TField = {
     id: 'tc_id',
     component: 'text',
     label: 'Id',
@@ -29,7 +29,7 @@ const FIdField = {
 /**
  * Definition of the title field of an Entry.
  */
-const FTitleField = {
+const FTitleField: TField = {
     id: 'tc_title',
     component: 'text',
     label: 'Title',
@@ -40,7 +40,7 @@ const FTitleField = {
         {
             validator: 'max',
             props: {
-                max: 32
+                max: 64
             }
         }
     ]
