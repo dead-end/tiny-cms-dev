@@ -9,7 +9,8 @@
             "component": "area",
             "validators": [
                 {
-                    "validator": "required"
+                    "validator": "required",
+                    "message": "Please enter a description!"
                 }
             ]
         },
@@ -27,8 +28,9 @@
                 {
                     "validator": "regex",
                     "props": {
-                        "regex": "^(http://|https://)*"
-                    }
+                        "regex": "^(http://|https://)"
+                    },
+                    "message": "Please enter an URL!"
                 }
             ]
         },

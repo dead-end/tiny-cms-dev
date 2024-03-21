@@ -2,12 +2,12 @@
  * The definition of a validator.
  *
  * validator: id
- * msg: error message
+ * message: error message
  */
 export type TValidatorDefinition = {
     validator: string
     props?: Record<string, any>
-    msg?: string
+    message?: string
 }
 
 /**

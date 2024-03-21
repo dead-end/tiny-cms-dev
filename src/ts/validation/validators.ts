@@ -1,18 +1,4 @@
-import type {
-    TValidatorCreator,
-    TValidatorDefinition
-} from '../types/validators'
-
-/**
- * The function checks if an error message is defined for the validator. If not
- * it returns the default error message.
- */
-const getError = (validator: TValidatorDefinition, msg: string) => {
-    if (validator.msg) {
-        return validator.msg
-    }
-    return msg
-}
+import type { TValidatorCreator } from '../types/validators'
 
 /**
  * The function ensures that the form field has a value.
@@ -20,7 +6,7 @@ const getError = (validator: TValidatorDefinition, msg: string) => {
 export const validateRequired: TValidatorCreator = (validator) => {
     return (value) => {
         if (!value) {
-            return getError(validator, 'Please enter a value!')
+            return validator.message || 'Please enter a value!'
         }
     }
 }
@@ -40,7 +26,7 @@ export const validateMin: TValidatorCreator = (validator) => {
         }
 
         if (value.length < min) {
-            return getError(validator, `The minumum length is: ${min}`)
+            return validator.message || `The minumum length is: ${min}`
         }
     }
 }
@@ -60,7 +46,7 @@ export const validateMax: TValidatorCreator = (validator) => {
         }
 
         if (value.length > max) {
-            return getError(validator, `The maximum length is: ${max}`)
+            return validator.message || `The maximum length is: ${max}`
         }
     }
 }
@@ -78,7 +64,7 @@ export const validateRegex: TValidatorCreator = (validator) => {
 
     return (value) => {
         if (value !== '' && !regex.test(value)) {
-            return getError(validator, `Value does not match ${regex}`)
+            return validator.message || `Value does not match ${regex}`
         }
     }
 }
@@ -96,7 +82,7 @@ export const validateFieldEquals: TValidatorCreator = (validator) => {
     const field = validator.props.field
     return (value, formData) => {
         if (value !== formData.get(field)) {
-            return getError(validator, `Value does not match field: ${field}`)
+            return validator.message || `Value does not match field: ${field}`
         }
     }
 }

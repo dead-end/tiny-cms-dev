@@ -19,6 +19,7 @@ export const formCreateValidator = (fields?: TField[]) => {
         formErrors.set(field, '')
 
         for (const validator of fieldValidators) {
+            console.log('field', field, validator)
             const msg = validator(formData.get(field), formData)
             if (msg) {
                 formErrors.set(field, msg)
