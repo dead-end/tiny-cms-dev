@@ -1,5 +1,6 @@
 import type { TRepoConfig } from '../../stores/repoConfig'
-import type { TCommit, TEntry, TFile } from '../../types'
+import type { TCommit, TFile } from '../../types/files'
+import type { TEntry } from '../../types/types'
 import { processGithubQuery } from './github'
 
 /*

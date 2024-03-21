@@ -1,5 +1,5 @@
 import type { TRepoConfig } from '../../stores/repoConfig'
-import type { TListing } from '../../types'
+import type { TListing } from '../../types/files'
 import { processGithubQuery } from './github'
 
 /**
