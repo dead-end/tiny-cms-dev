@@ -4,7 +4,7 @@
     import CardWrapper from '../components/wrappers/CardWrapper.svelte'
     import FlexColWrapper from '../components/wrappers/FlexColWrapper.svelte'
     import FormFields from '../components/FormFields.svelte'
-    import type { TData, TDefinition, TField } from '../ts/types'
+    import type { TData, TDefinition, TField } from '../ts/types/entries'
     import {
         formCreateValidator,
         formDataChanged

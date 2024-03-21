@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte'
-    import type { TEntry } from '../ts/types'
+    import type { TEntry } from '../ts/types/entries'
     import { repoConfigStore } from '../ts/stores/repoConfig'
     import { push } from 'svelte-spa-router'
     import ButtonWrapper from '../components/wrappers/ButtonWrapper.svelte'

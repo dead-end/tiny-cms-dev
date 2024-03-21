@@ -15,7 +15,7 @@
     import { location, push } from 'svelte-spa-router'
     import { getErrorMsg } from '../ts/libs/utils/utils'
     import { getLastCommit } from '../ts/github/persistUtils'
-    import type { TData, TDefinition, TField, TItem } from '../ts/types'
+    import type { TData, TDefinition, TField, TItem } from '../ts/types/entries'
     import CardWrapper from '../components/wrappers/CardWrapper.svelte'
     import FormFields from '../components/FormFields.svelte'
     import ButtonWrapper from '../components/wrappers/ButtonWrapper.svelte'
