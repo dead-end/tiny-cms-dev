@@ -12,4 +12,5 @@ export type TButton = {
 export type TComponent = {
     component: any
     validators: string[]
+    hasProps: boolean
 }

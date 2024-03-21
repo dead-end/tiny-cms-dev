@@ -12,22 +12,27 @@ import type { TComponent } from './types/misc'
 export const componentRegistry: Record<string, TComponent> = {
     text: {
         component: TextInput,
-        validators: ['required', 'min', 'max', 'regex']
+        validators: ['required', 'min', 'max', 'regex'],
+        hasProps: false
     },
     password: {
         component: PasswordInput,
-        validators: ['required', 'min', 'max', 'regex']
+        validators: ['required', 'min', 'max', 'regex'],
+        hasProps: false
     },
     area: {
         component: AreaInput,
-        validators: ['required', 'min', 'max', 'regex']
+        validators: ['required', 'min', 'max', 'regex'],
+        hasProps: false
     },
     checkbox: {
         component: Checkbox,
-        validators: []
+        validators: [],
+        hasProps: false
     },
     selectbox: {
         component: Selectbox,
-        validators: ['required']
+        validators: ['required'],
+        hasProps: true
     }
 }
