@@ -1,4 +1,4 @@
-import type { TField } from '../types'
+import type { TField } from '../types/entries'
 
 /**
  * Definition of the fields for the login dialog.
