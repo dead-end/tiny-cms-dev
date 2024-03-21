@@ -1,6 +1,6 @@
 import type { TRepoConfig } from '../stores/repoConfig'
 import type { TListing } from '../types/files'
-import type { TEntry } from '../types/types'
+import type { TEntry } from '../types/entries'
 import { cacheGet, cacheSet } from './cache'
 import { getCollectionPath, getDefinitionsPath } from './paths'
 import { ghGetFiles } from './queries/ghGetFiles'

@@ -1,6 +1,6 @@
 import type { TRepoConfig } from '../stores/repoConfig'
 import type { TCommit } from '../types/files'
-import type { TDefinition, TItem } from '../types/types'
+import type { TDefinition, TItem } from '../types/entries'
 import { cacheGet, cacheRemove, cacheSet } from './cache'
 import { getItemPath, getDefinitionPath } from './paths'
 import { ghDeleteFile } from './queries/ghDeleteFile'
