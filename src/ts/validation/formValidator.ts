@@ -1,4 +1,4 @@
-import type { TData, TField } from '../types'
+import type { TData, TField } from '../types/entries'
 import type { TValidatorFunction } from '../types/validators'
 import { validatorRegistry } from './validators'
 
