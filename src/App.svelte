@@ -5,7 +5,7 @@
     import About from './routes/About.svelte'
     import NotFound from './routes/NotFound.svelte'
     import Navigation from './components/Navigation.svelte'
-    import type { TNavEntry } from './ts/types'
+    import type { TNavEntry } from './ts/types/navigation'
     import Collection from './routes/Collection.svelte'
     import Definitions from './routes/Definitions.svelte'
     import Item from './routes/Item.svelte'
