@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { TEntry } from '../../ts/types'
+    import type { TEntry } from '../../ts/types/entries'
     import Popup from './Popup.svelte'
 
     export let deleteEntry: TEntry | null

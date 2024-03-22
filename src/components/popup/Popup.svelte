@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { TButton } from '../../ts/types'
+    import type { TButton } from '../../ts/types/misc'
     import ButtonWrapper from '../wrappers/ButtonWrapper.svelte'
 
     export let title: string
