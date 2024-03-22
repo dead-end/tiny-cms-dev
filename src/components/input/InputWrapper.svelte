@@ -5,7 +5,9 @@
 </script>
 
 <div>
-    <label for={id} class="label-base mb-2">{label}</label>
+    <label for={id} class="block text-gray-700 text-sm font-bold mb-2"
+        >{label}</label
+    >
     <slot />
     {#if error}
         <p class="text-xs text-red-600 pt-2">{error}</p>
