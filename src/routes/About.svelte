@@ -1,5 +1,4 @@
 <script lang="ts">
-    import {} from '../ts/libs/result'
     import { repoConfigStore } from '../ts/stores/repoConfig'
 
     let commit: string

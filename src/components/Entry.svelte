@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { TEntry } from '../ts/types'
+    import type { TEntry } from '../ts/types/entries'
 
     export let entry: TEntry
     export let commit: string

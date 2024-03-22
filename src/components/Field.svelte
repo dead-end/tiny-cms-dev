@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { TField } from '../ts/types'
+    import type { TField } from '../ts/types/entries'
 
     export let field: TField
 </script>

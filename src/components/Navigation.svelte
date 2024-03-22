@@ -1,6 +1,6 @@
 <script lang="ts">
     import { repoConfigStore } from '../ts/stores/repoConfig'
-    import type { TNavEntry } from '../ts/types'
+    import type { TNavEntry } from '../ts/types/navigation'
 
     export let entries: TNavEntry[] = []
 </script>

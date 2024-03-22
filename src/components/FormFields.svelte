@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { TData, TField } from '../ts/types'
+    import type { TData, TField } from '../ts/types/entries'
     import FormField from './FormField.svelte'
 
     export let fields: TField[]
