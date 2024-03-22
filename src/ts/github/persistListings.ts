@@ -37,7 +37,7 @@ const getListing = async (config: TRepoConfig, path: string) => {
     const listings = await ghGetListing(config, path)
     const { cached, uncached } = loadFromCache(path, listings)
 
-    console.log('listing:', listings, 'uncached:', uncached, 'cached:', cached)
+    // console.log('listing:', listings, 'uncached:', uncached, 'cached:', cached)
 
     if (uncached.length > 0) {
         const files = await ghGetFiles(config, uncached)
