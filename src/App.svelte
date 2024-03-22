@@ -48,12 +48,9 @@
             <div class="col-span-4 p-8 h-screen">
                 <div class="w-full">
                     {#if $errorStore !== ''}
-                        <Popup
-                            title="Errors"
-                            desc={$errorStore}
-                            {buttons}
-                            type="error"
-                        />
+                        <Popup title="Errors" {buttons} type="error"
+                            >{$errorStore}</Popup
+                        >
                     {/if}
                     <Routes {routes} />
                 </div>

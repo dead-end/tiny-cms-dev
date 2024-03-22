@@ -9,7 +9,6 @@
 {#if deleteEntry}
     <Popup
         title="Delete Entry"
-        desc="Do you want to delete entry: '{deleteEntry.tc_title}'"
         buttons={[
             {
                 label: 'Close',
@@ -26,6 +25,6 @@
                     }
                 }
             }
-        ]}
-    />
+        ]}>Do you want to delete entry: '{deleteEntry.tc_title}'</Popup
+    >
 {/if}

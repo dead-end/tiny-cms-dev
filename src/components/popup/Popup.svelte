@@ -3,7 +3,6 @@
     import ButtonWrapper from '../wrappers/ButtonWrapper.svelte'
 
     export let title: string
-    export let desc: string
     export let buttons: TButton[]
     export let type: 'ok' | 'error' = 'ok'
 </script>
@@ -22,7 +21,7 @@
             {title}
         </div>
         <div class="my-6">
-            {desc}
+            <slot />
         </div>
         <div>
             <ButtonWrapper>
