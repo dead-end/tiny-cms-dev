@@ -1,3 +1,9 @@
+## NPM
+
+```sh
+nvm use --lts
+```
+
 ## Project installation
 
 ```sh
@@ -95,6 +101,34 @@ To deploy to Github pages:
 npm run build
 npm run deploy
 ```
+
+## Markdown:
+
+https://marked.js.org/
+
+```sh
+npm install marked
+```
+
+https://github.com/apostrophecms/sanitize-html
+
+```sh
+npm install -D @types/sanitize-html
+npm install sanitize-html
+```
+
+https://github.com/tailwindlabs/tailwindcss-typography
+
+Add to `tailwind.config.js`
+
+```
+  plugins: [
+    require('@tailwindcss/typography'),
+    // ...
+  ],
+```
+
+npm install -D @tailwindcss/typography
 
 # Github Graphql
 
