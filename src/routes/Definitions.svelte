@@ -6,7 +6,10 @@
     import { errorStore } from '../ts/stores/errorStore'
     import CardWrapper from '../components/wrappers/CardWrapper.svelte'
     import { getErrorMsg } from '../ts/libs/utils/utils'
-    import { getDefinitionsListing } from '../ts/github/persistListings'
+    import {
+        getCollectionListing,
+        getDefinitionsListing
+    } from '../ts/github/persistListings'
     import ButtonWrapper from '../components/wrappers/ButtonWrapper.svelte'
     import FlexColWrapper from '../components/wrappers/FlexColWrapper.svelte'
     import DeleteEntryPopup from '../components/popup/DeleteEntryPopup.svelte'
@@ -20,6 +23,20 @@
     const doDelete = async (id: string) => {
         try {
             const lastCommit = await getLastCommit($repoConfigStore)
+
+            //
+            // Ensure that the collection is empty before we delete the
+            // definition.
+            //
+            const listing = await getCollectionListing($repoConfigStore, id)
+            if (listing.length !== 0) {
+                const list = listing
+                    .map((entry) => `'${entry.tc_title}'`)
+                    .join(' ,')
+                errorStore.set(`There are items in the collection: ${list}`)
+                return
+            }
+
             // TODO: unused
             const newCommit = await deleteDefinitionFile(
                 $repoConfigStore,
