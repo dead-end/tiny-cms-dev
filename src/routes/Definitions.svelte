@@ -15,6 +15,9 @@
     import DeleteEntryPopup from '../components/popup/DeleteEntryPopup.svelte'
     import { getLastCommit } from '../ts/github/persistUtils'
     import { deleteDefinitionFile } from '../ts/github/persistFiles'
+    import ShowIcon from '../components/icons/ShowIcon.svelte'
+    import DeleteIcon from '../components/icons/DeleteIcon.svelte'
+    import ListIcon from '../components/icons/ListIcon.svelte'
 
     let entries: TEntry[] = []
 
@@ -79,25 +82,20 @@
                     >
                     <td class="tb-cell">
                         <ButtonWrapper>
-                            <button
-                                class="btn-base"
-                                on:click={() =>
+                            <ShowIcon
+                                onClick={() =>
                                     push(
                                         '#/definitions/definition/' +
                                             definition.tc_id
-                                    )}>Show</button
-                            >
-                            <button
-                                class="btn-base"
-                                on:click={() => (deleteEntry = definition)}
-                                >Delete</button
-                            >
-                            <button
-                                class="btn-base"
-                                on:click={() =>
+                                    )}
+                            />
+                            <DeleteIcon
+                                onClick={() => (deleteEntry = definition)}
+                            />
+                            <ListIcon
+                                onClick={() =>
                                     push('#/collection/' + definition.tc_id)}
-                                >Collection</button
-                            >
+                            />
                         </ButtonWrapper>
                     </td>
                 </tr>

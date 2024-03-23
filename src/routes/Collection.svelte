@@ -11,6 +11,8 @@
     import { deleteItemFile } from '../ts/github/persistFiles'
     import FlexColWrapper from '../components/wrappers/FlexColWrapper.svelte'
     import DeleteEntryPopup from '../components/popup/DeleteEntryPopup.svelte'
+    import ShowIcon from '../components/icons/ShowIcon.svelte'
+    import DeleteIcon from '../components/icons/DeleteIcon.svelte'
 
     export let params = {
         collection: ''
@@ -72,17 +74,13 @@
                 >
                 <td class="tb-cell">
                     <ButtonWrapper>
-                        <button
-                            class="btn-base"
-                            on:click={() =>
+                        <ShowIcon
+                            onClick={() =>
                                 push(
                                     `#/collection/${params.collection}/item/${item.tc_id}`
-                                )}>Show</button
-                        >
-                        <button
-                            class="btn-base"
-                            on:click={() => (deleteEntry = item)}>Delete</button
-                        >
+                                )}
+                        />
+                        <DeleteIcon onClick={() => (deleteEntry = item)} />
                     </ButtonWrapper>
                 </td>
             </tr>
