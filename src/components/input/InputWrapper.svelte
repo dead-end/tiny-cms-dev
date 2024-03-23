@@ -1,15 +1,14 @@
 <script lang="ts">
+    import InputError from '../base/InputError.svelte'
+    import InputLabel from '../base/InputLabel.svelte'
+
     export let id: string
     export let label: string
     export let error: string | undefined
 </script>
 
 <div>
-    <label for={id} class="block text-gray-700 text-sm font-bold mb-2"
-        >{label}</label
-    >
+    <InputLabel {id} {label} />
     <slot />
-    {#if error}
-        <p class="text-xs text-red-600 pt-2">{error}</p>
-    {/if}
+    <InputError {error} />
 </div>

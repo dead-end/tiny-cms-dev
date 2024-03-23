@@ -22,5 +22,6 @@
         {value}
         on:blur={onblur}
         {disabled}
+        rows="8"
     />
 </InputWrapper>

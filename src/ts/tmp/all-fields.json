@@ -15,6 +15,17 @@
             ]
         },
         {
+            "id": "md",
+            "label": "Markdown",
+            "component": "markdown",
+            "validators": [
+                {
+                    "validator": "required",
+                    "message": "Please enter a markdown text!"
+                }
+            ]
+        },
+        {
             "id": "url",
             "label": "Url",
             "component": "text",
@@ -45,7 +56,10 @@
             "id": "selectbox",
             "label": "Selectbox",
             "component": "selectbox",
-            "value": "green,red,blue,black",
+            "value": "blue",
+            "props": {
+                "options": "green,red,blue,black"
+            },
             "validators": [
                 {
                     "validator": "required"

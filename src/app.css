@@ -7,8 +7,12 @@
         @apply transition duration-200 ease-in-out;
     }
 
+    .base-border {
+        @apply border border-blue-400 focus:border-blue-500;
+    }
+
     .input-border {
-        @apply outline-none focus:outline-none border border-blue-400 focus:border-blue-500 ring-blue-400 focus:ring-blue-500;
+        @apply base-border outline-none focus:outline-none ring-blue-400 focus:ring-blue-500;
     }
 
     .base {
