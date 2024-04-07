@@ -1,4 +1,4 @@
-import type { TRepoConfig } from '../stores/repoConfig'
+import type { TRepoConfig } from '../types/repoConfig'
 
 /**
  * The method creates the path for definitions.

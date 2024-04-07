@@ -1,4 +1,4 @@
-import type { TRepoConfig } from '../stores/repoConfig'
+import type { TRepoConfig } from '../types/repoConfig'
 import type { TCommit } from '../types/files'
 import type { TDefinition, TItem } from '../types/entries'
 import { cacheGet, cacheRemove, cacheSet } from './cache'

@@ -1,16 +1,6 @@
 import { writable } from 'svelte/store'
 import { encrypt, decrypt } from '../libs/crypt'
-
-/**
- * The definition of a repo config.
- */
-export type TRepoConfig = {
-    owner: string
-    name: string
-    branch: string
-    prefix: string
-    token: string
-}
+import type { TRepoConfig } from '../types/repoConfig'
 
 const defaultRepoConfig: TRepoConfig = {
     owner: '',

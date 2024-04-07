@@ -1,4 +1,4 @@
-import type { TRepoConfig } from '../../stores/repoConfig'
+import type { TRepoConfig } from '../../types/repoConfig'
 import type { TFile } from '../../types/files'
 import { processGithubQuery } from './github'
 
